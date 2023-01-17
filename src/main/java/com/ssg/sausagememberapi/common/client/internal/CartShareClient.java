@@ -11,5 +11,11 @@ public interface CartShareClient {
     @GetMapping("/cart-share/api/cart-share/{cartShareId}/cart-share-item")
     SuccessResponse<CartShareItemListResponse> getCartShareItemList(Long cartShareId);
 
+    @GetMapping("/cart-share/api/cart-share/{cartShareId}/mbr/{mbrId}/validation")
+    SuccessResponse<Boolean> validateCartShareAuth(Long cartShareId, Long mbrId);
+
+    @GetMapping("/cart-share/api/cart-share/{cartShareId}/mbr/{mbrId}/master-validation")
+    SuccessResponse<Boolean> validateCartShareMasterAuth(Long cartShareId, Long mbrId);
+
 
 }

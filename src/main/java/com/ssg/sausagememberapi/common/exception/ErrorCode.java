@@ -39,6 +39,7 @@ public enum ErrorCode {
      * 404 Not Found
      */
     NOT_FOUND_EXCEPTION(NOT_FOUND, "존재하지 않습니다."),
+    NOT_FOUND_CART_SHARE_ORDER_EXCEPTION(NOT_FOUND, "존재하지 않습니다."),
 
     /**
      * 409 Conflict

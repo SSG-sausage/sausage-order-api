@@ -4,6 +4,7 @@ package com.ssg.sausagememberapi.order.service;
 import com.ssg.sausagememberapi.common.client.internal.CartShareClient;
 import com.ssg.sausagememberapi.common.client.internal.dto.response.CartShareItemListResponse.CartShareItemInfo;
 import com.ssg.sausagememberapi.order.dto.response.CartShareOrdFindListResponse;
+import com.ssg.sausagememberapi.order.dto.response.CartShareOrdFindResponse;
 import com.ssg.sausagememberapi.order.entity.CartShareOdr;
 import com.ssg.sausagememberapi.order.entity.CartShareOdrItem;
 import com.ssg.sausagememberapi.order.repository.CartShareOrdItemRepository;
@@ -23,12 +24,18 @@ public class CartShareOrdService {
 
     private final CartShareOrdRepository cartShareOrdRepository;
 
-    private final CartShareClient cartShareClient;
-
     private final CartShareOrdItemRepository cartShareOrdItemRepository;
 
+    private final CartShareOrdUtilService cartShareOrdUtilService;
+
+    private final CartShareClient cartShareClient;
+
+
     @Transactional
-    public void saveCartShareOrd(Long cartShareId) {
+    public void saveCartShareOrd(Long mbrId, Long cartShareId) {
+
+        // validate 'isFound' and 'isCartShareMaster' (internal api)
+        cartShareClient.validateCartShareMasterAuth(mbrId, cartShareId);
 
         cartShareOrdRepository.save(CartShareOdr.newInstance(cartShareId));
 
@@ -36,21 +43,33 @@ public class CartShareOrdService {
         List<CartShareItemInfo> cartShareItemList = cartShareClient.getCartShareItemList(cartShareId)
                 .getData().getCartShareItemList();
 
-        List<CartShareOdrItem> cartShareOdrItems = cartShareItemList
-                .stream()
+        List<CartShareOdrItem> cartShareOdrItems = cartShareItemList.stream()
                 .map(cartShareItemInfo -> CartShareOdrItem.newInstance(cartShareItemInfo, cartShareId))
                 .collect(Collectors.toList());
 
-        // (kafka producing) delete cartShareItem
+        // (kafka producing) delete cartShareItem ==> to be added
 
         cartShareOrdItemRepository.saveAll(cartShareOdrItems);
     }
 
-    public CartShareOrdFindListResponse findCartShareOrderList(Long cartShareId) {
+    public CartShareOrdFindListResponse findCartShareOrderList(Long mbrId, Long cartShareId) {
+
+        // validate 'isFound' and 'isAccessibleCartShareByMbr' (internal api)
+        cartShareClient.validateCartShareAuth(mbrId, cartShareId);
 
         List<CartShareOdr> cartShareOdrList = cartShareOrdRepository.findAllByCartShareId(cartShareId);
 
         return CartShareOrdFindListResponse.of(cartShareOdrList);
+    }
+
+    public CartShareOrdFindResponse findCartShareOrder(Long mbrId, Long cartShareId, Long cartShareOrdId) {
+
+        // validate 'isFound' and 'isAccessibleCartShareByMbr' (internal api)
+        cartShareClient.validateCartShareAuth(mbrId, cartShareId);
+
+        CartShareOdr cartShareOdr = cartShareOrdUtilService.findById(cartShareOrdId);
+
+        return CartShareOrdFindResponse.of(cartShareOdr);
     }
 
 
