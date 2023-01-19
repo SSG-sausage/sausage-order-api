@@ -31,14 +31,14 @@ public class CartShareItemListResponse {
 
         private String itemNm;
 
-        private Long itemAmt;
+        private int itemAmt;
 
         private String itemImgUrl;
 
         private String shppCd;
 
-        private Integer itemQty;
+        private int itemQty;
 
-        private Boolean comYn;
+        private boolean comYn;
     }
 }

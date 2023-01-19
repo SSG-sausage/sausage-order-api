@@ -35,7 +35,7 @@ services:
       MYSQL_ROOT_HOST: '%'
       MYSQL_USER: "sausage"
       MYSQL_PASSWORD: "sausage"
-      MYSQL_DATABASE: "order"
+      MYSQL_DATABASE: "mysql_cart_share"
     ports:
       - "3308:3306"
     command:

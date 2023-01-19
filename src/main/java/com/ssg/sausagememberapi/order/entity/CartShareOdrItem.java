@@ -4,6 +4,8 @@ import com.ssg.sausagememberapi.common.client.internal.dto.response.CartShareIte
 import com.ssg.sausagememberapi.common.entity.BaseEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -45,10 +47,14 @@ public class CartShareOdrItem extends BaseEntity {
     private Boolean comYn;
 
     @Column(name = "ITEM_AMT", nullable = false)
-    private Long itemAmt;
+    private Integer itemAmt;
 
     @Column(name = "PAYMT_AMT", nullable = false)
-    private Long paymtAmt;
+    private Integer paymtAmt;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "SHPP_CD")
+    private ShppCd shppCd;
 
     public static CartShareOdrItem newInstance(CartShareItemInfo cartShareItemInfo, Long cartShareOrdId) {
         return CartShareOdrItem.builder()
@@ -56,9 +62,10 @@ public class CartShareOdrItem extends BaseEntity {
                 .itemId(cartShareItemInfo.getItemId())
                 .mbrId(cartShareItemInfo.getMbrId())
                 .itemQty(cartShareItemInfo.getItemQty())
-                .comYn(cartShareItemInfo.getComYn())
+                .comYn(cartShareItemInfo.isComYn())
                 .itemAmt(cartShareItemInfo.getItemAmt())
                 .paymtAmt(cartShareItemInfo.getItemAmt() * cartShareItemInfo.getItemQty())
+                .shppCd(ShppCd.valueOf(cartShareItemInfo.getShppCd()))
                 .build();
     }
 
