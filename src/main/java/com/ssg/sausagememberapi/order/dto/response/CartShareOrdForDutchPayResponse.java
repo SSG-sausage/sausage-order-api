@@ -16,9 +16,9 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(access = AccessLevel.PRIVATE)
-public class CartShareOrdByDutchPayResponse {
+public class CartShareOrdForDutchPayResponse {
 
-    private int totalPrice;
+    private int totalPymtAmt;
 
     private int commAmt;
 
@@ -26,11 +26,11 @@ public class CartShareOrdByDutchPayResponse {
 
     private List<CartShareOrdAmtInfo> ordInfoList = Collections.emptyList();
 
-    public static CartShareOrdByDutchPayResponse of(int totalPrice, int commAmt,
+    public static CartShareOrdForDutchPayResponse of(int totalPrice, int commAmt,
             List<CartShareOrdShppInfo> shppInfoList, List<CartShareOrdAmtInfo> ordInfoList) {
 
-        return CartShareOrdByDutchPayResponse.builder()
-                .totalPrice(totalPrice)
+        return CartShareOrdForDutchPayResponse.builder()
+                .totalPymtAmt(totalPrice)
                 .commAmt(commAmt)
                 .shppInfoList(shppInfoList)
                 .ordInfoList(ordInfoList)

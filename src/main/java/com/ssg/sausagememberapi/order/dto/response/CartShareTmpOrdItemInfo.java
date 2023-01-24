@@ -45,8 +45,8 @@ public class CartShareTmpOrdItemInfo {
 
     public static CartShareTmpOrdItemInfo of(CartShareTmpOdrItem cartShareTmpOdrItem) {
         return CartShareTmpOrdItemInfo.builder()
-                .cartShareTmpOrdItemId(cartShareTmpOdrItem.getCartShareOrdItemId())
-                .cartShareTmpOrdId(cartShareTmpOdrItem.getCartShareOrdId())
+                .cartShareTmpOrdItemId(cartShareTmpOdrItem.getCartShareTmpOrdItemId())
+                .cartShareTmpOrdId(cartShareTmpOdrItem.getCartShareTmpOrdId())
                 .itemId(cartShareTmpOdrItem.getItemId())
                 .mbrId(cartShareTmpOdrItem.getMbrId())
                 .itemQty(cartShareTmpOdrItem.getItemQty())

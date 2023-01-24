@@ -4,9 +4,11 @@ import com.ssg.sausagememberapi.common.config.resolver.MbrId;
 import com.ssg.sausagememberapi.common.dto.ErrorResponse;
 import com.ssg.sausagememberapi.common.dto.SuccessResponse;
 import com.ssg.sausagememberapi.common.success.SuccessCode;
-import com.ssg.sausagememberapi.order.dto.response.CartShareOrdByDutchPayResponse;
 import com.ssg.sausagememberapi.order.dto.response.CartShareOrdFindListResponse;
 import com.ssg.sausagememberapi.order.dto.response.CartShareOrdFindResponse;
+import com.ssg.sausagememberapi.order.dto.response.CartShareOrdForDutchPayResponse;
+import com.ssg.sausagememberapi.order.dto.response.CartShareOrdTotalPymtAmtForDutchPayResponse;
+import com.ssg.sausagememberapi.order.service.CartShareOrdDutchPayService;
 import com.ssg.sausagememberapi.order.service.CartShareOrdService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -32,6 +34,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class CartShareOrdController {
 
     private final CartShareOrdService cartShareOrdService;
+
+    private final CartShareOrdDutchPayService cartShareOrdDutchPayService;
 
     @Operation(summary = "공유장바구니 주문하기", responses = {
             @ApiResponse(responseCode = "200", description = "공유장바구니 주문하기 성공")
@@ -61,7 +65,7 @@ public class CartShareOrdController {
             @ApiResponse(responseCode = "200", description = "공유장바구니주문 단일 조회 성공"),
             @ApiResponse(responseCode = "404", description = "일치하는 공유장바구니주문 ID가 존재하지 않습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
-    @GetMapping(value = "/cart-share/{cartShareId}/cart-share-ord/{cartShareOrdId}", params = "mbrIdList")
+    @GetMapping(value = "/cart-share/{cartShareId}/cart-share-ord/{cartShareOrdId}")
     public ResponseEntity<SuccessResponse<CartShareOrdFindResponse>> findCartShareOrd(
             @Parameter(in = ParameterIn.HEADER) @MbrId Long mbrId,
             @PathVariable Long cartShareId,
@@ -71,12 +75,26 @@ public class CartShareOrdController {
                 cartShareOrdService.findCartShareOrder(mbrId, cartShareId, cartShareOrdId));
     }
 
-    @GetMapping(value = "/cart-share/{cartShareId}/dutch-pay", params = "mbrIdList")
-    public ResponseEntity<SuccessResponse<CartShareOrdByDutchPayResponse>> getCartShareOrdByDutchPay(
-            @PathVariable Long cartShareId) {
+    @Operation(summary = "공유장바구니주문 더치페이용 조회", responses = {
+            @ApiResponse(responseCode = "200", description = "공유장바구니주문 더치페이용 조회 성공"),
+    })
+    @GetMapping(value = "/cart-share-ord/{cartShareOrdId}/dutch-pay")
+    public ResponseEntity<SuccessResponse<CartShareOrdForDutchPayResponse>> getCartShareOrdForDutchPay(
+            @PathVariable Long cartShareOrdId) {
 
         return SuccessResponse.success(SuccessCode.FIND_CART_SHARE_ORD_SUCCESS,
-                cartShareOrdService.getCartShareOrdByDutchPay(cartShareId));
+                cartShareOrdDutchPayService.findCartShareOrd(cartShareOrdId));
+    }
+
+    @Operation(summary = "공유장바구니주문 총결제금액 더치페이용 조회", responses = {
+            @ApiResponse(responseCode = "200", description = "공유장바구니주문 총결제금액 더치페이용 조회 성공"),
+    })
+    @GetMapping(value = "/cart-share-ord/{cartShareOrdId}/total-pymt-amt/dutch-pay")
+    public ResponseEntity<SuccessResponse<CartShareOrdTotalPymtAmtForDutchPayResponse>> getCartShareOrdTotalPymtAmtForDutchPay(
+            @PathVariable Long cartShareOrdId) {
+
+        return SuccessResponse.success(SuccessCode.FIND_CART_SHARE_ORD_SUCCESS,
+                cartShareOrdDutchPayService.calculateOrdTotalPymtAmt(cartShareOrdId));
     }
 
 

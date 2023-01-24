@@ -34,29 +34,29 @@ public class CartShareOdrItem extends BaseEntity {
     private Long cartShareTmpOrdItemId;
 
     @Column(name = "CART_SHARE_ORD_ID", nullable = false)
-    protected Long cartShareOrdId;
+    private Long cartShareOrdId;
 
     @Column(name = "ITEM_ID", nullable = false)
-    protected Long itemId;
+    private Long itemId;
 
     @Column(name = "MBR_ID", nullable = false)
-    protected Long mbrId;
+    private Long mbrId;
 
     @Column(name = "ITEM_QTY", nullable = false)
-    protected Integer itemQty;
+    private Integer itemQty;
 
     @Column(name = "COM_YN", nullable = false)
-    protected Boolean comYn;
+    private Boolean comYn;
 
     @Column(name = "ITEM_AMT", nullable = false)
-    protected Integer itemAmt;
+    private Integer itemAmt;
 
     @Column(name = "PAYMT_AMT", nullable = false)
-    protected Integer paymtAmt;
+    private Integer paymtAmt;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "SHPP_CD")
-    protected ShppCd shppCd;
+    private ShppCd shppCd;
 
     public static CartShareOdrItem newInstance(Long cartShareOrdId, CartShareTmpOdrItem cartShareTmpOdrItem) {
 
