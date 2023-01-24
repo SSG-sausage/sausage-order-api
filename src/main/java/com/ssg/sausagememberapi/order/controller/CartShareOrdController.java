@@ -4,6 +4,7 @@ import com.ssg.sausagememberapi.common.config.resolver.MbrId;
 import com.ssg.sausagememberapi.common.dto.ErrorResponse;
 import com.ssg.sausagememberapi.common.dto.SuccessResponse;
 import com.ssg.sausagememberapi.common.success.SuccessCode;
+import com.ssg.sausagememberapi.order.dto.response.CartShareOrdByDutchPayResponse;
 import com.ssg.sausagememberapi.order.dto.response.CartShareOrdFindListResponse;
 import com.ssg.sausagememberapi.order.dto.response.CartShareOrdFindResponse;
 import com.ssg.sausagememberapi.order.service.CartShareOrdService;
@@ -67,5 +68,13 @@ public class CartShareOrdController {
         return SuccessResponse.success(SuccessCode.FIND_CART_SHARE_ORD_SUCCESS,
                 cartShareOrdService.findCartShareOrder(mbrId, cartShareId, cartShareOrdId));
     }
+
+    @GetMapping(value = "/cart-share/{cartShareId}/dutch-pay", params = "mbrIdList")
+    public ResponseEntity<SuccessResponse<CartShareOrdByDutchPayResponse>> getCartShareOrdByDutchPay(
+            @PathVariable Long cartShareId) {
+        return SuccessResponse.success(SuccessCode.FIND_CART_SHARE_ORD_SUCCESS,
+                cartShareOrdService.getCartShareOrdByDutchPay(cartShareId));
+    }
+
 
 }

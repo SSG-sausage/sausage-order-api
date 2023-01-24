@@ -83,6 +83,7 @@ public class CartShareOrdService {
 
         HashMap<String, CartShareOrdShppInfo> cartShareOrdShppInfoMap = new HashMap<>();
         HashMap<Long, CartShareOrdAmtInfo> cartShareOrdAmtInfoMap = new HashMap<>();
+
         int totalPrice = 0;
         int commAmt = 0;
 
@@ -141,8 +142,5 @@ public class CartShareOrdService {
         // 없을 경우 새로운 CartShareOrdShppInfo 객체 맨들면서 해쉬값 생성
         cartShareOrdShppInfoMap.put(cartShareOdrItem.getShppCd().getNm(),
                 CartShareOrdShppInfo.of(cartShareOdrItem.getShppCd()));
-
     }
-
-
 }

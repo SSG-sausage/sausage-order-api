@@ -1,9 +1,10 @@
 package com.ssg.sausagememberapi.order.entity;
 
 import com.ssg.sausagememberapi.common.entity.BaseEntity;
-import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -15,39 +16,43 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 
-@Table(name = "CART_SHARE_ORD")
+@Table(name = "CART_SHARE_TMP_ORD_ITEM")
 @Getter
 @Entity
 @DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder(access = AccessLevel.PUBLIC)
-public class CartShareOdr extends BaseEntity {
+public class CartShareTmpOdrItem extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "CART_SHARE_ORD_ID", nullable = false)
-    private Long cartShareOrdId;
+    @Column(name = "CART_SHARE_TMP_ORD_ITEM_ID", nullable = false)
+    private Long cartShareTmpOrdItemId;
 
     @Column(name = "CART_SHARE_TMP_ORD_ID", nullable = false)
     private Long cartShareTmpOrdId;
 
-    @Column(name = "CART_SHARE_ID", nullable = false)
-    private Long cartShareId;
+    @Column(name = "ITEM_ID", nullable = false)
+    private Long itemId;
 
-    @Column(name = "CART_SHARE_ORD_RCP_DTS", nullable = false)
-    private LocalDateTime cartShareOrdRcpDts;
+    @Column(name = "MBR_ID", nullable = false)
+    private Long mbrId;
 
-    @Column(name = "ORD_STAT_CD", nullable = false)
-    private OrdStatCd ordStatCd;
+    @Column(name = "ITEM_QTY", nullable = false)
+    private Integer itemQty;
 
+    @Column(name = "COM_YN", nullable = false)
+    private Boolean comYn;
 
-    public static CartShareOdr newInstance(Long cartShareId) {
-        return CartShareOdr.builder()
-                .cartShareId(cartShareId)
-                .cartShareOrdRcpDts(LocalDateTime.now())
-                .ordStatCd(OrdStatCd.IN_PROGRESS)
-                .build();
-    }
+    @Column(name = "ITEM_AMT", nullable = false)
+    private Integer itemAmt;
+
+    @Column(name = "PAYMT_AMT", nullable = false)
+    private Integer paymtAmt;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "SHPP_CD")
+    private ShppCd shppCd;
 
 }

@@ -15,38 +15,35 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 
-@Table(name = "CART_SHARE_ORD")
+@Table(name = "CART_SHARE_TMP_ORD")
 @Getter
 @Entity
 @DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder(access = AccessLevel.PUBLIC)
-public class CartShareOdr extends BaseEntity {
+public class CartShareTmpOdr extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "CART_SHARE_ORD_ID", nullable = false)
-    private Long cartShareOrdId;
-
     @Column(name = "CART_SHARE_TMP_ORD_ID", nullable = false)
     private Long cartShareTmpOrdId;
 
     @Column(name = "CART_SHARE_ID", nullable = false)
     private Long cartShareId;
 
-    @Column(name = "CART_SHARE_ORD_RCP_DTS", nullable = false)
-    private LocalDateTime cartShareOrdRcpDts;
+    @Column(name = "CART_SHARE_TMP_ORD_RCP_DTS", nullable = false)
+    private LocalDateTime cartShareTmpOrdRcpDts;
 
-    @Column(name = "ORD_STAT_CD", nullable = false)
-    private OrdStatCd ordStatCd;
+    @Column(name = "TMP_ORD_STAT_CD", nullable = false)
+    private TmpOrdStatCd tmpOrdStatCd;
 
 
-    public static CartShareOdr newInstance(Long cartShareId) {
-        return CartShareOdr.builder()
+    public static CartShareTmpOdr newInstance(Long cartShareId) {
+        return CartShareTmpOdr.builder()
                 .cartShareId(cartShareId)
-                .cartShareOrdRcpDts(LocalDateTime.now())
-                .ordStatCd(OrdStatCd.IN_PROGRESS)
+                .cartShareTmpOrdRcpDts(LocalDateTime.now())
+                .tmpOrdStatCd(TmpOrdStatCd.IN_PROGRESS)
                 .build();
     }
 

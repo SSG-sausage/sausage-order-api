@@ -31,11 +31,14 @@ public class CartShareOdrItem extends BaseEntity {
     @Column(name = "CART_SHARE_ORD_ITEM_ID", nullable = false)
     private Long cartShareOrdItemId;
 
-    @Column(name = "ITEM_ID", nullable = false)
-    private Long itemId;
-
     @Column(name = "CART_SHARE_ORD_ID", nullable = false)
     private Long cartShareOrdId;
+
+    @Column(name = "CART_SHARE_TMP_ORD_ITEM_ID", nullable = false)
+    private Long cartShareTmpOrdItemId;
+
+    @Column(name = "ITEM_ID", nullable = false)
+    private Long itemId;
 
     @Column(name = "MBR_ID", nullable = false)
     private Long mbrId;
