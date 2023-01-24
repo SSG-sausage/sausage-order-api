@@ -1,6 +1,5 @@
 package com.ssg.sausagememberapi.order.dto.response;
 
-import com.ssg.sausagememberapi.order.entity.CartShareOdrItem;
 import com.ssg.sausagememberapi.order.entity.CartShareTmpOdrItem;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
@@ -15,13 +14,13 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(access = AccessLevel.PRIVATE)
-public class CartShareOrdItemInfo {
+public class CartShareTmpOrdItemInfo {
 
-    @Schema(description = "공유장바구니주문상품 ID")
-    private Long cartShareOrdItemId;
+    @Schema(description = "공유장바구니임시주문상품 ID")
+    private Long cartShareTmpOrdItemId;
 
-    @Schema(description = "공유장바구니주문 ID")
-    private Long cartShareOrdId;
+    @Schema(description = "공유장바구니임시주문 ID")
+    private Long cartShareTmpOrdId;
 
     @Schema(description = "상품 ID")
     private Long itemId;
@@ -44,16 +43,16 @@ public class CartShareOrdItemInfo {
     @Schema(description = "배송타입코드")
     private String shppCd;
 
-    public static CartShareOrdItemInfo of(CartShareOdrItem cartShareOdrItem) {
-        return CartShareOrdItemInfo.builder()
-                .cartShareOrdItemId(cartShareOdrItem.getCartShareOrdItemId())
-                .cartShareOrdId(cartShareOdrItem.getCartShareOrdId())
-                .itemId(cartShareOdrItem.getItemId())
-                .mbrId(cartShareOdrItem.getMbrId())
-                .itemQty(cartShareOdrItem.getItemQty())
-                .itemAmt(cartShareOdrItem.getItemAmt())
-                .paymtAmt(cartShareOdrItem.getPaymtAmt())
-                .shppCd(cartShareOdrItem.getShppCd().name())
+    public static CartShareTmpOrdItemInfo of(CartShareTmpOdrItem cartShareTmpOdrItem) {
+        return CartShareTmpOrdItemInfo.builder()
+                .cartShareTmpOrdItemId(cartShareTmpOdrItem.getCartShareOrdItemId())
+                .cartShareTmpOrdId(cartShareTmpOdrItem.getCartShareOrdId())
+                .itemId(cartShareTmpOdrItem.getItemId())
+                .mbrId(cartShareTmpOdrItem.getMbrId())
+                .itemQty(cartShareTmpOdrItem.getItemQty())
+                .itemAmt(cartShareTmpOdrItem.getItemAmt())
+                .paymtAmt(cartShareTmpOdrItem.getPaymtAmt())
+                .shppCd(cartShareTmpOdrItem.getShppCd().name())
                 .build();
     }
 }

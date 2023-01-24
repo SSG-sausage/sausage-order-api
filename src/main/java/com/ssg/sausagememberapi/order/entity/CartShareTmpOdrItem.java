@@ -1,7 +1,6 @@
 package com.ssg.sausagememberapi.order.entity;
 
 import com.ssg.sausagememberapi.common.client.internal.dto.response.CartShareItemListResponse.CartShareItemInfo;
-import com.ssg.sausagememberapi.common.entity.BaseEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -23,8 +22,8 @@ import org.hibernate.annotations.DynamicUpdate;
 @DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Builder(access = AccessLevel.PUBLIC)
-public class CartShareTmpOdrItem extends BaseEntity {
+@Builder
+public class CartShareTmpOdrItem extends CartShareOdrItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,28 +34,29 @@ public class CartShareTmpOdrItem extends BaseEntity {
     private Long cartShareTmpOrdId;
 
     @Column(name = "ITEM_ID", nullable = false)
-    private Long itemId;
+    protected Long itemId;
 
     @Column(name = "MBR_ID", nullable = false)
-    private Long mbrId;
+    protected Long mbrId;
 
     @Column(name = "ITEM_QTY", nullable = false)
-    private Integer itemQty;
+    protected Integer itemQty;
 
     @Column(name = "COM_YN", nullable = false)
-    private Boolean comYn;
+    protected Boolean comYn;
 
     @Column(name = "ITEM_AMT", nullable = false)
-    private Integer itemAmt;
+    protected Integer itemAmt;
 
     @Column(name = "PAYMT_AMT", nullable = false)
-    private Integer paymtAmt;
+    protected Integer paymtAmt;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "SHPP_CD")
-    private ShppCd shppCd;
+    protected ShppCd shppCd;
 
     public static CartShareTmpOdrItem newInstance(CartShareItemInfo cartShareItemInfo, Long cartShareTmpOrdId) {
+
         return CartShareTmpOdrItem.builder()
                 .cartShareTmpOrdId(cartShareTmpOrdId)
                 .itemId(cartShareItemInfo.getItemId())

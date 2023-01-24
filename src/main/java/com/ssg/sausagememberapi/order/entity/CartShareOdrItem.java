@@ -22,7 +22,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@Builder(access = AccessLevel.PUBLIC)
+@Builder
 public class CartShareOdrItem extends BaseEntity {
 
     @Id
@@ -30,33 +30,33 @@ public class CartShareOdrItem extends BaseEntity {
     @Column(name = "CART_SHARE_ORD_ITEM_ID", nullable = false)
     private Long cartShareOrdItemId;
 
-    @Column(name = "CART_SHARE_ORD_ID", nullable = false)
-    private Long cartShareOrdId;
-
     @Column(name = "CART_SHARE_TMP_ORD_ITEM_ID", nullable = false)
     private Long cartShareTmpOrdItemId;
 
+    @Column(name = "CART_SHARE_ORD_ID", nullable = false)
+    protected Long cartShareOrdId;
+
     @Column(name = "ITEM_ID", nullable = false)
-    private Long itemId;
+    protected Long itemId;
 
     @Column(name = "MBR_ID", nullable = false)
-    private Long mbrId;
+    protected Long mbrId;
 
     @Column(name = "ITEM_QTY", nullable = false)
-    private Integer itemQty;
+    protected Integer itemQty;
 
     @Column(name = "COM_YN", nullable = false)
-    private Boolean comYn;
+    protected Boolean comYn;
 
     @Column(name = "ITEM_AMT", nullable = false)
-    private Integer itemAmt;
+    protected Integer itemAmt;
 
     @Column(name = "PAYMT_AMT", nullable = false)
-    private Integer paymtAmt;
+    protected Integer paymtAmt;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "SHPP_CD")
-    private ShppCd shppCd;
+    protected ShppCd shppCd;
 
     public static CartShareOdrItem newInstance(Long cartShareOrdId, CartShareTmpOdrItem cartShareTmpOdrItem) {
 

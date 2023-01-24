@@ -46,17 +46,18 @@ public class CartShareOrdController {
         return SuccessResponse.OK;
     }
 
-    @Operation(summary = "공유장바구니 리스트 조회", responses = {
+    @Operation(summary = "공유장바구니주문 리스트 조회", responses = {
             @ApiResponse(responseCode = "200", description = "공유장비구니주문 리스트 조회 성공")})
     @GetMapping(value = "/cart-share/{cartShareId}/cart-share-ord")
     public ResponseEntity<SuccessResponse<CartShareOrdFindListResponse>> findCartShareOrdList(
             @Parameter(in = ParameterIn.HEADER) @MbrId Long mbrId,
             @PathVariable Long cartShareId) {
+
         return SuccessResponse.success(SuccessCode.FIND_CART_SHARE_ORD_SUCCESS,
                 cartShareOrdService.findCartShareOrderList(mbrId, cartShareId));
     }
 
-    @Operation(summary = "공유장바구니 단일 조회", responses = {
+    @Operation(summary = "공유장바구니주문 단일 조회", responses = {
             @ApiResponse(responseCode = "200", description = "공유장바구니주문 단일 조회 성공"),
             @ApiResponse(responseCode = "404", description = "일치하는 공유장바구니주문 ID가 존재하지 않습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
@@ -65,6 +66,7 @@ public class CartShareOrdController {
             @Parameter(in = ParameterIn.HEADER) @MbrId Long mbrId,
             @PathVariable Long cartShareId,
             @PathVariable Long cartShareOrdId) {
+
         return SuccessResponse.success(SuccessCode.FIND_CART_SHARE_ORD_SUCCESS,
                 cartShareOrdService.findCartShareOrder(mbrId, cartShareId, cartShareOrdId));
     }
@@ -72,6 +74,7 @@ public class CartShareOrdController {
     @GetMapping(value = "/cart-share/{cartShareId}/dutch-pay", params = "mbrIdList")
     public ResponseEntity<SuccessResponse<CartShareOrdByDutchPayResponse>> getCartShareOrdByDutchPay(
             @PathVariable Long cartShareId) {
+
         return SuccessResponse.success(SuccessCode.FIND_CART_SHARE_ORD_SUCCESS,
                 cartShareOrdService.getCartShareOrdByDutchPay(cartShareId));
     }

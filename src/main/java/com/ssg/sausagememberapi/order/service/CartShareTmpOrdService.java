@@ -2,6 +2,7 @@ package com.ssg.sausagememberapi.order.service;
 
 import com.ssg.sausagememberapi.common.client.internal.CartShareClient;
 import com.ssg.sausagememberapi.common.client.internal.dto.response.CartShareItemListResponse.CartShareItemInfo;
+import com.ssg.sausagememberapi.order.dto.response.CartShareTmpOrdFindResponse;
 import com.ssg.sausagememberapi.order.entity.CartShareTmpOdr;
 import com.ssg.sausagememberapi.order.entity.CartShareTmpOdrItem;
 import com.ssg.sausagememberapi.order.repository.CartShareTmpOrdItemRepository;
@@ -29,15 +30,17 @@ public class CartShareTmpOrdService {
 
 
     @Transactional
-    public void findCartShareTmpOrdInProgress(Long mbrId, Long cartShareId) {
+    public CartShareTmpOrdFindResponse findCartShareTmpOrdInProgress(Long mbrId, Long cartShareId) {
 
-        // validate 'isFound' and 'isCartShareMaster' (internal api)
-        cartShareClient.validateCartShareMasterAuth(mbrId, cartShareId);
+        // validate 'isFound' and 'isCartShareMember' (internal api)
+        cartShareClient.validateCartShareAuth(mbrId, cartShareId);
 
-        CartShareTmpOdr cartShareTmpOrdInProgress = cartShareTmpOrdUtilService.findCartShareTmpOrdInProgress(
-                cartShareId);
+        CartShareTmpOdr cartShareTmpOdr = cartShareTmpOrdUtilService.findCartShareTmpOrdInProgress(cartShareId);
 
+        List<CartShareTmpOdrItem> cartShareTmpOdrItemList = cartShareTmpOrdItemRepository.findAllByCartShareTmpOrdId(
+                cartShareTmpOdr.getCartShareTmpOrdId());
 
+        return CartShareTmpOrdFindResponse.of(cartShareTmpOdr, cartShareTmpOdrItemList);
     }
 
     @Transactional
