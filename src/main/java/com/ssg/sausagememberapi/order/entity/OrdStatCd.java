@@ -7,9 +7,6 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public enum OrdStatCd {
 
-
-    IN_PROGRESS("주문 진행중"),
-
     SUCCESS("주문 성공"),
 
     CANCELED("주문 취소");

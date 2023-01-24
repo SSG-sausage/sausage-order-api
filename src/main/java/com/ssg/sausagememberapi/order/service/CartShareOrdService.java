@@ -1,7 +1,7 @@
 package com.ssg.sausagememberapi.order.service;
 
 
-import com.ssg.sausagememberapi.common.client.internal.CartShareClient;
+import com.ssg.sausagememberapi.common.client.internal.CartShareClientMock;
 import com.ssg.sausagememberapi.order.dto.response.CartShareOrdFindListResponse;
 import com.ssg.sausagememberapi.order.dto.response.CartShareOrdFindResponse;
 import com.ssg.sausagememberapi.order.entity.CartShareOdr;
@@ -31,7 +31,7 @@ public class CartShareOrdService {
 
     private final CartShareTmpOrdUtilService cartShareTmpOrdUtilService;
 
-    private final CartShareClient cartShareClient;
+    private final CartShareClientMock cartShareClient;
 
     public void saveCartShareOrdFromTmpOrd(Long mbrId, Long cartShareId) {
 

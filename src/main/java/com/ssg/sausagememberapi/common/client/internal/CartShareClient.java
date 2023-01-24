@@ -3,6 +3,7 @@ package com.ssg.sausagememberapi.common.client.internal;
 import com.ssg.sausagememberapi.common.client.internal.dto.response.CartShareItemListResponse;
 import com.ssg.sausagememberapi.common.dto.SuccessResponse;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -10,13 +11,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface CartShareClient {
 
     @GetMapping("/cart-share/api/cart-share/{cartShareId}/cart-share-item")
-    SuccessResponse<CartShareItemListResponse> getCartShareItemList(@PathVariable Long cartShareId);
+    ResponseEntity<SuccessResponse<CartShareItemListResponse>> getCartShareItemList(@PathVariable Long cartShareId);
 
     @GetMapping("/cart-share/api/cart-share/{cartShareId}/mbr/{mbrId}/validation")
-    SuccessResponse<Boolean> validateCartShareAuth(@PathVariable Long cartShareId, @PathVariable Long mbrId);
+    ResponseEntity<SuccessResponse<Boolean>> validateCartShareAuth(@PathVariable Long cartShareId,
+            @PathVariable Long mbrId);
 
     @GetMapping("/cart-share/api/cart-share/{cartShareId}/mbr/{mbrId}/master-validation")
-    SuccessResponse<Boolean> validateCartShareMasterAuth(@PathVariable Long cartShareId, @PathVariable Long mbrId);
+    ResponseEntity<SuccessResponse<Boolean>> validateCartShareMasterAuth(@PathVariable Long cartShareId,
+            @PathVariable Long mbrId);
 
 
 }

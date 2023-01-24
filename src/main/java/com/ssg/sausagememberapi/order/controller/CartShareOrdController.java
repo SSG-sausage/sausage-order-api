@@ -38,7 +38,8 @@ public class CartShareOrdController {
     private final CartShareOrdDutchPayService cartShareOrdDutchPayService;
 
     @Operation(summary = "공유장바구니 주문하기", responses = {
-            @ApiResponse(responseCode = "200", description = "공유장바구니 주문하기 성공")
+            @ApiResponse(responseCode = "200", description = "공유장바구니 주문하기 성공"),
+            @ApiResponse(responseCode = "404", description = "유효한 임시 주문이 존재하지 않습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PostMapping("/cart-share/{cartShareId}/cart-share-ord")
     public ResponseEntity<SuccessResponse<String>> saveCartShareOrd(
@@ -77,12 +78,13 @@ public class CartShareOrdController {
 
     @Operation(summary = "공유장바구니주문 더치페이용 조회", responses = {
             @ApiResponse(responseCode = "200", description = "공유장바구니주문 더치페이용 조회 성공"),
+            @ApiResponse(responseCode = "404", description = "일치하는 공유장바구니주문 ID가 존재하지 않습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @GetMapping(value = "/cart-share-ord/{cartShareOrdId}/dutch-pay")
     public ResponseEntity<SuccessResponse<CartShareOrdForDutchPayResponse>> getCartShareOrdForDutchPay(
             @PathVariable Long cartShareOrdId) {
 
-        return SuccessResponse.success(SuccessCode.FIND_CART_SHARE_ORD_SUCCESS,
+        return SuccessResponse.success(SuccessCode.OK_SUCCESS,
                 cartShareOrdDutchPayService.findCartShareOrd(cartShareOrdId));
     }
 
@@ -93,7 +95,7 @@ public class CartShareOrdController {
     public ResponseEntity<SuccessResponse<CartShareOrdTotalPymtAmtForDutchPayResponse>> getCartShareOrdTotalPymtAmtForDutchPay(
             @PathVariable Long cartShareOrdId) {
 
-        return SuccessResponse.success(SuccessCode.FIND_CART_SHARE_ORD_SUCCESS,
+        return SuccessResponse.success(SuccessCode.OK_SUCCESS,
                 cartShareOrdDutchPayService.calculateOrdTotalPymtAmt(cartShareOrdId));
     }
 

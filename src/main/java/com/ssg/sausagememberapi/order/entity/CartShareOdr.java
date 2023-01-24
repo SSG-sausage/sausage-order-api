@@ -4,6 +4,8 @@ import com.ssg.sausagememberapi.common.entity.BaseEntity;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -38,16 +40,16 @@ public class CartShareOdr extends BaseEntity {
     @Column(name = "CART_SHARE_ORD_RCP_DTS", nullable = false)
     private LocalDateTime cartShareOrdRcpDts;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "ORD_STAT_CD", nullable = false)
     private OrdStatCd ordStatCd;
-
 
     public static CartShareOdr newInstance(CartShareTmpOdr cartShareTmpOdr) {
         return CartShareOdr.builder()
                 .cartShareId(cartShareTmpOdr.getCartShareId())
                 .cartShareTmpOrdId(cartShareTmpOdr.getCartShareTmpOrdId())
                 .cartShareOrdRcpDts(LocalDateTime.now())
-                .ordStatCd(OrdStatCd.IN_PROGRESS)
+                .ordStatCd(OrdStatCd.SUCCESS)
                 .build();
     }
 

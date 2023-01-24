@@ -1,6 +1,6 @@
 package com.ssg.sausagememberapi.order.service;
 
-import com.ssg.sausagememberapi.common.client.internal.CartShareClient;
+import com.ssg.sausagememberapi.common.client.internal.CartShareClientMock;
 import com.ssg.sausagememberapi.common.client.internal.dto.response.CartShareItemListResponse.CartShareItemInfo;
 import com.ssg.sausagememberapi.order.dto.response.CartShareTmpOrdFindResponse;
 import com.ssg.sausagememberapi.order.entity.CartShareTmpOdr;
@@ -24,7 +24,7 @@ public class CartShareTmpOrdService {
 
     private final CartShareTmpOrdItemRepository cartShareTmpOrdItemRepository;
 
-    private final CartShareClient cartShareClient;
+    private final CartShareClientMock cartShareClient;
 
     private final CartShareTmpOrdUtilService cartShareTmpOrdUtilService;
 
@@ -52,7 +52,7 @@ public class CartShareTmpOrdService {
         CartShareTmpOdr cartShareTmpOdr = cartShareTmpOrdRepository.save(CartShareTmpOdr.newInstance(cartShareId));
 
         // find cartShareOrderItem-list by cart share id (internal api)
-        List<CartShareItemInfo> cartShareItemList = cartShareClient.getCartShareItemList(cartShareId)
+        List<CartShareItemInfo> cartShareItemList = cartShareClient.getCartShareItemList(cartShareId).getBody()
                 .getData().getCartShareItemList();
 
         List<CartShareTmpOdrItem> cartShareTmpOdrItems = cartShareItemList.stream()

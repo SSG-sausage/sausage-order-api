@@ -53,6 +53,7 @@ public class CartShareTmpOrdItemInfo {
                 .itemAmt(cartShareTmpOdrItem.getItemAmt())
                 .paymtAmt(cartShareTmpOdrItem.getPaymtAmt())
                 .shppCd(cartShareTmpOdrItem.getShppCd().name())
+                .comYn(cartShareTmpOdrItem.getComYn())
                 .build();
     }
 }

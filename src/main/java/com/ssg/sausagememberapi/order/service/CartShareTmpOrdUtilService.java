@@ -1,5 +1,7 @@
 package com.ssg.sausagememberapi.order.service;
 
+import com.ssg.sausagememberapi.common.exception.ErrorCode;
+import com.ssg.sausagememberapi.common.exception.NotFoundException;
 import com.ssg.sausagememberapi.order.entity.CartShareTmpOdr;
 import com.ssg.sausagememberapi.order.entity.CartShareTmpOdrItem;
 import com.ssg.sausagememberapi.order.entity.TmpOrdStatCd;
@@ -25,8 +27,11 @@ public class CartShareTmpOrdUtilService {
     public CartShareTmpOdr findCartShareTmpOrdInProgress(Long cartShareId) {
 
         // 임시 주문 상태가 IN_PROGRESS인 임시 주문 find
-        return cartShareTmpOrdRepository.findFirstByCartShareIdAndTmpOrdStatCd(cartShareId,
-                TmpOrdStatCd.IN_PROGRESS);
+        return cartShareTmpOrdRepository.findFirstByCartShareIdAndTmpOrdStatCd(cartShareId, TmpOrdStatCd.IN_PROGRESS)
+                .orElseThrow(() -> {
+                    throw new NotFoundException(String.format("유효한 임시 주문이 존재하지 않습니다."),
+                            ErrorCode.NOT_FOUND_CART_SHARE_TMP_ORDER_EXCEPTION);
+                });
     }
 
     @Transactional

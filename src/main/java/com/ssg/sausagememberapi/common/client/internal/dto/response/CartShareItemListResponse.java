@@ -3,6 +3,7 @@ package com.ssg.sausagememberapi.common.client.internal.dto.response;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -21,6 +22,7 @@ public class CartShareItemListResponse {
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonIgnoreProperties(ignoreUnknown = true)
+    @Builder
     public static class CartShareItemInfo {
 
         private Long cartShareItemId;

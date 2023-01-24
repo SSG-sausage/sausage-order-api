@@ -20,7 +20,7 @@ public class CartShareOrdUtilService {
     public CartShareOdr findById(Long cartShareOrdId) {
         return cartShareOrdRepository.findById(cartShareOrdId)
                 .orElseThrow(() -> {
-                    throw new NotFoundException(String.format("존재하지 않는 함께장보기주문 ID (%s) 입니다", cartShareOrdId),
+                    throw new NotFoundException(String.format("존재하지 않는 주문 ID (%s) 입니다", cartShareOrdId),
                             ErrorCode.NOT_FOUND_CART_SHARE_ORDER_EXCEPTION);
                 });
     }

@@ -7,6 +7,7 @@ import com.ssg.sausagememberapi.order.dto.response.CartShareOrdForDutchPayRespon
 import com.ssg.sausagememberapi.order.dto.response.CartShareOrdTotalPymtAmtForDutchPayResponse;
 import com.ssg.sausagememberapi.order.entity.CartShareOdrItem;
 import com.ssg.sausagememberapi.order.repository.CartShareOrdItemRepository;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -59,8 +60,8 @@ public class CartShareOrdDutchPayService {
         }
 
         return CartShareOrdForDutchPayResponse.of(totalPymtAmt, commAmt,
-                (List<CartShareOrdShppInfo>) cartShareOrdShppInfoMap.values(),
-                (List<CartShareOrdAmtInfo>) cartShareOrdAmtInfoMap.values());
+                new ArrayList<>(cartShareOrdShppInfoMap.values()),
+                new ArrayList<>(cartShareOrdAmtInfoMap.values()));
     }
 
     private int calculateCommAmt(int commAmt, CartShareOdrItem cartShareOdrItem) {
@@ -68,6 +69,26 @@ public class CartShareOrdDutchPayService {
             commAmt += cartShareOdrItem.getPaymtAmt();
         }
         return commAmt;
+    }
+
+    private void calculateShppAmt(HashMap<String, CartShareOrdShppInfo> cartShareOrdShppInfoMap,
+            CartShareOdrItem cartShareOdrItem) {
+
+        if (cartShareOrdShppInfoMap.containsKey(cartShareOdrItem.getShppCd().name())) {
+
+            // hashkey가 있을 경우, 멤버 추가
+            CartShareOrdShppInfo cartShareOrdShppInfo = cartShareOrdShppInfoMap.get(
+                    cartShareOdrItem.getShppCd().name());
+            cartShareOrdShppInfo.addMbrId(cartShareOdrItem.getMbrId());
+
+            return;
+        }
+
+        CartShareOrdShppInfo cartShareOrdShppInfo = CartShareOrdShppInfo.of(cartShareOdrItem.getShppCd());
+        cartShareOrdShppInfo.addMbrId(cartShareOdrItem.getMbrId());
+
+        // 없을 경우 새로운 CartShareOrdShppInfo 객체 맨들면서 해쉬값 생성.
+        cartShareOrdShppInfoMap.put(cartShareOdrItem.getShppCd().name(), cartShareOrdShppInfo);
     }
 
     private void calculateOrdAmt(HashMap<Long, CartShareOrdAmtInfo> cartShareOrdAmtInfoMap,
@@ -84,21 +105,5 @@ public class CartShareOrdDutchPayService {
         cartShareOrdAmtInfoMap.put(cartShareOdrItem.getMbrId(),
                 CartShareOrdAmtInfo.of(cartShareOdrItem.getMbrId(), cartShareOdrItem.getPaymtAmt()));
 
-    }
-
-    private void calculateShppAmt(HashMap<String, CartShareOrdShppInfo> cartShareOrdShppInfoMap,
-            CartShareOdrItem cartShareOdrItem) {
-
-        if (cartShareOrdShppInfoMap.containsKey(cartShareOdrItem.getShppCd().getNm())) {
-
-            // hashkey가 있을 경우, 멤버 추가
-            cartShareOrdShppInfoMap.get(cartShareOdrItem.getShppCd().getNm())
-                    .getMbrIdList().add(cartShareOdrItem.getMbrId());
-            return;
-        }
-
-        // 없을 경우 새로운 CartShareOrdShppInfo 객체 맨들면서 해쉬값 생성
-        cartShareOrdShppInfoMap.put(cartShareOdrItem.getShppCd().getNm(),
-                CartShareOrdShppInfo.of(cartShareOdrItem.getShppCd()));
     }
 }

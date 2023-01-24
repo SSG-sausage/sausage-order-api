@@ -1,7 +1,6 @@
 package com.ssg.sausagememberapi.order.dto.response;
 
 import com.ssg.sausagememberapi.order.entity.CartShareOdrItem;
-import com.ssg.sausagememberapi.order.entity.CartShareTmpOdrItem;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -54,6 +53,7 @@ public class CartShareOrdItemInfo {
                 .itemAmt(cartShareOdrItem.getItemAmt())
                 .paymtAmt(cartShareOdrItem.getPaymtAmt())
                 .shppCd(cartShareOdrItem.getShppCd().name())
+                .comYn(cartShareOdrItem.getComYn())
                 .build();
     }
 }

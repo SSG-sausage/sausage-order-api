@@ -16,7 +16,8 @@ public enum SuccessCode {
      */
     OK_SUCCESS(OK, "성공입니다."),
     LOGIN_SUCCESS(OK, "로그인 성공입니다."),
-    FIND_CART_SHARE_ORD_SUCCESS(OK, "공유장바구니 조회 성공입니다."),
+    FIND_CART_SHARE_ORD_SUCCESS(OK, "공유장바구니주문 조회 성공입니다."),
+    FIND_CART_SHARE_TMP_ORD_SUCCESS(OK, "공유장바구니임시주문 조회 성공입니다."),
 
     /**
      * 201 CREATED

@@ -4,6 +4,8 @@ import com.ssg.sausagememberapi.common.entity.BaseEntity;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -35,9 +37,9 @@ public class CartShareTmpOdr extends BaseEntity {
     @Column(name = "CART_SHARE_TMP_ORD_RCP_DTS", nullable = false)
     private LocalDateTime cartShareTmpOrdRcpDts;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "TMP_ORD_STAT_CD", nullable = false)
     private TmpOrdStatCd tmpOrdStatCd;
-
 
     public void changeTmpOrdStat(TmpOrdStatCd tmpOrdStatCd) {
         this.tmpOrdStatCd = tmpOrdStatCd;

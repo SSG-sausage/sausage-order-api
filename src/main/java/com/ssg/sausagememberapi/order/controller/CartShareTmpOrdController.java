@@ -44,13 +44,13 @@ public class CartShareTmpOrdController {
 
 
     @Operation(summary = "공유장바구니임시주문 단일 조회", responses = {
-            @ApiResponse(responseCode = "200", description = "공유장비구니임시주문 단일 조회 성공")})
+            @ApiResponse(responseCode = "200", description = "공유장비구니임시주문 단일조회 성공")})
     @GetMapping(value = "/cart-share/{cartShareId}/tmp-cart-share-ord")
     public ResponseEntity<SuccessResponse<CartShareTmpOrdFindResponse>> findCartShareTmpOrd(
             @Parameter(in = ParameterIn.HEADER) @MbrId Long mbrId,
             @PathVariable Long cartShareId) {
 
-        return SuccessResponse.success(SuccessCode.FIND_CART_SHARE_ORD_SUCCESS,
+        return SuccessResponse.success(SuccessCode.FIND_CART_SHARE_TMP_ORD_SUCCESS,
                 cartShareTmpOrdService.findCartShareTmpOrdInProgress(mbrId, cartShareId));
     }
 

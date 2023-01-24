@@ -2,6 +2,7 @@ package com.ssg.sausagememberapi.order.dto.response;
 
 import com.ssg.sausagememberapi.order.entity.ShppCd;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import lombok.AccessLevel;
@@ -70,11 +71,17 @@ public class CartShareOrdForDutchPayResponse {
 
         private int shppCst;
 
-        private Set<Long> mbrIdList = Collections.emptySet();
+        private Set<Long> mbrIdList = new HashSet<>();
+
+        public void addMbrId(Long mbrId) {
+            this.mbrIdList.add(mbrId);
+        }
 
         public static CartShareOrdShppInfo of(ShppCd shppCd) {
+
             return CartShareOrdShppInfo.builder()
                     .shppCst(shppCd.getShppCst())
+                    .mbrIdList(new HashSet<>())
                     .build();
         }
     }
