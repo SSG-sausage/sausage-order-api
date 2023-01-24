@@ -39,6 +39,10 @@ public class CartShareTmpOdr extends BaseEntity {
     private TmpOrdStatCd tmpOrdStatCd;
 
 
+    public void changeTmpOrdStat(TmpOrdStatCd tmpOrdStatCd) {
+        this.tmpOrdStatCd = tmpOrdStatCd;
+    }
+
     public static CartShareTmpOdr newInstance(Long cartShareId) {
         return CartShareTmpOdr.builder()
                 .cartShareId(cartShareId)

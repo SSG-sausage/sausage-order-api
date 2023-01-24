@@ -1,8 +1,11 @@
 package com.ssg.sausagememberapi.order.dto.response;
 
 import com.ssg.sausagememberapi.order.entity.CartShareOdr;
+import com.ssg.sausagememberapi.order.entity.CartShareOdrItem;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,11 +29,19 @@ public class CartShareOrdFindResponse {
     @Schema(description = "주문접수일시")
     private LocalDateTime cartShareOrdRcpDts;
 
-    public static CartShareOrdFindResponse of(CartShareOdr cartShareOdr) {
+    private List<CartShareOrdItemInfo> cartShareOrdItemList;
+
+    public static CartShareOrdFindResponse of(CartShareOdr cartShareOdr, List<CartShareOdrItem> cartShareOdrItemList) {
+
+        List<CartShareOrdItemInfo> cartShareOrdItemInfoList = cartShareOdrItemList.stream()
+                .map(CartShareOrdItemInfo::of)
+                .collect(Collectors.toList());
+
         return CartShareOrdFindResponse.builder()
                 .cartShareId(cartShareOdr.getCartShareId())
                 .cartShareOrdId(cartShareOdr.getCartShareOrdId())
                 .cartShareOrdRcpDts(cartShareOdr.getRegDts())
+                .cartShareOrdItemList(cartShareOrdItemInfoList)
                 .build();
     }
 

@@ -1,5 +1,6 @@
 package com.ssg.sausagememberapi.order.entity;
 
+import com.ssg.sausagememberapi.common.client.internal.dto.response.CartShareItemListResponse.CartShareItemInfo;
 import com.ssg.sausagememberapi.common.entity.BaseEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -54,5 +55,18 @@ public class CartShareTmpOdrItem extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "SHPP_CD")
     private ShppCd shppCd;
+
+    public static CartShareTmpOdrItem newInstance(CartShareItemInfo cartShareItemInfo, Long cartShareTmpOrdId) {
+        return CartShareTmpOdrItem.builder()
+                .cartShareTmpOrdId(cartShareTmpOrdId)
+                .itemId(cartShareItemInfo.getItemId())
+                .mbrId(cartShareItemInfo.getMbrId())
+                .itemQty(cartShareItemInfo.getItemQty())
+                .comYn(cartShareItemInfo.isComYn())
+                .itemAmt(cartShareItemInfo.getItemAmt())
+                .paymtAmt(cartShareItemInfo.getItemAmt() * cartShareItemInfo.getItemQty())
+                .shppCd(ShppCd.valueOf(cartShareItemInfo.getShppCd()))
+                .build();
+    }
 
 }

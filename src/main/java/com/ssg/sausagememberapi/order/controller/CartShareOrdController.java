@@ -41,7 +41,7 @@ public class CartShareOrdController {
             @Parameter(in = ParameterIn.HEADER) @MbrId Long mbrId,
             @PathVariable Long cartShareId) {
 
-        cartShareOrdService.saveCartShareOrd(mbrId, cartShareId);
+        cartShareOrdService.saveCartShareOrdFromTmpOrd(mbrId, cartShareId);
 
         return SuccessResponse.OK;
     }

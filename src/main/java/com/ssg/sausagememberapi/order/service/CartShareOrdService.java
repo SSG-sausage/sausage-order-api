@@ -2,7 +2,6 @@ package com.ssg.sausagememberapi.order.service;
 
 
 import com.ssg.sausagememberapi.common.client.internal.CartShareClient;
-import com.ssg.sausagememberapi.common.client.internal.dto.response.CartShareItemListResponse.CartShareItemInfo;
 import com.ssg.sausagememberapi.order.dto.response.CartShareOrdByDutchPayResponse;
 import com.ssg.sausagememberapi.order.dto.response.CartShareOrdByDutchPayResponse.CartShareOrdAmtInfo;
 import com.ssg.sausagememberapi.order.dto.response.CartShareOrdByDutchPayResponse.CartShareOrdShppInfo;
@@ -10,6 +9,8 @@ import com.ssg.sausagememberapi.order.dto.response.CartShareOrdFindListResponse;
 import com.ssg.sausagememberapi.order.dto.response.CartShareOrdFindResponse;
 import com.ssg.sausagememberapi.order.entity.CartShareOdr;
 import com.ssg.sausagememberapi.order.entity.CartShareOdrItem;
+import com.ssg.sausagememberapi.order.entity.CartShareTmpOdr;
+import com.ssg.sausagememberapi.order.entity.CartShareTmpOdrItem;
 import com.ssg.sausagememberapi.order.repository.CartShareOrdItemRepository;
 import com.ssg.sausagememberapi.order.repository.CartShareOrdRepository;
 import java.util.HashMap;
@@ -22,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 @Slf4j
 public class CartShareOrdService {
 
@@ -32,29 +33,34 @@ public class CartShareOrdService {
 
     private final CartShareOrdUtilService cartShareOrdUtilService;
 
+    private final CartShareTmpOrdUtilService cartShareTmpOrdUtilService;
+
     private final CartShareClient cartShareClient;
 
+    public void saveCartShareOrdFromTmpOrd(Long mbrId, Long cartShareId) {
 
-    @Transactional
-    public void saveCartShareOrd(Long mbrId, Long cartShareId) {
+        CartShareTmpOdr cartShareTmpOdr = cartShareTmpOrdUtilService.findCartShareTmpOrdInProgress(cartShareId);
 
-        // validate 'isFound' and 'isCartShareMaster' (internal api)
-        cartShareClient.validateCartShareMasterAuth(mbrId, cartShareId);
+        // Ord created from TmpOrd
+        CartShareOdr cartShareOdr = CartShareOdr.newInstance(cartShareTmpOdr);
+        cartShareOrdRepository.save(cartShareOdr);
 
-        cartShareOrdRepository.save(CartShareOdr.newInstance(cartShareId));
+        // find CartShareTmpOdrItem from TmpOrdId
+        List<CartShareTmpOdrItem> cartShareTmpOdrItemList = cartShareTmpOrdUtilService.findCartShareTmpOrdItemByTmpOrdId(
+                cartShareOdr.getCartShareTmpOrdId());
 
-        // find cartShareOrderItem-list by cart share id (internal api)
-        List<CartShareItemInfo> cartShareItemList = cartShareClient.getCartShareItemList(cartShareId)
-                .getData().getCartShareItemList();
-
-        List<CartShareOdrItem> cartShareOdrItems = cartShareItemList.stream()
-                .map(cartShareItemInfo -> CartShareOdrItem.newInstance(cartShareItemInfo, cartShareId))
+        // covert CartShareTmpOdrItem to CartShareOdrItem
+        List<CartShareOdrItem> cartShareOdrItems = cartShareTmpOdrItemList.stream()
+                .map(cartShareTmpOdrItem -> CartShareOdrItem.newInstance(cartShareOdr.getCartShareOrdId(),
+                        cartShareTmpOdrItem))
                 .collect(Collectors.toList());
 
-        // (kafka producing) delete cartShareItem ==> to be added
-
         cartShareOrdItemRepository.saveAll(cartShareOdrItems);
+
+        // change tmpOrdStatCd to Completed
+        cartShareTmpOrdUtilService.changeTmpOrdStatCdToCompleted(cartShareTmpOdr);
     }
+
 
     public CartShareOrdFindListResponse findCartShareOrderList(Long mbrId, Long cartShareId) {
 
@@ -73,7 +79,10 @@ public class CartShareOrdService {
 
         CartShareOdr cartShareOdr = cartShareOrdUtilService.findById(cartShareOrdId);
 
-        return CartShareOrdFindResponse.of(cartShareOdr);
+        List<CartShareOdrItem> cartShareOdrItemList = cartShareOrdItemRepository.findAllByCartShareOrdId(
+                cartShareOdr.getCartShareId());
+
+        return CartShareOrdFindResponse.of(cartShareOdr, cartShareOdrItemList);
     }
 
     public CartShareOrdByDutchPayResponse getCartShareOrdByDutchPay(Long cartShareOrdId) {

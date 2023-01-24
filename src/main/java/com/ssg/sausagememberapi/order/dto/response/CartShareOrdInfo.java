@@ -26,11 +26,15 @@ public class CartShareOrdInfo {
     @Schema(description = "주문접수일시")
     private LocalDateTime cartShareOrdRcpDts;
 
+    @Schema(description = "주문상태코드")
+    private String ordStatCd;
+
     public static CartShareOrdInfo of(CartShareOdr cartShareOdr) {
         return CartShareOrdInfo.builder()
                 .cartShareOrdId(cartShareOdr.getCartShareOrdId())
                 .cartShareId(cartShareOdr.getCartShareId())
                 .cartShareOrdRcpDts(cartShareOdr.getCartShareOrdRcpDts())
+                .ordStatCd(cartShareOdr.getOrdStatCd().name())
                 .build();
     }
 }

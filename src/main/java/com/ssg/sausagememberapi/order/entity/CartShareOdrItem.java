@@ -1,6 +1,5 @@
 package com.ssg.sausagememberapi.order.entity;
 
-import com.ssg.sausagememberapi.common.client.internal.dto.response.CartShareItemListResponse.CartShareItemInfo;
 import com.ssg.sausagememberapi.common.entity.BaseEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -59,16 +58,18 @@ public class CartShareOdrItem extends BaseEntity {
     @Column(name = "SHPP_CD")
     private ShppCd shppCd;
 
-    public static CartShareOdrItem newInstance(CartShareItemInfo cartShareItemInfo, Long cartShareOrdId) {
+    public static CartShareOdrItem newInstance(Long cartShareOrdId, CartShareTmpOdrItem cartShareTmpOdrItem) {
+
         return CartShareOdrItem.builder()
                 .cartShareOrdId(cartShareOrdId)
-                .itemId(cartShareItemInfo.getItemId())
-                .mbrId(cartShareItemInfo.getMbrId())
-                .itemQty(cartShareItemInfo.getItemQty())
-                .comYn(cartShareItemInfo.isComYn())
-                .itemAmt(cartShareItemInfo.getItemAmt())
-                .paymtAmt(cartShareItemInfo.getItemAmt() * cartShareItemInfo.getItemQty())
-                .shppCd(ShppCd.valueOf(cartShareItemInfo.getShppCd()))
+                .cartShareTmpOrdItemId(cartShareTmpOdrItem.getCartShareTmpOrdItemId())
+                .itemId(cartShareTmpOdrItem.getItemId())
+                .mbrId(cartShareTmpOdrItem.getMbrId())
+                .itemQty(cartShareTmpOdrItem.getItemQty())
+                .comYn(cartShareTmpOdrItem.getComYn())
+                .itemAmt(cartShareTmpOdrItem.getItemAmt())
+                .paymtAmt(cartShareTmpOdrItem.getItemAmt() * cartShareTmpOdrItem.getItemQty())
+                .shppCd(cartShareTmpOdrItem.getShppCd())
                 .build();
     }
 

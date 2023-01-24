@@ -42,9 +42,10 @@ public class CartShareOdr extends BaseEntity {
     private OrdStatCd ordStatCd;
 
 
-    public static CartShareOdr newInstance(Long cartShareId) {
+    public static CartShareOdr newInstance(CartShareTmpOdr cartShareTmpOdr) {
         return CartShareOdr.builder()
-                .cartShareId(cartShareId)
+                .cartShareId(cartShareTmpOdr.getCartShareId())
+                .cartShareTmpOrdId(cartShareTmpOdr.getCartShareTmpOrdId())
                 .cartShareOrdRcpDts(LocalDateTime.now())
                 .ordStatCd(OrdStatCd.IN_PROGRESS)
                 .build();
