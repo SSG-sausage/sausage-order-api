@@ -13,22 +13,18 @@ import lombok.ToString;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder(access = AccessLevel.PRIVATE)
-public class CartShareOrdFindForCartShareCal {
+@Builder(access = AccessLevel.PUBLIC)
+public class CartShareOrdFindForCartShareCalResponse {
 
     @Schema(description = "공유장바구니 ID")
     private Long cartShareId;
 
-    @Schema(description = "공유장바구니 ID")
-    private Long mastrMbrId;
+    @Schema(description = "공유장바구니마스터멤버 ID")
+    private Long cartShareMastrMbrId;
 
-    private Set<Long> mbrIdList;
+    @Schema(description = "공유장바구니멤버 ID")
+    private Set<Long> cartShareMbrIdList;
 
-    private int totalPaymtAmt;
-
-    public static CartShareOrdFindForCartShareCal of(int totalPymtAmt) {
-        return CartShareOrdFindForCartShareCal.builder()
-                .totalPaymtAmt(totalPymtAmt)
-                .build();
-    }
+    @Schema(description = "전체결제금액")
+    private int ttlPaymtAmt;
 }

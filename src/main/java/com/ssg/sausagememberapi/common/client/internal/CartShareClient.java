@@ -1,11 +1,14 @@
 package com.ssg.sausagememberapi.common.client.internal;
 
+import com.ssg.sausagememberapi.common.client.internal.dto.request.CartShareUpdateEditPsblYnRequest;
 import com.ssg.sausagememberapi.common.client.internal.dto.response.CartShareItemListResponse;
 import com.ssg.sausagememberapi.common.client.internal.dto.response.CartShareMbrIdListResponse;
 import com.ssg.sausagememberapi.common.dto.SuccessResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(name = "SAUSAGE-CART-SHARE-API")
 public interface CartShareClient {
@@ -15,6 +18,10 @@ public interface CartShareClient {
 
     @GetMapping("/cart-share/api/cart-share/{cartShareId}/cart-share-mbr-id")
     SuccessResponse<CartShareMbrIdListResponse> findCartShareMbrIdList(@PathVariable Long cartShareId);
+
+    @PostMapping("/cart-share/api/cart-share/{cartShareId}/edit-psbl-yn")
+    SuccessResponse<String> updateEditPsblYn(@PathVariable Long cartShareId,
+            @RequestBody CartShareUpdateEditPsblYnRequest request);
 
     @GetMapping("/cart-share/api/cart-share/{cartShareId}/mbr/{mbrId}/validation")
     SuccessResponse<Boolean> validateCartShareAuth(@PathVariable Long cartShareId,

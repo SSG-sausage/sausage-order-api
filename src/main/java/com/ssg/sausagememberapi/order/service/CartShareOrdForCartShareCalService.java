@@ -2,10 +2,11 @@ package com.ssg.sausagememberapi.order.service;
 
 
 import com.ssg.sausagememberapi.common.client.internal.CartShareClientMock;
-import com.ssg.sausagememberapi.order.dto.response.CartShareOrdFindDetailForCartShareCal;
-import com.ssg.sausagememberapi.order.dto.response.CartShareOrdFindDetailForCartShareCal.CartShareOrdAmtInfo;
-import com.ssg.sausagememberapi.order.dto.response.CartShareOrdFindDetailForCartShareCal.CartShareOrdShppInfo;
-import com.ssg.sausagememberapi.order.dto.response.CartShareOrdFindForCartShareCal;
+import com.ssg.sausagememberapi.common.client.internal.dto.response.CartShareMbrIdListResponse;
+import com.ssg.sausagememberapi.order.dto.response.CartShareOrdFindDetailForCartShareCalResponse;
+import com.ssg.sausagememberapi.order.dto.response.CartShareOrdFindDetailForCartShareCalResponse.CartShareOrdAmtInfo;
+import com.ssg.sausagememberapi.order.dto.response.CartShareOrdFindDetailForCartShareCalResponse.CartShareOrdShppInfo;
+import com.ssg.sausagememberapi.order.dto.response.CartShareOrdFindForCartShareCalResponse;
 import com.ssg.sausagememberapi.order.entity.CartShareOdr;
 import com.ssg.sausagememberapi.order.entity.CartShareOdrItem;
 import com.ssg.sausagememberapi.order.repository.CartShareOrdItemRepository;
@@ -31,19 +32,26 @@ public class CartShareOrdForCartShareCalService {
     private final CartShareClientMock cartShareClient;
 
 
-    public CartShareOrdFindForCartShareCal findCartShareOrd(Long cartShareOrdId) {
+    public CartShareOrdFindForCartShareCalResponse findCartShareOrd(Long cartShareOrdId) {
 
-        List<CartShareOdrItem> cartShareOdrItemList = cartShareOrdItemRepository.findAllByCartShareOrdId(
-                cartShareOrdId);
+        CartShareOdr cartShareOdr = cartShareOrdUtilService.findById(cartShareOrdId);
 
-        Integer totalPymtAmt = cartShareOdrItemList.stream()
+        CartShareMbrIdListResponse cartShareMbrIdListResponse = cartShareClient.findCartShareMbrIdList(
+                cartShareOdr.getCartShareId()).getData();
+
+        // calculate ttlPymtAmt
+        Integer ttlPymtAmt = cartShareOrdItemRepository.findAllByCartShareOrdId(cartShareOrdId).stream()
                 .map(CartShareOdrItem::getPaymtAmt)
                 .reduce(0, Integer::sum);
 
-        return CartShareOrdFindForCartShareCal.of(totalPymtAmt);
+        return CartShareOrdFindForCartShareCalResponse.builder()
+                .cartShareId(cartShareOdr.getCartShareId())
+                .cartShareMbrIdList(new HashSet<>(cartShareMbrIdListResponse.getCartShareMbrIdList()))
+                .cartShareMastrMbrId(cartShareMbrIdListResponse.getCartShareMastrMbrId())
+                .ttlPaymtAmt(ttlPymtAmt).build();
     }
 
-    public CartShareOrdFindDetailForCartShareCal findCartShareOrdDetail(Long cartShareOrdId) {
+    public CartShareOrdFindDetailForCartShareCalResponse findCartShareOrdDetail(Long cartShareOrdId) {
 
         CartShareOdr cartShareOdr = cartShareOrdUtilService.findById(cartShareOrdId);
 
@@ -73,8 +81,10 @@ public class CartShareOrdForCartShareCalService {
         cartShareMbrIdSet.removeAll(cartShareOrdAmtInfoMap.keySet());
         cartShareMbrIdSet.forEach(mbrId -> cartShareOrdAmtInfoMap.put(mbrId, CartShareOrdAmtInfo.of(mbrId, 0)));
 
-        return CartShareOrdFindDetailForCartShareCal.of(commAmt, new ArrayList<>(cartShareOrdShppInfoMap.values()),
-                new ArrayList<>(cartShareOrdAmtInfoMap.values()));
+        return CartShareOrdFindDetailForCartShareCalResponse.builder()
+                .commAmt(commAmt)
+                .shppInfoList(new ArrayList<>(cartShareOrdShppInfoMap.values()))
+                .ordInfoList(new ArrayList<>(cartShareOrdAmtInfoMap.values())).build();
     }
 
     private int calculateCommAmt(int commAmt, CartShareOdrItem cartShareOdrItem) {

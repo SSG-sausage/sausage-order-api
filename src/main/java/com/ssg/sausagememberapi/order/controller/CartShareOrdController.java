@@ -1,11 +1,12 @@
 package com.ssg.sausagememberapi.order.controller;
 
+import com.ssg.sausagememberapi.common.client.internal.dto.request.CartShareCalSaveRequest;
 import com.ssg.sausagememberapi.common.config.resolver.MbrId;
 import com.ssg.sausagememberapi.common.dto.ErrorResponse;
 import com.ssg.sausagememberapi.common.dto.SuccessResponse;
 import com.ssg.sausagememberapi.common.success.SuccessCode;
-import com.ssg.sausagememberapi.order.dto.response.CartShareOrdFindDetailForCartShareCal;
-import com.ssg.sausagememberapi.order.dto.response.CartShareOrdFindForCartShareCal;
+import com.ssg.sausagememberapi.order.dto.response.CartShareOrdFindDetailForCartShareCalResponse;
+import com.ssg.sausagememberapi.order.dto.response.CartShareOrdFindForCartShareCalResponse;
 import com.ssg.sausagememberapi.order.dto.response.CartShareOrdFindListResponse;
 import com.ssg.sausagememberapi.order.dto.response.CartShareOrdFindResponse;
 import com.ssg.sausagememberapi.order.service.CartShareOrdForCartShareCalService;
@@ -42,13 +43,12 @@ public class CartShareOrdController {
             @ApiResponse(responseCode = "404", description = "유효한 임시 주문이 존재하지 않습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PostMapping("/cart-share/{cartShareId}/cart-share-ord")
-    public ResponseEntity<SuccessResponse<String>> saveCartShareOrd(
+    public ResponseEntity<SuccessResponse<CartShareCalSaveRequest>> saveCartShareOrd(
             @Parameter(in = ParameterIn.HEADER) @MbrId Long mbrId,
             @PathVariable Long cartShareId) {
 
-        cartShareOrdService.saveCartShareOrdFromTmpOrd(mbrId, cartShareId);
-
-        return SuccessResponse.OK;
+        return SuccessResponse.success(SuccessCode.FIND_CART_SHARE_ORD_SUCCESS,
+                cartShareOrdService.saveCartShareOrdFromTmpOrd(mbrId, cartShareId));
     }
 
     @Operation(summary = "공유장바구니주문 리스트 조회", responses = {
@@ -80,7 +80,7 @@ public class CartShareOrdController {
             @ApiResponse(responseCode = "200", description = "공유장바구니주문 정산 조회 성공"),
     })
     @GetMapping(value = "/cart-share-ord/{cartShareOrdId}/cart-share-cal")
-    public ResponseEntity<SuccessResponse<CartShareOrdFindForCartShareCal>> findCartShareOrdFindForCartShareCal(
+    public ResponseEntity<SuccessResponse<CartShareOrdFindForCartShareCalResponse>> findCartShareOrdFindForCartShareCal(
             @PathVariable Long cartShareOrdId) {
 
         return SuccessResponse.success(SuccessCode.OK_SUCCESS,
@@ -92,7 +92,7 @@ public class CartShareOrdController {
             @ApiResponse(responseCode = "404", description = "일치하는 공유장바구니주문 ID가 존재하지 않습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @GetMapping(value = "/cart-share-ord/{cartShareOrdId}/cart-share-cal/detail")
-    public ResponseEntity<SuccessResponse<CartShareOrdFindDetailForCartShareCal>> findCartShareOrdFindDetailForCartShareCal(
+    public ResponseEntity<SuccessResponse<CartShareOrdFindDetailForCartShareCalResponse>> findCartShareOrdFindDetailForCartShareCal(
             @PathVariable Long cartShareOrdId) {
 
         return SuccessResponse.success(SuccessCode.OK_SUCCESS,

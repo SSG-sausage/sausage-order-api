@@ -1,5 +1,6 @@
 package com.ssg.sausagememberapi.common.client.internal;
 
+import com.ssg.sausagememberapi.common.client.internal.dto.request.CartShareUpdateEditPsblYnRequest;
 import com.ssg.sausagememberapi.common.client.internal.dto.response.CartShareItemListResponse;
 import com.ssg.sausagememberapi.common.client.internal.dto.response.CartShareItemListResponse.CartShareItemInfo;
 import com.ssg.sausagememberapi.common.client.internal.dto.response.CartShareMbrIdListResponse;
@@ -24,8 +25,13 @@ public class CartShareClientMock implements CartShareClient {
 
     @Override
     public SuccessResponse<CartShareMbrIdListResponse> findCartShareMbrIdList(Long cartShareId) {
-        return SuccessResponse.success(SuccessCode.OK_SUCCESS, new CartShareMbrIdListResponse(List.of(1L, 2L)))
-                .getBody();
+        return SuccessResponse.success(SuccessCode.OK_SUCCESS,
+                new CartShareMbrIdListResponse(1L, List.of(1L, 2L, 3L))).getBody();
+    }
+
+    @Override
+    public SuccessResponse<String> updateEditPsblYn(Long cartShareId, CartShareUpdateEditPsblYnRequest request) {
+        return SuccessResponse.OK.getBody();
     }
 
     @Override

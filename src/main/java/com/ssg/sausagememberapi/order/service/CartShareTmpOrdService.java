@@ -1,6 +1,7 @@
 package com.ssg.sausagememberapi.order.service;
 
 import com.ssg.sausagememberapi.common.client.internal.CartShareClientMock;
+import com.ssg.sausagememberapi.common.client.internal.dto.request.CartShareUpdateEditPsblYnRequest;
 import com.ssg.sausagememberapi.common.client.internal.dto.response.CartShareItemListResponse.CartShareItemInfo;
 import com.ssg.sausagememberapi.order.dto.response.CartShareTmpOrdFindResponse;
 import com.ssg.sausagememberapi.order.entity.CartShareTmpOdr;
@@ -52,8 +53,8 @@ public class CartShareTmpOrdService {
         CartShareTmpOdr cartShareTmpOdr = cartShareTmpOrdRepository.save(CartShareTmpOdr.newInstance(cartShareId));
 
         // find cartShareOrderItem-list by cart share id (internal api)
-        List<CartShareItemInfo> cartShareItemList = cartShareClient.findCartShareItemList(cartShareId).getBody()
-                .getData().getCartShareItemList();
+        List<CartShareItemInfo> cartShareItemList = cartShareClient.findCartShareItemList(cartShareId).getData()
+                .getCartShareItemList();
 
         List<CartShareTmpOdrItem> cartShareTmpOdrItems = cartShareItemList.stream()
                 .map(cartShareItemInfo -> CartShareTmpOdrItem.newInstance(cartShareItemInfo,
@@ -62,6 +63,9 @@ public class CartShareTmpOrdService {
 
         // save all items
         cartShareTmpOrdItemRepository.saveAll(cartShareTmpOdrItems);
+
+        //장바구니 수정 불가 api 호출
+        cartShareClient.updateEditPsblYn(cartShareId, CartShareUpdateEditPsblYnRequest.of(Boolean.FALSE));
     }
 
 

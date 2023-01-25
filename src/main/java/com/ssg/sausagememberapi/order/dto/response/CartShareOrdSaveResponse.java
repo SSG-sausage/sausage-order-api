@@ -1,4 +1,4 @@
-package com.ssg.sausagememberapi.common.client.internal.dto.response;
+package com.ssg.sausagememberapi.order.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
@@ -11,9 +11,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
 @Builder(access = AccessLevel.PRIVATE)
-public class CartShareCalSaveResponse {
+public class CartShareOrdSaveResponse {
 
     @Schema(description = "공유장바구니정산 id")
     private Long cartShareCalId;
 
+    public static CartShareOrdSaveResponse of(Long cartShareCalId) {
+
+        return CartShareOrdSaveResponse.builder()
+                .cartShareCalId(cartShareCalId)
+                .build();
+    }
 }

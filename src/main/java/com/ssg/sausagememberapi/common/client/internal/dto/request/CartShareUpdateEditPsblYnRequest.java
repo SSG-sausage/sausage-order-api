@@ -10,15 +10,15 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder
-public class CartShareCalSaveRequest {
+@Builder(access = AccessLevel.PUBLIC)
+public class CartShareUpdateEditPsblYnRequest {
 
-    @Schema(description = "함께 장보기 주문 id")
-    private Long cartShareOrdId;
+    @Schema(description = "수정가능여부")
+    private Boolean editPsblYn;
 
-    public static CartShareCalSaveRequest of(Long cartShareOrdId) {
-        return CartShareCalSaveRequest.builder()
-                .cartShareOrdId(cartShareOrdId)
+    public static CartShareUpdateEditPsblYnRequest of(boolean editPsblYn) {
+        return CartShareUpdateEditPsblYnRequest.builder()
+                .editPsblYn(editPsblYn)
                 .build();
     }
 

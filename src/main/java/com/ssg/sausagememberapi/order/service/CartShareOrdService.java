@@ -1,7 +1,10 @@
 package com.ssg.sausagememberapi.order.service;
 
 
+import com.ssg.sausagememberapi.common.client.internal.CartShareCalClientMock;
 import com.ssg.sausagememberapi.common.client.internal.CartShareClientMock;
+import com.ssg.sausagememberapi.common.client.internal.dto.request.CartShareCalSaveRequest;
+import com.ssg.sausagememberapi.common.client.internal.dto.request.CartShareUpdateEditPsblYnRequest;
 import com.ssg.sausagememberapi.order.dto.response.CartShareOrdFindListResponse;
 import com.ssg.sausagememberapi.order.dto.response.CartShareOrdFindResponse;
 import com.ssg.sausagememberapi.order.entity.CartShareOdr;
@@ -33,7 +36,12 @@ public class CartShareOrdService {
 
     private final CartShareClientMock cartShareClient;
 
-    public void saveCartShareOrdFromTmpOrd(Long mbrId, Long cartShareId) {
+    private final CartShareCalClientMock cartShareCalClientMock;
+
+    public CartShareCalSaveRequest saveCartShareOrdFromTmpOrd(Long mbrId, Long cartShareId) {
+
+        // validate 'isFound' and 'isCartShareMaster' (internal api)
+        cartShareClient.validateCartShareMasterAuth(mbrId, cartShareId);
 
         CartShareTmpOdr cartShareTmpOdr = cartShareTmpOrdUtilService.findCartShareTmpOrdInProgress(cartShareId);
 
@@ -58,11 +66,14 @@ public class CartShareOrdService {
 
         // *to be added, cart-share-item 삭제
 
-        // *to be added, 장바구니 수정 가능 api 호출
+        // 장바구니 수정 가능 api 호출
+        cartShareClient.updateEditPsblYn(cartShareId, CartShareUpdateEditPsblYnRequest.of(Boolean.TRUE));
 
-        // 정산 생성 api, sync
+        // 정산 생성 api
+        Long cartShareCalId = cartShareCalClientMock.saveCartShareCal(
+                CartShareCalSaveRequest.of(cartShareOdr.getCartShareOrdId())).getData().getCartShareCalId();
 
-        return 1
+        return CartShareCalSaveRequest.of(cartShareCalId);
     }
 
 
@@ -74,7 +85,6 @@ public class CartShareOrdService {
         List<CartShareOdr> cartShareOdrList = cartShareOrdRepository.findAllByCartShareId(cartShareId);
 
         // * to be added, get DUTCH_PAY_ST_YN
-
 
         return CartShareOrdFindListResponse.of(cartShareOdrList);
     }

@@ -17,8 +17,8 @@ import lombok.ToString;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder(access = AccessLevel.PRIVATE)
-public class CartShareOrdFindDetailForCartShareCal {
+@Builder(access = AccessLevel.PUBLIC)
+public class CartShareOrdFindDetailForCartShareCalResponse {
 
     @Schema(description = "공통 금액")
     private int commAmt;
@@ -28,16 +28,6 @@ public class CartShareOrdFindDetailForCartShareCal {
 
     @Schema(description = "공유장바구니주문 금액 정보 리스트")
     private List<CartShareOrdAmtInfo> ordInfoList = Collections.emptyList();
-
-    public static CartShareOrdFindDetailForCartShareCal of(int commAmt, List<CartShareOrdShppInfo> shppInfoList,
-            List<CartShareOrdAmtInfo> ordInfoList) {
-
-        return CartShareOrdFindDetailForCartShareCal.builder()
-                .commAmt(commAmt)
-                .shppInfoList(shppInfoList)
-                .ordInfoList(ordInfoList)
-                .build();
-    }
 
     @ToString
     @Getter
