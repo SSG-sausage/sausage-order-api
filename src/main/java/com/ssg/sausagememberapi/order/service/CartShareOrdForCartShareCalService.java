@@ -1,14 +1,17 @@
 package com.ssg.sausagememberapi.order.service;
 
 
-import com.ssg.sausagememberapi.order.dto.response.CartShareOrdForDutchPayResponse;
-import com.ssg.sausagememberapi.order.dto.response.CartShareOrdForDutchPayResponse.CartShareOrdAmtInfo;
-import com.ssg.sausagememberapi.order.dto.response.CartShareOrdForDutchPayResponse.CartShareOrdShppInfo;
-import com.ssg.sausagememberapi.order.dto.response.CartShareOrdTotalPymtAmtForDutchPayResponse;
+import com.ssg.sausagememberapi.common.client.internal.CartShareClientMock;
+import com.ssg.sausagememberapi.order.dto.response.CartShareOrdFindDetailForCartShareCal;
+import com.ssg.sausagememberapi.order.dto.response.CartShareOrdFindDetailForCartShareCal.CartShareOrdAmtInfo;
+import com.ssg.sausagememberapi.order.dto.response.CartShareOrdFindDetailForCartShareCal.CartShareOrdShppInfo;
+import com.ssg.sausagememberapi.order.dto.response.CartShareOrdFindForCartShareCal;
+import com.ssg.sausagememberapi.order.entity.CartShareOdr;
 import com.ssg.sausagememberapi.order.entity.CartShareOdrItem;
 import com.ssg.sausagememberapi.order.repository.CartShareOrdItemRepository;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,11 +22,16 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
-public class CartShareOrdDutchPayService {
+public class CartShareOrdForCartShareCalService {
 
     private final CartShareOrdItemRepository cartShareOrdItemRepository;
 
-    public CartShareOrdTotalPymtAmtForDutchPayResponse calculateOrdTotalPymtAmt(Long cartShareOrdId) {
+    private final CartShareOrdUtilService cartShareOrdUtilService;
+
+    private final CartShareClientMock cartShareClient;
+
+
+    public CartShareOrdFindForCartShareCal findCartShareOrd(Long cartShareOrdId) {
 
         List<CartShareOdrItem> cartShareOdrItemList = cartShareOrdItemRepository.findAllByCartShareOrdId(
                 cartShareOrdId);
@@ -32,24 +40,26 @@ public class CartShareOrdDutchPayService {
                 .map(CartShareOdrItem::getPaymtAmt)
                 .reduce(0, Integer::sum);
 
-        return CartShareOrdTotalPymtAmtForDutchPayResponse.of(totalPymtAmt);
+        return CartShareOrdFindForCartShareCal.of(totalPymtAmt);
     }
 
-    public CartShareOrdForDutchPayResponse findCartShareOrd(Long cartShareOrdId) {
+    public CartShareOrdFindDetailForCartShareCal findCartShareOrdDetail(Long cartShareOrdId) {
+
+        CartShareOdr cartShareOdr = cartShareOrdUtilService.findById(cartShareOrdId);
 
         List<CartShareOdrItem> cartShareOdrItemList = cartShareOrdItemRepository.findAllByCartShareOrdId(
                 cartShareOrdId);
 
+        HashSet<Long> cartShareMbrIdSet = new HashSet<>(
+                cartShareClient.findCartShareMbrIdList(cartShareOdr.getCartShareId()).getData()
+                        .getCartShareMbrIdList());
+
         HashMap<String, CartShareOrdShppInfo> cartShareOrdShppInfoMap = new HashMap<>();
         HashMap<Long, CartShareOrdAmtInfo> cartShareOrdAmtInfoMap = new HashMap<>();
 
-        int totalPymtAmt = 0;
         int commAmt = 0;
 
         for (CartShareOdrItem cartShareOdrItem : cartShareOdrItemList) {
-
-            // 총 결제 금액 더하기
-            totalPymtAmt += cartShareOdrItem.getPaymtAmt();
 
             // 공통 금액 계산
             commAmt = calculateCommAmt(commAmt, cartShareOdrItem);
@@ -59,8 +69,11 @@ public class CartShareOrdDutchPayService {
             calculateOrdAmt(cartShareOrdAmtInfoMap, cartShareOdrItem);
         }
 
-        return CartShareOrdForDutchPayResponse.of(totalPymtAmt, commAmt,
-                new ArrayList<>(cartShareOrdShppInfoMap.values()),
+        // 결제금액이 0원인 mbr 추가.
+        cartShareMbrIdSet.removeAll(cartShareOrdAmtInfoMap.keySet());
+        cartShareMbrIdSet.forEach(mbrId -> cartShareOrdAmtInfoMap.put(mbrId, CartShareOrdAmtInfo.of(mbrId, 0)));
+
+        return CartShareOrdFindDetailForCartShareCal.of(commAmt, new ArrayList<>(cartShareOrdShppInfoMap.values()),
                 new ArrayList<>(cartShareOrdAmtInfoMap.values()));
     }
 

@@ -52,15 +52,13 @@ public class CartShareTmpOrdService {
         CartShareTmpOdr cartShareTmpOdr = cartShareTmpOrdRepository.save(CartShareTmpOdr.newInstance(cartShareId));
 
         // find cartShareOrderItem-list by cart share id (internal api)
-        List<CartShareItemInfo> cartShareItemList = cartShareClient.getCartShareItemList(cartShareId).getBody()
+        List<CartShareItemInfo> cartShareItemList = cartShareClient.findCartShareItemList(cartShareId).getBody()
                 .getData().getCartShareItemList();
 
         List<CartShareTmpOdrItem> cartShareTmpOdrItems = cartShareItemList.stream()
                 .map(cartShareItemInfo -> CartShareTmpOdrItem.newInstance(cartShareItemInfo,
                         cartShareTmpOdr.getCartShareTmpOrdId()))
                 .collect(Collectors.toList());
-
-        // (kafka producing) delete cartShareItem ==> to be added
 
         // save all items
         cartShareTmpOrdItemRepository.saveAll(cartShareTmpOdrItems);

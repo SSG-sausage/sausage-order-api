@@ -29,6 +29,7 @@ public class CartShareOrdFindResponse {
     @Schema(description = "주문접수일시")
     private LocalDateTime cartShareOrdRcpDts;
 
+    @Schema(description = "공유장바구니주문상품 리스트")
     private List<CartShareOrdItemInfo> cartShareOrdItemList;
 
     public static CartShareOrdFindResponse of(CartShareOdr cartShareOdr, List<CartShareOdrItem> cartShareOdrItemList) {

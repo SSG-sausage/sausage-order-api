@@ -1,6 +1,7 @@
 package com.ssg.sausagememberapi.order.dto.response;
 
 import com.ssg.sausagememberapi.order.entity.ShppCd;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -17,21 +18,21 @@ import lombok.ToString;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(access = AccessLevel.PRIVATE)
-public class CartShareOrdForDutchPayResponse {
+public class CartShareOrdFindDetailForCartShareCal {
 
-    private int totalPymtAmt;
-
+    @Schema(description = "공통 금액")
     private int commAmt;
 
+    @Schema(description = "공유장바구니 배송 정보 리스트")
     private List<CartShareOrdShppInfo> shppInfoList = Collections.emptyList();
 
+    @Schema(description = "공유장바구니주문 금액 정보 리스트")
     private List<CartShareOrdAmtInfo> ordInfoList = Collections.emptyList();
 
-    public static CartShareOrdForDutchPayResponse of(int totalPrice, int commAmt,
-            List<CartShareOrdShppInfo> shppInfoList, List<CartShareOrdAmtInfo> ordInfoList) {
+    public static CartShareOrdFindDetailForCartShareCal of(int commAmt, List<CartShareOrdShppInfo> shppInfoList,
+            List<CartShareOrdAmtInfo> ordInfoList) {
 
-        return CartShareOrdForDutchPayResponse.builder()
-                .totalPymtAmt(totalPrice)
+        return CartShareOrdFindDetailForCartShareCal.builder()
                 .commAmt(commAmt)
                 .shppInfoList(shppInfoList)
                 .ordInfoList(ordInfoList)
@@ -45,9 +46,11 @@ public class CartShareOrdForDutchPayResponse {
     @Builder(access = AccessLevel.PRIVATE)
     public static class CartShareOrdAmtInfo {
 
+        @Schema(description = "멤버 ID")
         private Long mbrId;
 
         // 배송비 제외 주문 금액
+        @Schema(description = "주문 금액")
         private int ordAmt;
 
         public void addOrdAmt(int ordAmt) {
@@ -69,8 +72,10 @@ public class CartShareOrdForDutchPayResponse {
     @Builder(access = AccessLevel.PRIVATE)
     public static class CartShareOrdShppInfo {
 
+        @Schema(description = "배송비")
         private int shppCst;
 
+        @Schema(description = "멤버 ID 리스트")
         private Set<Long> mbrIdList = new HashSet<>();
 
         public void addMbrId(Long mbrId) {

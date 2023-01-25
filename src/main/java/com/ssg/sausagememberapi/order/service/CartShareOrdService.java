@@ -55,6 +55,14 @@ public class CartShareOrdService {
 
         // change tmpOrdStatCd to Completed
         cartShareTmpOrdUtilService.changeTmpOrdStatCdToCompleted(cartShareTmpOdr);
+
+        // *to be added, cart-share-item 삭제
+
+        // *to be added, 장바구니 수정 가능 api 호출
+
+        // 정산 생성 api, sync
+
+        return 1
     }
 
 
@@ -64,6 +72,9 @@ public class CartShareOrdService {
         cartShareClient.validateCartShareAuth(mbrId, cartShareId);
 
         List<CartShareOdr> cartShareOdrList = cartShareOrdRepository.findAllByCartShareId(cartShareId);
+
+        // * to be added, get DUTCH_PAY_ST_YN
+
 
         return CartShareOrdFindListResponse.of(cartShareOdrList);
     }

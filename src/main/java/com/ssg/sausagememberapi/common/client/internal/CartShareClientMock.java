@@ -2,11 +2,11 @@ package com.ssg.sausagememberapi.common.client.internal;
 
 import com.ssg.sausagememberapi.common.client.internal.dto.response.CartShareItemListResponse;
 import com.ssg.sausagememberapi.common.client.internal.dto.response.CartShareItemListResponse.CartShareItemInfo;
+import com.ssg.sausagememberapi.common.client.internal.dto.response.CartShareMbrIdListResponse;
 import com.ssg.sausagememberapi.common.dto.SuccessResponse;
 import com.ssg.sausagememberapi.common.success.SuccessCode;
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 
@@ -18,18 +18,24 @@ public class CartShareClientMock implements CartShareClient {
      */
 
     @Override
-    public ResponseEntity<SuccessResponse<CartShareItemListResponse>> getCartShareItemList(Long cartShareId) {
-        return SuccessResponse.success(SuccessCode.OK_SUCCESS, createMockData());
+    public SuccessResponse<CartShareItemListResponse> findCartShareItemList(Long cartShareId) {
+        return SuccessResponse.success(SuccessCode.OK_SUCCESS, createMockData()).getBody();
     }
 
     @Override
-    public ResponseEntity<SuccessResponse<Boolean>> validateCartShareAuth(Long cartShareId, Long mbrId) {
-        return SuccessResponse.success(SuccessCode.OK_SUCCESS, Boolean.TRUE);
+    public SuccessResponse<CartShareMbrIdListResponse> findCartShareMbrIdList(Long cartShareId) {
+        return SuccessResponse.success(SuccessCode.OK_SUCCESS, new CartShareMbrIdListResponse(List.of(1L, 2L)))
+                .getBody();
     }
 
     @Override
-    public ResponseEntity<SuccessResponse<Boolean>> validateCartShareMasterAuth(Long cartShareId, Long mbrId) {
-        return SuccessResponse.success(SuccessCode.OK_SUCCESS, Boolean.TRUE);
+    public SuccessResponse<Boolean> validateCartShareAuth(Long cartShareId, Long mbrId) {
+        return SuccessResponse.success(SuccessCode.OK_SUCCESS, Boolean.TRUE).getBody();
+    }
+
+    @Override
+    public SuccessResponse<Boolean> validateCartShareMasterAuth(Long cartShareId, Long mbrId) {
+        return SuccessResponse.success(SuccessCode.OK_SUCCESS, Boolean.TRUE).getBody();
     }
 
     public CartShareItemListResponse createMockData() {
@@ -42,7 +48,6 @@ public class CartShareClientMock implements CartShareClient {
                 .mbrId(1L)
                 .itemNm("test")
                 .itemAmt(1000)
-                .itemImgUrl("test")
                 .shppCd("SSG_SHPP")
                 .itemQty(1)
                 .comYn(true)
@@ -54,7 +59,6 @@ public class CartShareClientMock implements CartShareClient {
                 .mbrId(2L)
                 .itemNm("test")
                 .itemAmt(2000)
-                .itemImgUrl("test2")
                 .shppCd("SSG_SHPP")
                 .itemQty(2)
                 .comYn(false)
@@ -66,7 +70,6 @@ public class CartShareClientMock implements CartShareClient {
                 .mbrId(1L)
                 .itemNm("test")
                 .itemAmt(4000)
-                .itemImgUrl("test2")
                 .shppCd("EMART_TRADERS_SHPP")
                 .itemQty(2)
                 .comYn(true)
