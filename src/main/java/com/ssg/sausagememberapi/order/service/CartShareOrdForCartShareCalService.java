@@ -58,6 +58,7 @@ public class CartShareOrdForCartShareCalService {
         List<CartShareOdrItem> cartShareOdrItemList = cartShareOrdItemRepository.findAllByCartShareOrdId(
                 cartShareOrdId);
 
+        // find cartShareMbrList and covert to hashset type
         HashSet<Long> cartShareMbrIdSet = new HashSet<>(
                 cartShareClient.findCartShareMbrIdList(cartShareOdr.getCartShareId()).getData()
                         .getCartShareMbrIdList());
@@ -69,7 +70,6 @@ public class CartShareOrdForCartShareCalService {
 
         for (CartShareOdrItem cartShareOdrItem : cartShareOdrItemList) {
 
-            // 공통 금액 계산
             commAmt = calculateCommAmt(commAmt, cartShareOdrItem);
 
             calculateShppAmt(cartShareOrdShppInfoMap, cartShareOdrItem);
@@ -77,7 +77,7 @@ public class CartShareOrdForCartShareCalService {
             calculateOrdAmt(cartShareOrdAmtInfoMap, cartShareOdrItem);
         }
 
-        // 결제금액이 0원인 mbr 추가.
+        // add zero paymtamt mbr
         cartShareMbrIdSet.removeAll(cartShareOrdAmtInfoMap.keySet());
         cartShareMbrIdSet.forEach(mbrId -> cartShareOrdAmtInfoMap.put(mbrId, CartShareOrdAmtInfo.of(mbrId, 0)));
 
@@ -97,9 +97,9 @@ public class CartShareOrdForCartShareCalService {
     private void calculateShppAmt(HashMap<String, CartShareOrdShppInfo> cartShareOrdShppInfoMap,
             CartShareOdrItem cartShareOdrItem) {
 
+        // if contain shppCd hash key
         if (cartShareOrdShppInfoMap.containsKey(cartShareOdrItem.getShppCd().name())) {
 
-            // hashkey가 있을 경우, 멤버 추가
             CartShareOrdShppInfo cartShareOrdShppInfo = cartShareOrdShppInfoMap.get(
                     cartShareOdrItem.getShppCd().name());
             cartShareOrdShppInfo.addMbrId(cartShareOdrItem.getMbrId());
@@ -107,24 +107,24 @@ public class CartShareOrdForCartShareCalService {
             return;
         }
 
+        // if not contain shppCd hash key, put new shppCd hash key
         CartShareOrdShppInfo cartShareOrdShppInfo = CartShareOrdShppInfo.of(cartShareOdrItem.getShppCd());
         cartShareOrdShppInfo.addMbrId(cartShareOdrItem.getMbrId());
 
-        // 없을 경우 새로운 CartShareOrdShppInfo 객체 맨들면서 해쉬값 생성.
         cartShareOrdShppInfoMap.put(cartShareOdrItem.getShppCd().name(), cartShareOrdShppInfo);
     }
 
     private void calculateOrdAmt(HashMap<Long, CartShareOrdAmtInfo> cartShareOrdAmtInfoMap,
             CartShareOdrItem cartShareOdrItem) {
 
+        // if contain mbrId hash key
         if (cartShareOrdAmtInfoMap.containsKey(cartShareOdrItem.getMbrId())) {
 
-            // hashkey가 있을 경우, 멤버가 계산할 가격 더하기.
             cartShareOrdAmtInfoMap.get(cartShareOdrItem.getMbrId()).addOrdAmt(cartShareOdrItem.getPaymtAmt());
             return;
         }
 
-        // 없을 경우 새로운 CartShareOrdAmtInfo 객체 맨들면서 해쉬값 생성
+        // if not contain mbrId hash key, put new mbrId hash key
         cartShareOrdAmtInfoMap.put(cartShareOdrItem.getMbrId(),
                 CartShareOrdAmtInfo.of(cartShareOdrItem.getMbrId(), cartShareOdrItem.getPaymtAmt()));
 

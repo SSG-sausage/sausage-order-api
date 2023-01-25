@@ -64,12 +64,13 @@ public class CartShareOrdService {
         // change tmpOrdStatCd to Completed
         cartShareTmpOrdUtilService.changeTmpOrdStatCdToCompleted(cartShareTmpOdr);
 
-        // *to be added, cart-share-item 삭제
+        // invoke delete cartshareItemList api
+        cartShareClient.deleteCartShareItemList(cartShareId);
 
-        // 장바구니 수정 가능 api 호출
+        // invoke update cartshare editPsblYn to True api
         cartShareClient.updateEditPsblYn(cartShareId, CartShareUpdateEditPsblYnRequest.of(Boolean.TRUE));
 
-        // 정산 생성 api
+        // invoke save cartShareCal api
         Long cartShareCalId = cartShareCalClientMock.saveCartShareCal(
                 CartShareCalSaveRequest.of(cartShareOdr.getCartShareOrdId())).getData().getCartShareCalId();
 
@@ -79,7 +80,7 @@ public class CartShareOrdService {
 
     public CartShareOrdFindListResponse findCartShareOrderList(Long mbrId, Long cartShareId) {
 
-        // validate 'isFound' and 'isAccessibleCartShareByMbr' (internal api)
+        // validate 'isFound' and 'isAccessibleCartShareByMbr'
         cartShareClient.validateCartShareAuth(mbrId, cartShareId);
 
         List<CartShareOdr> cartShareOdrList = cartShareOrdRepository.findAllByCartShareId(cartShareId);
@@ -91,7 +92,7 @@ public class CartShareOrdService {
 
     public CartShareOrdFindResponse findCartShareOrder(Long mbrId, Long cartShareId, Long cartShareOrdId) {
 
-        // validate 'isFound' and 'isAccessibleCartShareByMbr' (internal api)
+        // validate 'isFound' and 'isAccessibleCartShareByMbr'
         cartShareClient.validateCartShareAuth(mbrId, cartShareId);
 
         CartShareOdr cartShareOdr = cartShareOrdUtilService.findById(cartShareOrdId);

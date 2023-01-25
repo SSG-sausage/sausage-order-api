@@ -35,6 +35,11 @@ public class CartShareClientMock implements CartShareClient {
     }
 
     @Override
+    public SuccessResponse<String> deleteCartShareItemList(Long cartShareId) {
+        return SuccessResponse.OK.getBody();
+    }
+
+    @Override
     public SuccessResponse<Boolean> validateCartShareAuth(Long cartShareId, Long mbrId) {
         return SuccessResponse.success(SuccessCode.OK_SUCCESS, Boolean.TRUE).getBody();
     }

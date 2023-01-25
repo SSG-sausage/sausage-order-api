@@ -33,7 +33,7 @@ public class CartShareTmpOrdService {
     @Transactional
     public CartShareTmpOrdFindResponse findCartShareTmpOrdInProgress(Long mbrId, Long cartShareId) {
 
-        // validate 'isFound' and 'isCartShareMember' (internal api)
+        // validate 'isFound' and 'isCartShareMember'
         cartShareClient.validateCartShareAuth(mbrId, cartShareId);
 
         CartShareTmpOdr cartShareTmpOdr = cartShareTmpOrdUtilService.findCartShareTmpOrdInProgress(cartShareId);
@@ -47,12 +47,12 @@ public class CartShareTmpOrdService {
     @Transactional
     public void saveCartShareTmpOrd(Long mbrId, Long cartShareId) {
 
-        // validate 'isFound' and 'isCartShareMaster' (internal api)
+        // validate 'isFound' and 'isCartShareMaster'
         cartShareClient.validateCartShareMasterAuth(mbrId, cartShareId);
 
         CartShareTmpOdr cartShareTmpOdr = cartShareTmpOrdRepository.save(CartShareTmpOdr.newInstance(cartShareId));
 
-        // find cartShareOrderItem-list by cart share id (internal api)
+        // find cartShareOrderItem-list by cart share id
         List<CartShareItemInfo> cartShareItemList = cartShareClient.findCartShareItemList(cartShareId).getData()
                 .getCartShareItemList();
 
@@ -64,7 +64,7 @@ public class CartShareTmpOrdService {
         // save all items
         cartShareTmpOrdItemRepository.saveAll(cartShareTmpOdrItems);
 
-        //장바구니 수정 불가 api 호출
+        // invoke update cartshare editPsblYn to False api
         cartShareClient.updateEditPsblYn(cartShareId, CartShareUpdateEditPsblYnRequest.of(Boolean.FALSE));
     }
 

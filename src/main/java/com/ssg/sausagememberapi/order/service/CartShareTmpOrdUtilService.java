@@ -26,7 +26,7 @@ public class CartShareTmpOrdUtilService {
     @Transactional
     public CartShareTmpOdr findCartShareTmpOrdInProgress(Long cartShareId) {
 
-        // 임시 주문 상태가 IN_PROGRESS인 임시 주문 find
+        // find tmpOrd be IN_PROGRESS
         return cartShareTmpOrdRepository.findFirstByCartShareIdAndTmpOrdStatCd(cartShareId, TmpOrdStatCd.IN_PROGRESS)
                 .orElseThrow(() -> {
                     throw new NotFoundException(String.format("유효한 임시 주문이 존재하지 않습니다."),

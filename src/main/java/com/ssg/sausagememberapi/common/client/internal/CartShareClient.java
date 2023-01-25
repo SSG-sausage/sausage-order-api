@@ -5,6 +5,7 @@ import com.ssg.sausagememberapi.common.client.internal.dto.response.CartShareIte
 import com.ssg.sausagememberapi.common.client.internal.dto.response.CartShareMbrIdListResponse;
 import com.ssg.sausagememberapi.common.dto.SuccessResponse;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +23,9 @@ public interface CartShareClient {
     @PostMapping("/cart-share/api/cart-share/{cartShareId}/edit-psbl-yn")
     SuccessResponse<String> updateEditPsblYn(@PathVariable Long cartShareId,
             @RequestBody CartShareUpdateEditPsblYnRequest request);
+
+    @DeleteMapping("/cart-share/api/cart-share/{cartShareId}")
+    SuccessResponse<String> deleteCartShareItemList(@PathVariable Long cartShareId);
 
     @GetMapping("/cart-share/api/cart-share/{cartShareId}/mbr/{mbrId}/validation")
     SuccessResponse<Boolean> validateCartShareAuth(@PathVariable Long cartShareId,
