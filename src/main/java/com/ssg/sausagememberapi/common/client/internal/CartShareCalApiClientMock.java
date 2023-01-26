@@ -7,7 +7,7 @@ import com.ssg.sausagememberapi.common.success.SuccessCode;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CartShareCalClientMock implements CartShareCalClient {
+public class CartShareCalApiClientMock implements CartShareCalClient {
 
     @Override
     public SuccessResponse<CartShareCalSaveResponse> saveCartShareCal(CartShareCalSaveRequest request) {

@@ -8,6 +8,8 @@ CREATE TABLE `CART_SHARE_ORD`
     `CART_SHARE_ORD_ID`      bigint      NOT NULL AUTO_INCREMENT,
     `CART_SHARE_TMP_ORD_ID`  bigint      NOT NULL,
     `CART_SHARE_ID`          bigint      NOT NULL,
+    `CART_SHARE_CAL_ID`      bigint      NOT NULL,
+    `CAL_ST_YN`              boolean     NOT NULL,
     `CART_SHARE_ORD_RCP_DTS` datetime    NOT NULL,
     `ORD_STAT_CD`            varchar(30) NOT NULL,
     `REG_DTS`                datetime    NOT NULL,

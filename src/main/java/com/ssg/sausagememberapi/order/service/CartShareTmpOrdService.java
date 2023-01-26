@@ -1,7 +1,7 @@
 package com.ssg.sausagememberapi.order.service;
 
-import com.ssg.sausagememberapi.common.client.internal.CartShareClientMock;
-import com.ssg.sausagememberapi.common.client.internal.dto.request.CartShareUpdateEditPsblYnRequest;
+import com.ssg.sausagememberapi.common.client.internal.CartShareApiClientMock;
+import com.ssg.sausagememberapi.common.client.internal.CartShareProducerService;
 import com.ssg.sausagememberapi.common.client.internal.dto.response.CartShareItemListResponse.CartShareItemInfo;
 import com.ssg.sausagememberapi.order.dto.response.CartShareTmpOrdFindResponse;
 import com.ssg.sausagememberapi.order.entity.CartShareTmpOdr;
@@ -25,16 +25,18 @@ public class CartShareTmpOrdService {
 
     private final CartShareTmpOrdItemRepository cartShareTmpOrdItemRepository;
 
-    private final CartShareClientMock cartShareClient;
+    private final CartShareApiClientMock cartShareClient;
 
     private final CartShareTmpOrdUtilService cartShareTmpOrdUtilService;
+
+    private final CartShareProducerService cartShareProducerService;
 
 
     @Transactional
     public CartShareTmpOrdFindResponse findCartShareTmpOrdInProgress(Long mbrId, Long cartShareId) {
 
         // validate 'isFound' and 'isCartShareMember'
-        cartShareClient.validateCartShareAuth(mbrId, cartShareId);
+        cartShareClient.validateCartShareMbr(mbrId, cartShareId);
 
         CartShareTmpOdr cartShareTmpOdr = cartShareTmpOrdUtilService.findCartShareTmpOrdInProgress(cartShareId);
 
@@ -48,7 +50,7 @@ public class CartShareTmpOrdService {
     public void saveCartShareTmpOrd(Long mbrId, Long cartShareId) {
 
         // validate 'isFound' and 'isCartShareMaster'
-        cartShareClient.validateCartShareMasterAuth(mbrId, cartShareId);
+        cartShareClient.validateCartShareMastr(mbrId, cartShareId);
 
         CartShareTmpOdr cartShareTmpOdr = cartShareTmpOrdRepository.save(CartShareTmpOdr.newInstance(cartShareId));
 
@@ -64,8 +66,8 @@ public class CartShareTmpOrdService {
         // save all items
         cartShareTmpOrdItemRepository.saveAll(cartShareTmpOdrItems);
 
-        // invoke update cartshare editPsblYn to False api
-        cartShareClient.updateEditPsblYn(cartShareId, CartShareUpdateEditPsblYnRequest.of(Boolean.FALSE));
+        // produce update cartshare editPsblYn to False api
+        cartShareProducerService.updateEditPsblYn(cartShareId, false);
     }
 
 

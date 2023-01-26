@@ -1,10 +1,10 @@
 package com.ssg.sausagememberapi.order.service;
 
 
-import com.ssg.sausagememberapi.common.client.internal.CartShareCalClientMock;
-import com.ssg.sausagememberapi.common.client.internal.CartShareClientMock;
+import com.ssg.sausagememberapi.common.client.internal.CartShareApiClientMock;
+import com.ssg.sausagememberapi.common.client.internal.CartShareCalApiClientMock;
+import com.ssg.sausagememberapi.common.client.internal.CartShareProducerService;
 import com.ssg.sausagememberapi.common.client.internal.dto.request.CartShareCalSaveRequest;
-import com.ssg.sausagememberapi.common.client.internal.dto.request.CartShareUpdateEditPsblYnRequest;
 import com.ssg.sausagememberapi.order.dto.response.CartShareOrdFindListResponse;
 import com.ssg.sausagememberapi.order.dto.response.CartShareOrdFindResponse;
 import com.ssg.sausagememberapi.order.entity.CartShareOdr;
@@ -34,14 +34,17 @@ public class CartShareOrdService {
 
     private final CartShareTmpOrdUtilService cartShareTmpOrdUtilService;
 
-    private final CartShareClientMock cartShareClient;
+    private final CartShareApiClientMock cartShareClient;
 
-    private final CartShareCalClientMock cartShareCalClientMock;
+    private final CartShareCalApiClientMock cartShareCalApiClientMock;
+
+    private final CartShareProducerService cartShareProducerService;
+
 
     public CartShareCalSaveRequest saveCartShareOrdFromTmpOrd(Long mbrId, Long cartShareId) {
 
         // validate 'isFound' and 'isCartShareMaster' (internal api)
-        cartShareClient.validateCartShareMasterAuth(mbrId, cartShareId);
+        cartShareClient.validateCartShareMastr(mbrId, cartShareId);
 
         CartShareTmpOdr cartShareTmpOdr = cartShareTmpOrdUtilService.findCartShareTmpOrdInProgress(cartShareId);
 
@@ -64,14 +67,14 @@ public class CartShareOrdService {
         // change tmpOrdStatCd to Completed
         cartShareTmpOrdUtilService.changeTmpOrdStatCdToCompleted(cartShareTmpOdr);
 
-        // invoke delete cartshareItemList api
-        cartShareClient.deleteCartShareItemList(cartShareId);
+        // produce delete cartshareItemList
+        cartShareProducerService.deleteCartShareItemList(cartShareId);
 
-        // invoke update cartshare editPsblYn to True api
-        cartShareClient.updateEditPsblYn(cartShareId, CartShareUpdateEditPsblYnRequest.of(Boolean.TRUE));
+        // produce update cartshare editPsblYn to True api
+        cartShareProducerService.updateEditPsblYn(cartShareId, true);
 
         // invoke save cartShareCal api
-        Long cartShareCalId = cartShareCalClientMock.saveCartShareCal(
+        Long cartShareCalId = cartShareCalApiClientMock.saveCartShareCal(
                 CartShareCalSaveRequest.of(cartShareOdr.getCartShareOrdId())).getData().getCartShareCalId();
 
         return CartShareCalSaveRequest.of(cartShareCalId);
@@ -81,7 +84,7 @@ public class CartShareOrdService {
     public CartShareOrdFindListResponse findCartShareOrderList(Long mbrId, Long cartShareId) {
 
         // validate 'isFound' and 'isAccessibleCartShareByMbr'
-        cartShareClient.validateCartShareAuth(mbrId, cartShareId);
+        cartShareClient.validateCartShareMbr(mbrId, cartShareId);
 
         List<CartShareOdr> cartShareOdrList = cartShareOrdRepository.findAllByCartShareId(cartShareId);
 
@@ -93,7 +96,7 @@ public class CartShareOrdService {
     public CartShareOrdFindResponse findCartShareOrder(Long mbrId, Long cartShareId, Long cartShareOrdId) {
 
         // validate 'isFound' and 'isAccessibleCartShareByMbr'
-        cartShareClient.validateCartShareAuth(mbrId, cartShareId);
+        cartShareClient.validateCartShareMbr(mbrId, cartShareId);
 
         CartShareOdr cartShareOdr = cartShareOrdUtilService.findById(cartShareOrdId);
 

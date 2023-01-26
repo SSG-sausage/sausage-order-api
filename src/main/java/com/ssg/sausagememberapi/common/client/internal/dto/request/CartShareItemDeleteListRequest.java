@@ -13,19 +13,14 @@ import lombok.ToString;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(access = AccessLevel.PUBLIC)
 @ToString
-public class CartShareUpdateEditPsblYnRequest {
+public class CartShareItemDeleteListRequest {
 
     @Schema(description = "공유장바구니 ID")
     private Long cartShareId;
 
-    @Schema(description = "수정가능여부")
-    private Boolean editPsblYn;
-
-    public static CartShareUpdateEditPsblYnRequest of(Long cartShareId, boolean editPsblYn) {
-        return CartShareUpdateEditPsblYnRequest.builder()
+    public static CartShareItemDeleteListRequest of(Long cartShareId) {
+        return CartShareItemDeleteListRequest.builder()
                 .cartShareId(cartShareId)
-                .editPsblYn(editPsblYn)
                 .build();
     }
-
 }

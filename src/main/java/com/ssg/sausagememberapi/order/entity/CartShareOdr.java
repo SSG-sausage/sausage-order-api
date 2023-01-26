@@ -37,6 +37,12 @@ public class CartShareOdr extends BaseEntity {
     @Column(name = "CART_SHARE_ID", nullable = false)
     private Long cartShareId;
 
+    @Column(name = "CART_SHARE_CAL_ID", nullable = false)
+    private Long cartShareCalId;
+
+    @Column(name = "CAL_ST_YN", nullable = false)
+    private Long calStYn;
+
     @Column(name = "CART_SHARE_ORD_RCP_DTS", nullable = false)
     private LocalDateTime cartShareOrdRcpDts;
 

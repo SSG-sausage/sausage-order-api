@@ -12,12 +12,12 @@ import org.springframework.kafka.core.KafkaAdmin;
 public class KafkaTopicConfig {
 
     @Value("${kafka.address}")
-    private String bootstrapServer;
+    private String server;
 
     @Bean
     public KafkaAdmin kafkaAdmin() {
         Map<String, Object> configs = new HashMap<>();
-        configs.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
+        configs.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, server);
         return new KafkaAdmin(configs);
     }
 }

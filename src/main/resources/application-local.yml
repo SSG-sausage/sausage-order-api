@@ -32,6 +32,5 @@ eureka:
 kafka:
   address: localhost:9092,localhost:9093,localhost:9094
   topic:
-    name: test
-    group:
-      name: test-group
+    cart-share-service.cart-share-item-list.deleting: cart-share-service.cart-share-item-list.deleting
+    cart-share-service.cart-share-edit-psbl-yn.updating: cart-share-service.cart-share-edit-psbl-yn.updating
