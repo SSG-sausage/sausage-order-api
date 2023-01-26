@@ -29,7 +29,7 @@ public class CartShareTmpOrdController {
 
     private final CartShareTmpOrdService cartShareTmpOrdService;
 
-    @Operation(summary = "공유장바구니 임시주문하기", responses = {
+    @Operation(summary = "[external] 공유장바구니 임시주문하기", responses = {
             @ApiResponse(responseCode = "200", description = "공유장바구니 임시주문하기 성공")
     })
     @PostMapping("/cart-share/{cartShareId}/tmp-cart-share-ord")
@@ -43,7 +43,7 @@ public class CartShareTmpOrdController {
     }
 
 
-    @Operation(summary = "공유장바구니임시주문 단일 조회", responses = {
+    @Operation(summary = "[external] 공유장바구니임시주문 단일 조회", responses = {
             @ApiResponse(responseCode = "200", description = "공유장비구니임시주문 단일조회 성공")})
     @GetMapping(value = "/cart-share/{cartShareId}/tmp-cart-share-ord")
     public ResponseEntity<SuccessResponse<CartShareTmpOrdFindResponse>> findCartShareTmpOrd(

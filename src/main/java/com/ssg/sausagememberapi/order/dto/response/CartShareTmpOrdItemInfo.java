@@ -32,7 +32,7 @@ public class CartShareTmpOrdItemInfo {
     private Integer itemQty;
 
     @Schema(description = "공통상품여부")
-    private Boolean comYn;
+    private Boolean commYn;
 
     @Schema(description = "상품가격")
     private Integer itemAmt;
@@ -53,7 +53,7 @@ public class CartShareTmpOrdItemInfo {
                 .itemAmt(cartShareTmpOdrItem.getItemAmt())
                 .paymtAmt(cartShareTmpOdrItem.getPaymtAmt())
                 .shppCd(cartShareTmpOdrItem.getShppCd().name())
-                .comYn(cartShareTmpOdrItem.getComYn())
+                .commYn(cartShareTmpOdrItem.getCommYn())
                 .build();
     }
 }

@@ -49,6 +49,6 @@ public class CartShareItemListResponse {
         private int itemQty;
 
         @Schema(description = "공통상품여부")
-        private boolean comYn;
+        private boolean commYn;
     }
 }

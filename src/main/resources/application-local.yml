@@ -31,6 +31,9 @@ eureka:
 
 kafka:
   address: localhost:9092,localhost:9093,localhost:9094
+  group:
+    name: ord-service
   topic:
     cart-share-service.cart-share-item-list.deleting: cart-share-service.cart-share-item-list.deleting
     cart-share-service.cart-share-edit-psbl-yn.updating: cart-share-service.cart-share-edit-psbl-yn.updating
+    cart-share-ord-service.cal-st-yn.updating: cart-share-ord-service.cal-st-yn.updating

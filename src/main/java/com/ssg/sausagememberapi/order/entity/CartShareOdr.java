@@ -37,11 +37,11 @@ public class CartShareOdr extends BaseEntity {
     @Column(name = "CART_SHARE_ID", nullable = false)
     private Long cartShareId;
 
-    @Column(name = "CART_SHARE_CAL_ID", nullable = false)
+    @Column(name = "CART_SHARE_CAL_ID")
     private Long cartShareCalId;
 
     @Column(name = "CAL_ST_YN", nullable = false)
-    private Long calStYn;
+    private Boolean calStYn;
 
     @Column(name = "CART_SHARE_ORD_RCP_DTS", nullable = false)
     private LocalDateTime cartShareOrdRcpDts;
@@ -50,12 +50,21 @@ public class CartShareOdr extends BaseEntity {
     @Column(name = "ORD_STAT_CD", nullable = false)
     private OrdStatCd ordStatCd;
 
+    public void changeCartShareCalId(Long cartShareCalId) {
+        this.cartShareCalId = cartShareCalId;
+    }
+
+    public void changeCalStYn(Boolean calStYn) {
+        this.calStYn = calStYn;
+    }
+
     public static CartShareOdr newInstance(CartShareTmpOdr cartShareTmpOdr) {
         return CartShareOdr.builder()
                 .cartShareId(cartShareTmpOdr.getCartShareId())
                 .cartShareTmpOrdId(cartShareTmpOdr.getCartShareTmpOrdId())
                 .cartShareOrdRcpDts(LocalDateTime.now())
                 .ordStatCd(OrdStatCd.SUCCESS)
+                .calStYn(false)
                 .build();
     }
 

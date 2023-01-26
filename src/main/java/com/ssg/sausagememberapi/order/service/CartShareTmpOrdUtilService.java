@@ -23,7 +23,6 @@ public class CartShareTmpOrdUtilService {
 
     private final CartShareTmpOrdItemRepository cartShareTmpOrdItemRepository;
 
-    @Transactional
     public CartShareTmpOdr findCartShareTmpOrdInProgress(Long cartShareId) {
 
         // find tmpOrd be IN_PROGRESS
@@ -34,7 +33,6 @@ public class CartShareTmpOrdUtilService {
                 });
     }
 
-    @Transactional
     public List<CartShareTmpOdrItem> findCartShareTmpOrdItemByTmpOrdId(Long cartShareTmpOrdId) {
         return cartShareTmpOrdItemRepository.findAllByCartShareTmpOrdId(cartShareTmpOrdId);
     }

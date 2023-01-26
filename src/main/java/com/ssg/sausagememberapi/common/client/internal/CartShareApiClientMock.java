@@ -50,7 +50,7 @@ public class CartShareApiClientMock implements CartShareApiClient {
                 .itemAmt(1000)
                 .shppCd("SSG_SHPP")
                 .itemQty(1)
-                .comYn(true)
+                .commYn(true)
                 .build();
 
         CartShareItemInfo cartShareItemInfo2 = CartShareItemInfo.builder()
@@ -61,7 +61,7 @@ public class CartShareApiClientMock implements CartShareApiClient {
                 .itemAmt(2000)
                 .shppCd("SSG_SHPP")
                 .itemQty(2)
-                .comYn(false)
+                .commYn(false)
                 .build();
 
         CartShareItemInfo cartShareItemInfo3 = CartShareItemInfo.builder()
@@ -72,7 +72,7 @@ public class CartShareApiClientMock implements CartShareApiClient {
                 .itemAmt(4000)
                 .shppCd("EMART_TRADERS_SHPP")
                 .itemQty(2)
-                .comYn(true)
+                .commYn(true)
                 .build();
 
         cartShareItemList.addAll(List.of(cartShareItemInfo1, cartShareItemInfo2, cartShareItemInfo3));

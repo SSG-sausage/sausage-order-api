@@ -38,7 +38,7 @@ public class CartShareOrdController {
 
     private final CartShareOrdForCartShareCalService cartShareOrdForCartShareCalService;
 
-    @Operation(summary = "공유장바구니 주문하기", responses = {
+    @Operation(summary = "[external] 공유장바구니 주문하기", responses = {
             @ApiResponse(responseCode = "200", description = "공유장바구니 주문하기 성공"),
             @ApiResponse(responseCode = "404", description = "유효한 임시 주문이 존재하지 않습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
@@ -51,7 +51,7 @@ public class CartShareOrdController {
                 cartShareOrdService.saveCartShareOrdFromTmpOrd(mbrId, cartShareId));
     }
 
-    @Operation(summary = "공유장바구니주문 리스트 조회", responses = {
+    @Operation(summary = "[external] 공유장바구니주문 리스트 조회", responses = {
             @ApiResponse(responseCode = "200", description = "공유장비구니주문 리스트 조회 성공")})
     @GetMapping(value = "/cart-share/{cartShareId}/cart-share-ord")
     public ResponseEntity<SuccessResponse<CartShareOrdFindListResponse>> findCartShareOrdList(
@@ -62,7 +62,7 @@ public class CartShareOrdController {
                 cartShareOrdService.findCartShareOrderList(mbrId, cartShareId));
     }
 
-    @Operation(summary = "공유장바구니주문 단일 조회", responses = {
+    @Operation(summary = "[external] 공유장바구니주문 단일 조회", responses = {
             @ApiResponse(responseCode = "200", description = "공유장바구니주문 단일 조회 성공"),
             @ApiResponse(responseCode = "404", description = "일치하는 공유장바구니주문 ID가 존재하지 않습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
@@ -76,7 +76,7 @@ public class CartShareOrdController {
                 cartShareOrdService.findCartShareOrder(mbrId, cartShareId, cartShareOrdId));
     }
 
-    @Operation(summary = "공유장바구니주문 정산 조회", responses = {
+    @Operation(summary = "[internal] 공유장바구니주문 정산 조회", responses = {
             @ApiResponse(responseCode = "200", description = "공유장바구니주문 정산 조회 성공"),
     })
     @GetMapping(value = "/cart-share-ord/{cartShareOrdId}/cart-share-cal")
@@ -87,7 +87,7 @@ public class CartShareOrdController {
                 cartShareOrdForCartShareCalService.findCartShareOrd(cartShareOrdId));
     }
 
-    @Operation(summary = "공유장바구니주문 정산 세부 조회", responses = {
+    @Operation(summary = "[internal] 공유장바구니주문 정산 세부 조회", responses = {
             @ApiResponse(responseCode = "200", description = "공유장바구니주문 정산 세부 조회 성공"),
             @ApiResponse(responseCode = "404", description = "일치하는 공유장바구니주문 ID가 존재하지 않습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
@@ -98,6 +98,4 @@ public class CartShareOrdController {
         return SuccessResponse.success(SuccessCode.OK_SUCCESS,
                 cartShareOrdForCartShareCalService.findCartShareOrdDetail(cartShareOrdId));
     }
-
-
 }

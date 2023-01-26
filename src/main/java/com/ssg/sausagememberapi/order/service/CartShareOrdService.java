@@ -73,9 +73,13 @@ public class CartShareOrdService {
         // produce update cartshare editPsblYn to True api
         cartShareProducerService.updateEditPsblYn(cartShareId, true);
 
+        // *to be added, produce 주문 완료 알림 생성 이벤트
+
         // invoke save cartShareCal api
         Long cartShareCalId = cartShareCalApiClientMock.saveCartShareCal(
                 CartShareCalSaveRequest.of(cartShareOdr.getCartShareOrdId())).getData().getCartShareCalId();
+
+        cartShareOdr.changeCartShareCalId(cartShareCalId);
 
         return CartShareCalSaveRequest.of(cartShareCalId);
     }
@@ -104,5 +108,12 @@ public class CartShareOrdService {
                 cartShareOdr.getCartShareId());
 
         return CartShareOrdFindResponse.of(cartShareOdr, cartShareOdrItemList);
+    }
+
+    public void changeCalStYnToTrue(Long cartShareOrdId) {
+
+        CartShareOdr cartShareOdr = cartShareOrdUtilService.findById(cartShareOrdId);
+
+        cartShareOdr.changeCalStYn(true);
     }
 }

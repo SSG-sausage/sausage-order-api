@@ -88,7 +88,7 @@ public class CartShareOrdForCartShareCalService {
     }
 
     private int calculateCommAmt(int commAmt, CartShareOdrItem cartShareOdrItem) {
-        if (cartShareOdrItem.getComYn()) {
+        if (cartShareOdrItem.getCommYn()) {
             commAmt += cartShareOdrItem.getPaymtAmt();
         }
         return commAmt;
