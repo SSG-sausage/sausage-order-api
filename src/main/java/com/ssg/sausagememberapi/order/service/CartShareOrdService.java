@@ -1,8 +1,8 @@
 package com.ssg.sausagememberapi.order.service;
 
 
-import com.ssg.sausagememberapi.common.client.internal.CartShareApiClientMock;
-import com.ssg.sausagememberapi.common.client.internal.CartShareCalApiClientMock;
+import com.ssg.sausagememberapi.common.client.internal.CartShareApiClient;
+import com.ssg.sausagememberapi.common.client.internal.CartShareCalApiClient;
 import com.ssg.sausagememberapi.common.client.internal.CartShareProducerService;
 import com.ssg.sausagememberapi.common.client.internal.dto.request.CartShareCalSaveRequest;
 import com.ssg.sausagememberapi.order.dto.response.CartShareOrdFindListResponse;
@@ -34,9 +34,9 @@ public class CartShareOrdService {
 
     private final CartShareTmpOrdUtilService cartShareTmpOrdUtilService;
 
-    private final CartShareApiClientMock cartShareClient;
+    private final CartShareApiClient cartShareClient;
 
-    private final CartShareCalApiClientMock cartShareCalApiClientMock;
+    private final CartShareCalApiClient cartShareCalApiClient;
 
     private final CartShareProducerService cartShareProducerService;
 
@@ -76,7 +76,7 @@ public class CartShareOrdService {
         // *to be added, produce 주문 완료 알림 생성 이벤트
 
         // invoke save cartShareCal api
-        Long cartShareCalId = cartShareCalApiClientMock.saveCartShareCal(
+        Long cartShareCalId = cartShareCalApiClient.saveCartShareCal(
                 CartShareCalSaveRequest.of(cartShareOdr.getCartShareOrdId())).getData().getCartShareCalId();
 
         cartShareOdr.changeCartShareCalId(cartShareCalId);

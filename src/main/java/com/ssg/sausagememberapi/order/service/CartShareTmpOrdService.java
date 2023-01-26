@@ -1,6 +1,6 @@
 package com.ssg.sausagememberapi.order.service;
 
-import com.ssg.sausagememberapi.common.client.internal.CartShareApiClientMock;
+import com.ssg.sausagememberapi.common.client.internal.CartShareApiClient;
 import com.ssg.sausagememberapi.common.client.internal.CartShareProducerService;
 import com.ssg.sausagememberapi.common.client.internal.dto.response.CartShareItemListResponse.CartShareItemInfo;
 import com.ssg.sausagememberapi.order.dto.response.CartShareTmpOrdFindResponse;
@@ -25,7 +25,7 @@ public class CartShareTmpOrdService {
 
     private final CartShareTmpOrdItemRepository cartShareTmpOrdItemRepository;
 
-    private final CartShareApiClientMock cartShareClient;
+    private final CartShareApiClient cartShareClient;
 
     private final CartShareTmpOrdUtilService cartShareTmpOrdUtilService;
 

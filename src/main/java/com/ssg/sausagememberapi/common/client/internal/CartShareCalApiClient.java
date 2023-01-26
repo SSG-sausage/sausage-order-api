@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(name = "SAUSAGE-CART-CAL-SHARE-API")
-public interface CartShareCalClient {
+public interface CartShareCalApiClient {
 
     @PostMapping("/cart-share-cal/api/cart-share-cal")
     SuccessResponse<CartShareCalSaveResponse> saveCartShareCal(@RequestBody CartShareCalSaveRequest request);
