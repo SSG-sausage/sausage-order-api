@@ -49,6 +49,8 @@ public class CartShareTmpOrdService {
     @Transactional
     public void saveCartShareTmpOrd(Long mbrId, Long cartShareId) {
 
+        log.info(String.valueOf(mbrId));
+
         // validate 'isFound' and 'isCartShareMaster'
         cartShareClient.validateCartShareMastr(mbrId, cartShareId);
 

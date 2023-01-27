@@ -17,8 +17,10 @@ public interface CartShareApiClient {
     SuccessResponse<CartShareMbrIdListResponse> findCartShareMbrIdList(@PathVariable Long cartShareId);
 
     @GetMapping("/api/cart-share/{cartShareId}/mbr/{mbrId}/validation")
-    SuccessResponse<Boolean> validateCartShareMbr(@PathVariable Long cartShareId, @PathVariable Long mbrId);
+    SuccessResponse<Boolean> validateCartShareMbr(@PathVariable("cartShareId") Long cartShareId,
+            @PathVariable("mbrId") Long mbrId);
 
     @GetMapping("/api/cart-share/{cartShareId}/mbr/{mbrId}/mastr-validation")
-    SuccessResponse<Boolean> validateCartShareMastr(@PathVariable Long cartShareId, @PathVariable Long mbrId);
+    SuccessResponse<Boolean> validateCartShareMastr(@PathVariable("cartShareId") Long cartShareId,
+            @PathVariable("mbrId") Long mbrId);
 }
