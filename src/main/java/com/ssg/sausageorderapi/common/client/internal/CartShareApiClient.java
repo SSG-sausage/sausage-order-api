@@ -10,15 +10,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 @FeignClient(name = "SAUSAGE-CART-SHARE-API")
 public interface CartShareApiClient {
 
-    @GetMapping("/cart-share/api/cart-share/{cartShareId}/cart-share-item")
+    @GetMapping("/api/cart-share/{cartShareId}/cart-share-item")
     SuccessResponse<CartShareItemListResponse> findCartShareItemList(@PathVariable Long cartShareId);
 
-    @GetMapping("/cart-share/api/cart-share/{cartShareId}/cart-share-mbr-id")
+    @GetMapping("/api/cart-share/{cartShareId}/cart-share-mbr-id")
     SuccessResponse<CartShareMbrIdListResponse> findCartShareMbrIdList(@PathVariable Long cartShareId);
 
-    @GetMapping("/cart-share/api/cart-share/{cartShareId}/mbr/{mbrId}/validation")
+    @GetMapping("/api/cart-share/{cartShareId}/mbr/{mbrId}/validation")
     SuccessResponse<Boolean> validateCartShareMbr(@PathVariable Long cartShareId, @PathVariable Long mbrId);
 
-    @GetMapping("/cart-share/api/cart-share/{cartShareId}/mbr/{mbrId}/mastr-validation")
+    @GetMapping("/api/cart-share/{cartShareId}/mbr/{mbrId}/mastr-validation")
     SuccessResponse<Boolean> validateCartShareMastr(@PathVariable Long cartShareId, @PathVariable Long mbrId);
 }

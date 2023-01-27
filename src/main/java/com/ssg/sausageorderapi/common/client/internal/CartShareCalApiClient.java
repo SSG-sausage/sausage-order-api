@@ -7,9 +7,9 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(name = "SAUSAGE-CART-CAL-SHARE-API")
+@FeignClient(name = "SAUSAGE-CART-CALCULATION-SHARE-API")
 public interface CartShareCalApiClient {
 
-    @PostMapping("/cart-share-cal/api/cart-share-cal")
+    @PostMapping("/api/cart-share-cal")
     SuccessResponse<CartShareCalSaveResponse> saveCartShareCal(@RequestBody CartShareCalSaveRequest request);
 }

@@ -47,7 +47,7 @@ public class CartShareOrdForCartShareCalService {
         return CartShareOrdFindForCartShareCalResponse.builder()
                 .cartShareId(cartShareOdr.getCartShareId())
                 .cartShareMbrIdList(new HashSet<>(cartShareMbrIdListResponse.getCartShareMbrIdList()))
-                .cartShareMastrMbrId(cartShareMbrIdListResponse.getMastrMbrId())
+                .mastrMbrId(cartShareMbrIdListResponse.getMastrMbrId())
                 .ttlPaymtAmt(ttlPymtAmt).build();
     }
 

@@ -30,10 +30,6 @@ eureka:
       defaultZone: http://127.0.0.1:8761/eureka
 
 kafka:
-  address: localhost:9092,localhost:9093,localhost:9094
+  address: localhost:9091,localhost:9092,localhost:9093
   group:
     name: ord-service
-  topic:
-    cart-share-service.cart-share-item-list.deleting: cart-share-service.cart-share-item-list.deleting
-    cart-share-service.cart-share-edit-psbl-yn.updating: cart-share-service.cart-share-edit-psbl-yn.updating
-    cart-share-ord-service.cal-st-yn.updating: cart-share-ord-service.cal-st-yn.updating

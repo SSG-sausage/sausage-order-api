@@ -1,14 +1,14 @@
-package com.ssg.sausageorderapi.common.client.internal;
+package com.ssg.sausageorderapi.common.kafka.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ssg.sausageorderapi.common.client.internal.dto.request.CartShareItemDeleteListRequest;
-import com.ssg.sausageorderapi.common.client.internal.dto.request.CartShareUpdateEditPsblYnRequest;
 import com.ssg.sausageorderapi.common.exception.ErrorCode;
 import com.ssg.sausageorderapi.common.exception.InternalServerException;
+import com.ssg.sausageorderapi.common.kafka.constants.KafkaConstants;
+import com.ssg.sausageorderapi.common.kafka.dto.CartShareItemDeleteListDto;
+import com.ssg.sausageorderapi.common.kafka.dto.CartShareUpdateEditPsblYnDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -17,22 +17,17 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class CartShareProducerService {
 
-    @Value("${kafka.topic.cart-share-service.cart-share-item-list.deleting}")
-    private String cartShareItemListDeleteTopic;
-
-    @Value("${kafka.topic.cart-share-service.cart-share-edit-psbl-yn.updating}")
-    private String cartShareEditPsblYnUpdateTopic;
-
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
     private final ObjectMapper objectMapper;
 
     public void deleteCartShareItemList(Long cartShareId) {
-        produceKafkaMsg(cartShareItemListDeleteTopic, CartShareItemDeleteListRequest.of(cartShareId));
+        produceKafkaMsg(KafkaConstants.KAFKA_CART_SHARE_ITEM_DELETE, CartShareItemDeleteListDto.of(cartShareId));
     }
 
     public void updateEditPsblYn(Long cartShareId, boolean editPsblYn) {
-        produceKafkaMsg(cartShareEditPsblYnUpdateTopic, CartShareUpdateEditPsblYnRequest.of(cartShareId, editPsblYn));
+        produceKafkaMsg(KafkaConstants.KAFKA_CART_SHARE_EDIT_UPDATE_UPDATE,
+                CartShareUpdateEditPsblYnDto.of(cartShareId, editPsblYn));
     }
 
     public void produceKafkaMsg(String topicNm, Object object) {
@@ -42,5 +37,4 @@ public class CartShareProducerService {
             throw new InternalServerException("예상치 못한 서버 에러가 발생하였습니다.", ErrorCode.INTERNAL_SERVER_EXCEPTION);
         }
     }
-
 }

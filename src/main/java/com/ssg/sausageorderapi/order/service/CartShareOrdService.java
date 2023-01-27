@@ -3,8 +3,8 @@ package com.ssg.sausageorderapi.order.service;
 
 import com.ssg.sausageorderapi.common.client.internal.CartShareApiClient;
 import com.ssg.sausageorderapi.common.client.internal.CartShareCalApiClient;
-import com.ssg.sausageorderapi.common.client.internal.CartShareProducerService;
 import com.ssg.sausageorderapi.common.client.internal.dto.request.CartShareCalSaveRequest;
+import com.ssg.sausageorderapi.common.kafka.service.CartShareProducerService;
 import com.ssg.sausageorderapi.order.dto.response.CartShareOrdFindListResponse;
 import com.ssg.sausageorderapi.order.dto.response.CartShareOrdFindResponse;
 import com.ssg.sausageorderapi.order.entity.CartShareOdr;

@@ -20,7 +20,7 @@ public class CartShareOrdFindForCartShareCalResponse {
     private Long cartShareId;
 
     @Schema(description = "공유장바구니마스터멤버 ID")
-    private Long cartShareMastrMbrId;
+    private Long mastrMbrId;
 
     @Schema(description = "공유장바구니멤버 ID")
     private Set<Long> cartShareMbrIdList;
