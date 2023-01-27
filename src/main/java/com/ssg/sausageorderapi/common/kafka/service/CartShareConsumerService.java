@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssg.sausageorderapi.common.exception.ErrorCode;
 import com.ssg.sausageorderapi.common.exception.InternalServerException;
-import com.ssg.sausageorderapi.common.kafka.constants.KafkaConstants;
+import com.ssg.sausageorderapi.common.kafka.constant.KafkaConstants;
 import com.ssg.sausageorderapi.common.kafka.dto.CartShareOrdUpdateCalStYnDto;
 import com.ssg.sausageorderapi.order.entity.CartShareOdr;
 import com.ssg.sausageorderapi.order.service.CartShareOrdUtilService;

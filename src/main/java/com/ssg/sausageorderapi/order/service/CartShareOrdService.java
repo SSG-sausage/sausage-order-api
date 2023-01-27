@@ -1,8 +1,8 @@
 package com.ssg.sausageorderapi.order.service;
 
 
-import com.ssg.sausageorderapi.common.client.internal.CartShareApiClient;
-import com.ssg.sausageorderapi.common.client.internal.CartShareCalApiClient;
+import com.ssg.sausageorderapi.common.client.internal.CartShareApiClientMock;
+import com.ssg.sausageorderapi.common.client.internal.CartShareCalApiClientMock;
 import com.ssg.sausageorderapi.common.client.internal.dto.request.CartShareCalSaveRequest;
 import com.ssg.sausageorderapi.common.kafka.service.CartShareProducerService;
 import com.ssg.sausageorderapi.order.dto.response.CartShareOrdFindListResponse;
@@ -11,8 +11,10 @@ import com.ssg.sausageorderapi.order.entity.CartShareOdr;
 import com.ssg.sausageorderapi.order.entity.CartShareOdrItem;
 import com.ssg.sausageorderapi.order.entity.CartShareTmpOdr;
 import com.ssg.sausageorderapi.order.entity.CartShareTmpOdrItem;
+import com.ssg.sausageorderapi.order.entity.ShppCd;
 import com.ssg.sausageorderapi.order.repository.CartShareOrdItemRepository;
 import com.ssg.sausageorderapi.order.repository.CartShareOrdRepository;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -34,12 +36,11 @@ public class CartShareOrdService {
 
     private final CartShareTmpOrdUtilService cartShareTmpOrdUtilService;
 
-    private final CartShareApiClient cartShareClient;
+    private final CartShareApiClientMock cartShareClient;
 
-    private final CartShareCalApiClient cartShareCalApiClient;
+    private final CartShareCalApiClientMock cartShareCalApiClient;
 
     private final CartShareProducerService cartShareProducerService;
-
 
     public CartShareCalSaveRequest saveCartShareOrdFromTmpOrd(Long mbrId, Long cartShareId) {
 
@@ -64,6 +65,10 @@ public class CartShareOrdService {
 
         cartShareOrdItemRepository.saveAll(cartShareOdrItems);
 
+        // calculate ttlPaymtAmt and save
+        int ttlPaymtAmt = calculateTtlPaymtAmt(cartShareOdrItems);
+        cartShareOdr.changeTtlPaymtAmt(ttlPaymtAmt);
+
         // change tmpOrdStatCd to Completed
         cartShareTmpOrdUtilService.changeTmpOrdStatCdToCompleted(cartShareTmpOdr);
 
@@ -83,7 +88,6 @@ public class CartShareOrdService {
 
         return CartShareCalSaveRequest.of(cartShareCalId);
     }
-
 
     public CartShareOrdFindListResponse findCartShareOrderList(Long mbrId, Long cartShareId) {
 
@@ -110,10 +114,24 @@ public class CartShareOrdService {
         return CartShareOrdFindResponse.of(cartShareOdr, cartShareOdrItemList);
     }
 
-    public void changeCalStYnToTrue(Long cartShareOrdId) {
+    private int calculateTtlPaymtAmt(List<CartShareOdrItem> cartShareOdrItems) {
 
-        CartShareOdr cartShareOdr = cartShareOrdUtilService.findById(cartShareOrdId);
+        int ttlPaymtAmt = 0, ttlShppcst = 0;
+        HashMap<String, Integer> shppCdMap = new HashMap<>();
 
-        cartShareOdr.changeCalStYn(true);
+        for (CartShareOdrItem cartShareOdrItem : cartShareOdrItems) {
+
+            ttlPaymtAmt += cartShareOdrItem.getPaymtAmt();
+            
+            String shppName = cartShareOdrItem.getShppCd().name();
+            shppCdMap.put(shppName, shppCdMap.getOrDefault(shppName, 0)
+                    + cartShareOdrItem.getItemAmt() * cartShareOdrItem.getItemQty());
+        }
+
+        for (String shppCd : shppCdMap.keySet()) {
+            ttlShppcst += ShppCd.calculateShppCst(ShppCd.valueOf(shppCd), shppCdMap.get(shppCd));
+        }
+
+        return ttlPaymtAmt + ttlShppcst;
     }
 }

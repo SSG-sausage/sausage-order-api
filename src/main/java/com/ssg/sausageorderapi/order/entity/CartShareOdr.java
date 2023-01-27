@@ -43,6 +43,9 @@ public class CartShareOdr extends BaseEntity {
     @Column(name = "CAL_ST_YN", nullable = false)
     private Boolean calStYn;
 
+    @Column(name = "TTL_PAYMT_AMT", nullable = true)
+    private Integer ttlPaymtAmt;
+
     @Column(name = "CART_SHARE_ORD_RCP_DTS", nullable = false)
     private LocalDateTime cartShareOrdRcpDts;
 
@@ -56,6 +59,10 @@ public class CartShareOdr extends BaseEntity {
 
     public void changeCalStYn(Boolean calStYn) {
         this.calStYn = calStYn;
+    }
+
+    public void changeTtlPaymtAmt(int ttlPaymtAmt) {
+        this.ttlPaymtAmt = ttlPaymtAmt;
     }
 
     public static CartShareOdr newInstance(CartShareTmpOdr cartShareTmpOdr) {

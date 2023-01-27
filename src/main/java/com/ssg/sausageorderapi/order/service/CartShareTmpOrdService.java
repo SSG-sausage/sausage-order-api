@@ -1,6 +1,6 @@
 package com.ssg.sausageorderapi.order.service;
 
-import com.ssg.sausageorderapi.common.client.internal.CartShareApiClient;
+import com.ssg.sausageorderapi.common.client.internal.CartShareApiClientMock;
 import com.ssg.sausageorderapi.common.client.internal.dto.response.CartShareItemListResponse.CartShareItemInfo;
 import com.ssg.sausageorderapi.common.kafka.service.CartShareProducerService;
 import com.ssg.sausageorderapi.order.dto.response.CartShareTmpOrdFindResponse;
@@ -25,7 +25,7 @@ public class CartShareTmpOrdService {
 
     private final CartShareTmpOrdItemRepository cartShareTmpOrdItemRepository;
 
-    private final CartShareApiClient cartShareClient;
+    private final CartShareApiClientMock cartShareClient;
 
     private final CartShareTmpOrdUtilService cartShareTmpOrdUtilService;
 

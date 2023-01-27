@@ -1,4 +1,4 @@
-package com.ssg.sausageorderapi.common.kafka.constants;
+package com.ssg.sausageorderapi.common.kafka.constant;
 
 public class KafkaConstants {
 

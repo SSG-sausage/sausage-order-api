@@ -25,6 +25,6 @@ public class CartShareOrdFindForCartShareCalResponse {
     @Schema(description = "멤버 ID 리스트")
     private Set<Long> mbrIdList;
 
-    @Schema(description = "전체결제금액")
+    @Schema(description = "총결제금액")
     private int ttlPaymtAmt;
 }

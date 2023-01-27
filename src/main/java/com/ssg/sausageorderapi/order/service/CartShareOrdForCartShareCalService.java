@@ -1,7 +1,7 @@
 package com.ssg.sausageorderapi.order.service;
 
 
-import com.ssg.sausageorderapi.common.client.internal.CartShareApiClient;
+import com.ssg.sausageorderapi.common.client.internal.CartShareApiClientMock;
 import com.ssg.sausageorderapi.common.client.internal.dto.response.CartShareMbrIdListResponse;
 import com.ssg.sausageorderapi.order.dto.response.CartShareOrdFindDetailForCartShareCalResponse;
 import com.ssg.sausageorderapi.order.dto.response.CartShareOrdFindDetailForCartShareCalResponse.CartShareOrdAmtInfo;
@@ -29,7 +29,7 @@ public class CartShareOrdForCartShareCalService {
 
     private final CartShareOrdUtilService cartShareOrdUtilService;
 
-    private final CartShareApiClient cartShareClient;
+    private final CartShareApiClientMock cartShareClient;
 
 
     public CartShareOrdFindForCartShareCalResponse findCartShareOrd(Long cartShareOrdId) {
@@ -39,16 +39,11 @@ public class CartShareOrdForCartShareCalService {
         CartShareMbrIdListResponse cartShareMbrIdListResponse = cartShareClient.findCartShareMbrIdList(
                 cartShareOdr.getCartShareId()).getData();
 
-        // calculate ttlPymtAmt
-        Integer ttlPymtAmt = cartShareOrdItemRepository.findAllByCartShareOrdId(cartShareOrdId).stream()
-                .map(CartShareOdrItem::getPaymtAmt)
-                .reduce(0, Integer::sum);
-
         return CartShareOrdFindForCartShareCalResponse.builder()
                 .cartShareId(cartShareOdr.getCartShareId())
                 .mbrIdList(new HashSet<>(cartShareMbrIdListResponse.getMbrIdList()))
                 .mastrMbrId(cartShareMbrIdListResponse.getMastrMbrId())
-                .ttlPaymtAmt(ttlPymtAmt).build();
+                .ttlPaymtAmt(cartShareOdr.getTtlPaymtAmt()).build();
     }
 
     public CartShareOrdFindDetailForCartShareCalResponse findCartShareOrdDetail(Long cartShareOrdId) {
