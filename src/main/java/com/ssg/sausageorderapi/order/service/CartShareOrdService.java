@@ -1,8 +1,8 @@
 package com.ssg.sausageorderapi.order.service;
 
 
-import com.ssg.sausageorderapi.common.client.internal.CartShareApiClientMock;
-import com.ssg.sausageorderapi.common.client.internal.CartShareCalApiClientMock;
+import com.ssg.sausageorderapi.common.client.internal.CartShareApiClient;
+import com.ssg.sausageorderapi.common.client.internal.CartShareCalApiClient;
 import com.ssg.sausageorderapi.common.client.internal.dto.request.CartShareCalSaveRequest;
 import com.ssg.sausageorderapi.common.kafka.service.CartShareProducerService;
 import com.ssg.sausageorderapi.order.dto.response.CartShareOrdFindListResponse;
@@ -36,9 +36,9 @@ public class CartShareOrdService {
 
     private final CartShareTmpOrdUtilService cartShareTmpOrdUtilService;
 
-    private final CartShareApiClientMock cartShareClient;
+    private final CartShareApiClient cartShareClient;
 
-    private final CartShareCalApiClientMock cartShareCalApiClient;
+    private final CartShareCalApiClient cartShareCalApiClient;
 
     private final CartShareProducerService cartShareProducerService;
 
@@ -122,7 +122,7 @@ public class CartShareOrdService {
         for (CartShareOdrItem cartShareOdrItem : cartShareOdrItems) {
 
             ttlPaymtAmt += cartShareOdrItem.getPaymtAmt();
-            
+
             String shppName = cartShareOdrItem.getShppCd().name();
             shppCdMap.put(shppName, shppCdMap.getOrDefault(shppName, 0)
                     + cartShareOdrItem.getItemAmt() * cartShareOdrItem.getItemQty());

@@ -1,7 +1,7 @@
 package com.ssg.sausageorderapi.order.service;
 
 
-import com.ssg.sausageorderapi.common.client.internal.CartShareApiClientMock;
+import com.ssg.sausageorderapi.common.client.internal.CartShareApiClient;
 import com.ssg.sausageorderapi.common.client.internal.dto.response.CartShareMbrIdListResponse;
 import com.ssg.sausageorderapi.order.dto.response.CartShareOrdFindDetailForCartShareCalResponse;
 import com.ssg.sausageorderapi.order.dto.response.CartShareOrdFindDetailForCartShareCalResponse.CartShareOrdAmtInfo;
@@ -29,7 +29,7 @@ public class CartShareOrdForCartShareCalService {
 
     private final CartShareOrdUtilService cartShareOrdUtilService;
 
-    private final CartShareApiClientMock cartShareClient;
+    private final CartShareApiClient cartShareClient;
 
 
     public CartShareOrdFindForCartShareCalResponse findCartShareOrd(Long cartShareOrdId) {
