@@ -20,7 +20,7 @@ public class CartShareOrdInfo {
     @Schema(description = "공유장바구니주문 ID")
     private Long cartShareOrdId;
 
-    @Schema(description = "공유장바구니ID")
+    @Schema(description = "공유장바구니 ID")
     private Long cartShareId;
 
     @Schema(description = "주문접수일시")

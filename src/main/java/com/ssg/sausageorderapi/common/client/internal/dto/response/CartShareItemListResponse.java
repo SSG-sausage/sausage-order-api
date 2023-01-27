@@ -42,6 +42,7 @@ public class CartShareItemListResponse {
 
         @Schema(description = "상품가격")
         private int itemAmt;
+
         @Schema(description = "배송타입코드")
         private String shppCd;
 

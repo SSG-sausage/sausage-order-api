@@ -19,11 +19,11 @@ public class CartShareOrdFindForCartShareCalResponse {
     @Schema(description = "공유장바구니 ID")
     private Long cartShareId;
 
-    @Schema(description = "공유장바구니마스터멤버 ID")
+    @Schema(description = "마스터 ID")
     private Long mastrMbrId;
 
-    @Schema(description = "공유장바구니멤버 ID")
-    private Set<Long> cartShareMbrIdList;
+    @Schema(description = "멤버 ID 리스트")
+    private Set<Long> mbrIdList;
 
     @Schema(description = "전체결제금액")
     private int ttlPaymtAmt;

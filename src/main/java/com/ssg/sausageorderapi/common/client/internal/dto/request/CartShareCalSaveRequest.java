@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CartShareCalSaveRequest {
 
-    @Schema(description = "함께 장보기 주문 ID")
+    @Schema(description = "공유장바구니주문 ID")
     private Long cartShareOrdId;
 
     public static CartShareCalSaveRequest of(Long cartShareOrdId) {

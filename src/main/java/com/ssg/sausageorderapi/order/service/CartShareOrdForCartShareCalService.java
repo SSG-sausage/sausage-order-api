@@ -46,7 +46,7 @@ public class CartShareOrdForCartShareCalService {
 
         return CartShareOrdFindForCartShareCalResponse.builder()
                 .cartShareId(cartShareOdr.getCartShareId())
-                .cartShareMbrIdList(new HashSet<>(cartShareMbrIdListResponse.getCartShareMbrIdList()))
+                .mbrIdList(new HashSet<>(cartShareMbrIdListResponse.getMbrIdList()))
                 .mastrMbrId(cartShareMbrIdListResponse.getMastrMbrId())
                 .ttlPaymtAmt(ttlPymtAmt).build();
     }
@@ -61,7 +61,7 @@ public class CartShareOrdForCartShareCalService {
         // find cartShareMbrList and covert to hashset type
         HashSet<Long> cartShareMbrIdSet = new HashSet<>(
                 cartShareClient.findCartShareMbrIdList(cartShareOdr.getCartShareId()).getData()
-                        .getCartShareMbrIdList());
+                        .getMbrIdList());
 
         HashMap<String, CartShareOrdShppInfo> cartShareOrdShppInfoMap = new HashMap<>();
         HashMap<Long, CartShareOrdAmtInfo> cartShareOrdAmtInfoMap = new HashMap<>();
