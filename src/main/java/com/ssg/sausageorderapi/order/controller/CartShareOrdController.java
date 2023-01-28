@@ -58,8 +58,6 @@ public class CartShareOrdController {
             @Parameter(in = ParameterIn.HEADER) @MbrId Long mbrId,
             @PathVariable Long cartShareId) {
 
-        log.info(String.valueOf(mbrId));
-
         return SuccessResponse.success(SuccessCode.FIND_CART_SHARE_ORD_SUCCESS,
                 cartShareOrdService.findCartShareOrderList(mbrId, cartShareId));
     }

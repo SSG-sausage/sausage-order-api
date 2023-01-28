@@ -81,12 +81,12 @@ public class CartShareOrdService {
         // *to be added, produce 주문 완료 알림 생성 이벤트
 
         // invoke save cartShareCal api
-        Long cartShareCalId = cartShareCalApiClient.saveCartShareCal(
-                CartShareCalSaveRequest.of(cartShareOdr.getCartShareOrdId())).getData().getCartShareCalId();
+//        Long cartShareCalId = cartShareCalApiClient.saveCartShareCal(
+//                CartShareCalSaveRequest.of(cartShareOdr.getCartShareOrdId())).getData().getCartShareCalId();
+//
+//        cartShareOdr.changeCartShareCalId(cartShareCalId);
 
-        cartShareOdr.changeCartShareCalId(cartShareCalId);
-
-        return CartShareCalSaveRequest.of(cartShareCalId);
+        return CartShareCalSaveRequest.of(1L);
     }
 
     public CartShareOrdFindListResponse findCartShareOrderList(Long mbrId, Long cartShareId) {
