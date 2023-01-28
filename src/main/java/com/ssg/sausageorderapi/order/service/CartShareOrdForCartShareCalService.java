@@ -2,11 +2,9 @@ package com.ssg.sausageorderapi.order.service;
 
 
 import com.ssg.sausageorderapi.common.client.internal.CartShareApiClient;
-import com.ssg.sausageorderapi.common.client.internal.dto.response.CartShareMbrIdListResponse;
 import com.ssg.sausageorderapi.order.dto.response.CartShareOrdFindDetailForCartShareCalResponse;
 import com.ssg.sausageorderapi.order.dto.response.CartShareOrdFindDetailForCartShareCalResponse.CartShareOrdAmtInfo;
 import com.ssg.sausageorderapi.order.dto.response.CartShareOrdFindDetailForCartShareCalResponse.CartShareOrdShppInfo;
-import com.ssg.sausageorderapi.order.dto.response.CartShareOrdFindForCartShareCalResponse;
 import com.ssg.sausageorderapi.order.entity.CartShareOdr;
 import com.ssg.sausageorderapi.order.entity.CartShareOdrItem;
 import com.ssg.sausageorderapi.order.repository.CartShareOrdItemRepository;
@@ -30,21 +28,6 @@ public class CartShareOrdForCartShareCalService {
     private final CartShareOrdUtilService cartShareOrdUtilService;
 
     private final CartShareApiClient cartShareClient;
-
-
-    public CartShareOrdFindForCartShareCalResponse findCartShareOrd(Long cartShareOrdId) {
-
-        CartShareOdr cartShareOdr = cartShareOrdUtilService.findById(cartShareOrdId);
-
-        CartShareMbrIdListResponse cartShareMbrIdListResponse = cartShareClient.findCartShareMbrIdList(
-                cartShareOdr.getCartShareId()).getData();
-
-        return CartShareOrdFindForCartShareCalResponse.builder()
-                .cartShareId(cartShareOdr.getCartShareId())
-                .mbrIdList(new HashSet<>(cartShareMbrIdListResponse.getMbrIdList()))
-                .mastrMbrId(cartShareMbrIdListResponse.getMastrMbrId())
-                .ttlPaymtAmt(cartShareOdr.getTtlPaymtAmt()).build();
-    }
 
     public CartShareOrdFindDetailForCartShareCalResponse findCartShareOrdDetail(Long cartShareOrdId) {
 

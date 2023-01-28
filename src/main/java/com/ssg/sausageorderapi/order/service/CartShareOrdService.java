@@ -4,6 +4,7 @@ package com.ssg.sausageorderapi.order.service;
 import com.ssg.sausageorderapi.common.client.internal.CartShareApiClient;
 import com.ssg.sausageorderapi.common.client.internal.CartShareCalApiClient;
 import com.ssg.sausageorderapi.common.client.internal.dto.request.CartShareCalSaveRequest;
+import com.ssg.sausageorderapi.common.client.internal.dto.response.CartShareMbrIdListResponse;
 import com.ssg.sausageorderapi.common.kafka.service.CartShareProducerService;
 import com.ssg.sausageorderapi.order.dto.response.CartShareOrdFindListResponse;
 import com.ssg.sausageorderapi.order.dto.response.CartShareOrdFindResponse;
@@ -15,6 +16,7 @@ import com.ssg.sausageorderapi.order.entity.ShppCd;
 import com.ssg.sausageorderapi.order.repository.CartShareOrdItemRepository;
 import com.ssg.sausageorderapi.order.repository.CartShareOrdRepository;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -65,29 +67,26 @@ public class CartShareOrdService {
 
         cartShareOrdItemRepository.saveAll(cartShareOdrItems);
 
-        // calculate ttlPaymtAmt and save
+        // 총 결제 금액 변경
         int ttlPaymtAmt = calculateTtlPaymtAmt(cartShareOdrItems);
         cartShareOdr.changeTtlPaymtAmt(ttlPaymtAmt);
 
-        // change tmpOrdStatCd to Completed
+        // 주문 완료 이후, 장바구니 후속 이벤트 발생
         cartShareTmpOrdUtilService.changeTmpOrdStatCdToCompleted(cartShareTmpOdr);
-
-        // produce delete cartshareItemList
         cartShareProducerService.deleteCartShareItemList(cartShareId);
-
-        // produce update cartshare editPsblYn to True api
         cartShareProducerService.updateEditPsblYn(cartShareId, true);
 
         // *to be added, produce 주문 완료 알림 생성 이벤트
 
-        // invoke save cartShareCal api
-//        Long cartShareCalId = cartShareCalApiClient.saveCartShareCal(
-//                CartShareCalSaveRequest.of(cartShareOdr.getCartShareOrdId())).getData().getCartShareCalId();
-//
-//        cartShareOdr.changeCartShareCalId(cartShareCalId);
+        CartShareCalSaveRequest cartShareCalSaveRequest = createCartShareCalSaveRequest(cartShareOdr);
+        Long cartShareCalId = cartShareCalApiClient.saveCartShareCal(cartShareCalSaveRequest).getData()
+                .getCartShareCalId();
+
+        cartShareOdr.changeCartShareCalId(cartShareCalId);
 
         return CartShareCalSaveRequest.of(1L);
     }
+
 
     public CartShareOrdFindListResponse findCartShareOrderList(Long mbrId, Long cartShareId) {
 
@@ -133,5 +132,17 @@ public class CartShareOrdService {
         }
 
         return ttlPaymtAmt + ttlShppcst;
+    }
+
+    private CartShareCalSaveRequest createCartShareCalSaveRequest(CartShareOdr cartShareOdr) {
+
+        CartShareMbrIdListResponse cartShareMbrIdListResponse = cartShareClient.findCartShareMbrIdList(
+                cartShareOdr.getCartShareId()).getData();
+
+        return CartShareCalSaveRequest.builder()
+                .cartShareId(cartShareOdr.getCartShareId())
+                .mbrIdList(new HashSet<>(cartShareMbrIdListResponse.getMbrIdList()))
+                .mastrMbrId(cartShareMbrIdListResponse.getMastrMbrId())
+                .ttlPaymtAmt(cartShareOdr.getTtlPaymtAmt()).build();
     }
 }

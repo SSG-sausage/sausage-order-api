@@ -6,7 +6,6 @@ import com.ssg.sausageorderapi.common.dto.ErrorResponse;
 import com.ssg.sausageorderapi.common.dto.SuccessResponse;
 import com.ssg.sausageorderapi.common.success.SuccessCode;
 import com.ssg.sausageorderapi.order.dto.response.CartShareOrdFindDetailForCartShareCalResponse;
-import com.ssg.sausageorderapi.order.dto.response.CartShareOrdFindForCartShareCalResponse;
 import com.ssg.sausageorderapi.order.dto.response.CartShareOrdFindListResponse;
 import com.ssg.sausageorderapi.order.dto.response.CartShareOrdFindResponse;
 import com.ssg.sausageorderapi.order.service.CartShareOrdForCartShareCalService;
@@ -74,17 +73,6 @@ public class CartShareOrdController {
 
         return SuccessResponse.success(SuccessCode.FIND_CART_SHARE_ORD_SUCCESS,
                 cartShareOrdService.findCartShareOrder(mbrId, cartShareId, cartShareOrdId));
-    }
-
-    @Operation(summary = "[internal] 공유장바구니주문 정산 조회", responses = {
-            @ApiResponse(responseCode = "200", description = "공유장바구니주문 정산 조회 성공입니다."),
-    })
-    @GetMapping(value = "/cart-share-ord/{cartShareOrdId}/cart-share-cal")
-    public ResponseEntity<SuccessResponse<CartShareOrdFindForCartShareCalResponse>> findCartShareOrdFindForCartShareCal(
-            @PathVariable Long cartShareOrdId) {
-
-        return SuccessResponse.success(SuccessCode.OK_SUCCESS,
-                cartShareOrdForCartShareCalService.findCartShareOrd(cartShareOrdId));
     }
 
     @Operation(summary = "[internal] 공유장바구니주문 정산 세부 조회", responses = {
