@@ -36,10 +36,10 @@ public class CartShareOrdForCartShareCalService {
         List<CartShareOdrItem> cartShareOdrItemList = cartShareOrdItemRepository.findAllByCartShareOrdId(
                 cartShareOrdId);
 
-        // find cartShareMbrList and covert to hashset type
-        HashSet<Long> cartShareMbrIdSet = new HashSet<>(
-                cartShareClient.findCartShareMbrIdList(cartShareOdr.getCartShareId()).getData()
-                        .getMbrIdList());
+        List<Long> mbrIdList = cartShareClient.findCartShareMbrIdList(cartShareOdr.getCartShareId()).getData()
+                .getMbrIdList();
+
+        HashSet<Long> cartShareMbrIdSet = new HashSet<>(mbrIdList);
 
         HashMap<String, CartShareOrdShppInfo> cartShareOrdShppInfoMap = new HashMap<>();
         HashMap<Long, CartShareOrdAmtInfo> cartShareOrdAmtInfoMap = new HashMap<>();
@@ -50,7 +50,7 @@ public class CartShareOrdForCartShareCalService {
 
             commAmt = calculateCommAmt(commAmt, cartShareOdrItem);
 
-            calculateShppCst(cartShareOrdShppInfoMap, cartShareOdrItem);
+            calculateShppCst(cartShareOrdShppInfoMap, cartShareOdrItem, mbrIdList);
 
             calculateOrdAmt(cartShareOrdAmtInfoMap, cartShareOdrItem);
         }
@@ -73,38 +73,29 @@ public class CartShareOrdForCartShareCalService {
     }
 
     private void calculateShppCst(HashMap<String, CartShareOrdShppInfo> cartShareOrdShppInfoMap,
-            CartShareOdrItem cartShareOdrItem) {
+            CartShareOdrItem cartShareOdrItem, List<Long> mbrIdList) {
 
-        // if contain shppCd hash key
-        if (cartShareOrdShppInfoMap.containsKey(cartShareOdrItem.getShppCd().name())) {
+        CartShareOrdShppInfo cartShareOrdShppInfo = cartShareOrdShppInfoMap.getOrDefault(
+                cartShareOdrItem.getShppCd().name(),
+                CartShareOrdShppInfo.of(cartShareOdrItem.getShppCd()));
 
-            CartShareOrdShppInfo cartShareOrdShppInfo = cartShareOrdShppInfoMap.get(
-                    cartShareOdrItem.getShppCd().name());
+        if (cartShareOdrItem.getCommYn()) {
+            cartShareOrdShppInfo.addMbrIdList(new HashSet<>(mbrIdList));
+        } else {
             cartShareOrdShppInfo.addMbrId(cartShareOdrItem.getMbrId());
-
-            return;
         }
-
-        // if not contain shppCd hash key, put new shppCd hash key
-        CartShareOrdShppInfo cartShareOrdShppInfo = CartShareOrdShppInfo.of(cartShareOdrItem.getShppCd());
-        cartShareOrdShppInfo.addMbrId(cartShareOdrItem.getMbrId());
-
+        
         cartShareOrdShppInfoMap.put(cartShareOdrItem.getShppCd().name(), cartShareOrdShppInfo);
     }
 
     private void calculateOrdAmt(HashMap<Long, CartShareOrdAmtInfo> cartShareOrdAmtInfoMap,
             CartShareOdrItem cartShareOdrItem) {
 
-        // if contain mbrId hash key
-        if (cartShareOrdAmtInfoMap.containsKey(cartShareOdrItem.getMbrId())) {
-
-            cartShareOrdAmtInfoMap.get(cartShareOdrItem.getMbrId()).addOrdAmt(cartShareOdrItem.getPaymtAmt());
-            return;
-        }
-
-        // if not contain mbrId hash key, put new mbrId hash key
-        cartShareOrdAmtInfoMap.put(cartShareOdrItem.getMbrId(),
+        CartShareOrdAmtInfo cartShareOrdAmtInfo = cartShareOrdAmtInfoMap.getOrDefault(cartShareOdrItem.getMbrId(),
                 CartShareOrdAmtInfo.of(cartShareOdrItem.getMbrId(), cartShareOdrItem.getPaymtAmt()));
 
+        cartShareOrdAmtInfo.addOrdAmt(cartShareOdrItem.getPaymtAmt());
+
+        cartShareOrdAmtInfoMap.put(cartShareOdrItem.getMbrId(), cartShareOrdAmtInfo);
     }
 }
