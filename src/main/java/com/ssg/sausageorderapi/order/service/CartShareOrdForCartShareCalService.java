@@ -55,7 +55,7 @@ public class CartShareOrdForCartShareCalService {
             calculateOrdAmt(cartShareOrdAmtInfoMap, cartShareOdrItem);
         }
 
-        // add zero paymtamt mbr
+        // 총결제금액이 0원이 멤버 추가
         cartShareMbrIdSet.removeAll(cartShareOrdAmtInfoMap.keySet());
         cartShareMbrIdSet.forEach(mbrId -> cartShareOrdAmtInfoMap.put(mbrId, CartShareOrdAmtInfo.of(mbrId, 0)));
 
@@ -84,7 +84,7 @@ public class CartShareOrdForCartShareCalService {
         } else {
             cartShareOrdShppInfo.addMbrId(cartShareOdrItem.getMbrId());
         }
-        
+
         cartShareOrdShppInfoMap.put(cartShareOdrItem.getShppCd().name(), cartShareOrdShppInfo);
     }
 

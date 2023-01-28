@@ -35,7 +35,6 @@ public class CartShareTmpOrdService {
     @Transactional
     public CartShareTmpOrdFindResponse findCartShareTmpOrdInProgress(Long mbrId, Long cartShareId) {
 
-        // validate 'isFound' and 'isCartShareMember'
         cartShareClient.validateCartShareMbr(mbrId, cartShareId);
 
         CartShareTmpOdr cartShareTmpOdr = cartShareTmpOrdUtilService.findCartShareTmpOrdInProgress(cartShareId);
@@ -49,14 +48,10 @@ public class CartShareTmpOrdService {
     @Transactional
     public void saveCartShareTmpOrd(Long mbrId, Long cartShareId) {
 
-        log.info(String.valueOf(mbrId));
-
-        // validate 'isFound' and 'isCartShareMaster'
         cartShareClient.validateCartShareMastr(mbrId, cartShareId);
 
         CartShareTmpOdr cartShareTmpOdr = cartShareTmpOrdRepository.save(CartShareTmpOdr.newInstance(cartShareId));
 
-        // find cartShareOrderItem-list by cart share id
         List<CartShareItemInfo> cartShareItemList = cartShareClient.findCartShareItemList(cartShareId).getData()
                 .getCartShareItemList();
 
@@ -65,10 +60,8 @@ public class CartShareTmpOrdService {
                         cartShareTmpOdr.getCartShareTmpOrdId()))
                 .collect(Collectors.toList());
 
-        // save all items
         cartShareTmpOrdItemRepository.saveAll(cartShareTmpOdrItems);
 
-        // produce update cartshare editPsblYn to False api
         cartShareProducerService.updateEditPsblYn(cartShareId, false);
     }
 

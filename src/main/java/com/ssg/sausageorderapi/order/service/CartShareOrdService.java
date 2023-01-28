@@ -46,20 +46,19 @@ public class CartShareOrdService {
 
     public CartShareCalSaveRequest saveCartShareOrdFromTmpOrd(Long mbrId, Long cartShareId) {
 
-        // validate 'isFound' and 'isCartShareMaster' (internal api)
         cartShareClient.validateCartShareMastr(mbrId, cartShareId);
 
         CartShareTmpOdr cartShareTmpOdr = cartShareTmpOrdUtilService.findCartShareTmpOrdInProgress(cartShareId);
 
-        // Ord created from TmpOrd
+        // 임시주문으로부터 주문 저장
         CartShareOdr cartShareOdr = CartShareOdr.newInstance(cartShareTmpOdr);
+
         cartShareOrdRepository.save(cartShareOdr);
 
-        // find CartShareTmpOdrItem from TmpOrdId
+        // 임시주문상품으로부터 주문상품 저장
         List<CartShareTmpOdrItem> cartShareTmpOdrItemList = cartShareTmpOrdUtilService.findCartShareTmpOrdItemByTmpOrdId(
                 cartShareOdr.getCartShareTmpOrdId());
 
-        // covert CartShareTmpOdrItem to CartShareOdrItem
         List<CartShareOdrItem> cartShareOdrItems = cartShareTmpOdrItemList.stream()
                 .map(cartShareTmpOdrItem -> CartShareOdrItem.newInstance(cartShareOdr.getCartShareOrdId(),
                         cartShareTmpOdrItem))
@@ -90,7 +89,6 @@ public class CartShareOrdService {
 
     public CartShareOrdFindListResponse findCartShareOrderList(Long mbrId, Long cartShareId) {
 
-        // validate 'isFound' and 'isAccessibleCartShareByMbr'
         cartShareClient.validateCartShareMbr(mbrId, cartShareId);
 
         List<CartShareOdr> cartShareOdrList = cartShareOrdRepository.findAllByCartShareId(cartShareId);
@@ -102,7 +100,6 @@ public class CartShareOrdService {
 
     public CartShareOrdFindResponse findCartShareOrder(Long mbrId, Long cartShareId, Long cartShareOrdId) {
 
-        // validate 'isFound' and 'isAccessibleCartShareByMbr'
         cartShareClient.validateCartShareMbr(mbrId, cartShareId);
 
         CartShareOdr cartShareOdr = cartShareOrdUtilService.findById(cartShareOrdId);
