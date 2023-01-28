@@ -6,6 +6,7 @@ import com.ssg.sausageorderapi.common.kafka.service.CartShareProducerService;
 import com.ssg.sausageorderapi.order.dto.response.CartShareTmpOrdFindResponse;
 import com.ssg.sausageorderapi.order.entity.CartShareTmpOdr;
 import com.ssg.sausageorderapi.order.entity.CartShareTmpOdrItem;
+import com.ssg.sausageorderapi.order.entity.TmpOrdStatCd;
 import com.ssg.sausageorderapi.order.repository.CartShareTmpOrdItemRepository;
 import com.ssg.sausageorderapi.order.repository.CartShareTmpOrdRepository;
 import java.util.List;
@@ -63,6 +64,16 @@ public class CartShareTmpOrdService {
         cartShareTmpOrdItemRepository.saveAll(cartShareTmpOdrItems);
 
         cartShareProducerService.updateEditPsblYn(cartShareId, false);
+    }
+
+    @Transactional
+    public void cancelCartShareTmpOrd(Long mbrId, Long cartShareId) {
+
+        cartShareClient.validateCartShareMastr(mbrId, cartShareId);
+
+        CartShareTmpOdr cartShareTmpOdr = cartShareTmpOrdUtilService.findCartShareTmpOrdInProgress(cartShareId);
+
+        cartShareTmpOdr.changeTmpOrdStat(TmpOrdStatCd.CANCELED);
     }
 
 

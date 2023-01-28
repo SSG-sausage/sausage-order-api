@@ -13,6 +13,7 @@ import com.ssg.sausageorderapi.order.entity.CartShareOdrItem;
 import com.ssg.sausageorderapi.order.entity.CartShareTmpOdr;
 import com.ssg.sausageorderapi.order.entity.CartShareTmpOdrItem;
 import com.ssg.sausageorderapi.order.entity.ShppCd;
+import com.ssg.sausageorderapi.order.entity.TmpOrdStatCd;
 import com.ssg.sausageorderapi.order.repository.CartShareOrdItemRepository;
 import com.ssg.sausageorderapi.order.repository.CartShareOrdRepository;
 import java.util.HashMap;
@@ -71,7 +72,7 @@ public class CartShareOrdService {
         cartShareOdr.changeTtlPaymtAmt(ttlPaymtAmt);
 
         // 주문 완료 이후, 장바구니 후속 이벤트 발생
-        cartShareTmpOrdUtilService.changeTmpOrdStatCdToCompleted(cartShareTmpOdr);
+        cartShareTmpOrdUtilService.changeTmpOrdStatCd(cartShareTmpOdr, TmpOrdStatCd.CANCELED);
         cartShareProducerService.deleteCartShareItemList(cartShareId);
         cartShareProducerService.updateEditPsblYn(cartShareId, true);
 
@@ -138,6 +139,7 @@ public class CartShareOrdService {
 
         return CartShareCalSaveRequest.builder()
                 .cartShareId(cartShareOdr.getCartShareId())
+                .cartShareOrdId(cartShareOdr.getCartShareOrdId())
                 .mbrIdList(new HashSet<>(cartShareMbrIdListResponse.getMbrIdList()))
                 .mastrMbrId(cartShareMbrIdListResponse.getMastrMbrId())
                 .ttlPaymtAmt(cartShareOdr.getTtlPaymtAmt()).build();
