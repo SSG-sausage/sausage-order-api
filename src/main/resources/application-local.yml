@@ -30,8 +30,6 @@ eureka:
       defaultZone: http://127.0.0.1:8761/eureka
 
 kafka:
-  address: localhost:9092,localhost:9093,localhost:9094
-  topic:
-    name: test
-    group:
-      name: test-group
+  address: localhost:9091,localhost:9092,localhost:9093
+  group:
+    name: ord-service
