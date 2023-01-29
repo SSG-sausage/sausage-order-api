@@ -1,6 +1,5 @@
 package com.ssg.sausageorderapi.order.controller;
 
-import com.ssg.sausageorderapi.common.client.internal.dto.request.CartShareCalSaveRequest;
 import com.ssg.sausageorderapi.common.config.resolver.MbrId;
 import com.ssg.sausageorderapi.common.dto.ErrorResponse;
 import com.ssg.sausageorderapi.common.dto.SuccessResponse;
@@ -42,12 +41,14 @@ public class CartShareOrdController {
             @ApiResponse(responseCode = "404", description = "유효한 임시 주문이 존재하지 않습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PostMapping("/cart-share/{cartShareId}/cart-share-ord")
-    public ResponseEntity<SuccessResponse<CartShareCalSaveRequest>> saveCartShareOrd(
+    public ResponseEntity<SuccessResponse<String>> saveCartShareOrd(
             @Parameter(in = ParameterIn.HEADER) @MbrId Long mbrId,
             @PathVariable Long cartShareId) {
 
-        return SuccessResponse.success(SuccessCode.FIND_CART_SHARE_ORD_SUCCESS,
-                cartShareOrdService.saveCartShareOrdFromTmpOrd(mbrId, cartShareId));
+        cartShareOrdService.saveCartShareOrdFromTmpOrd(mbrId, cartShareId);
+
+        return SuccessResponse.OK;
+
     }
 
     @Operation(summary = "[external] 공유장바구니주문 리스트 조회", responses = {

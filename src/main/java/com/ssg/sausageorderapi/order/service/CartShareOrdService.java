@@ -45,7 +45,7 @@ public class CartShareOrdService {
 
     private final CartShareProducerService cartShareProducerService;
 
-    public CartShareCalSaveRequest saveCartShareOrdFromTmpOrd(Long mbrId, Long cartShareId) {
+    public void saveCartShareOrdFromTmpOrd(Long mbrId, Long cartShareId) {
 
         cartShareClient.validateCartShareMastr(mbrId, cartShareId);
 
@@ -83,8 +83,6 @@ public class CartShareOrdService {
                 .getCartShareCalId();
 
         cartShareOdr.changeCartShareCalId(cartShareCalId);
-
-        return CartShareCalSaveRequest.of(1L);
     }
 
 

@@ -37,6 +37,9 @@ public class CartShareOrdItemInfo {
     @Schema(description = "상품가격")
     private Integer itemAmt;
 
+    @Schema(description = "상품이름")
+    private String itemNm;
+
     @Schema(description = "결제금액")
     private Integer paymtAmt;
 
@@ -50,6 +53,7 @@ public class CartShareOrdItemInfo {
                 .itemId(cartShareOdrItem.getItemId())
                 .mbrId(cartShareOdrItem.getMbrId())
                 .itemQty(cartShareOdrItem.getItemQty())
+                .itemNm(cartShareOdrItem.getItemNm())
                 .itemAmt(cartShareOdrItem.getItemAmt())
                 .paymtAmt(cartShareOdrItem.getPaymtAmt())
                 .shppCd(cartShareOdrItem.getShppCd().name())

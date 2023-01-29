@@ -49,6 +49,9 @@ public class CartShareTmpOdrItem extends BaseEntity {
     @Column(name = "ITEM_AMT", nullable = false)
     private Integer itemAmt;
 
+    @Column(name = "ITEM_NM", nullable = false)
+    private String itemNm;
+
     @Column(name = "PAYMT_AMT", nullable = false)
     private Integer paymtAmt;
 
@@ -65,6 +68,7 @@ public class CartShareTmpOdrItem extends BaseEntity {
                 .itemQty(cartShareItemInfo.getItemQty())
                 .commYn(cartShareItemInfo.isCommYn())
                 .itemAmt(cartShareItemInfo.getItemAmt())
+                .itemNm(cartShareItemInfo.getItemNm())
                 .paymtAmt(cartShareItemInfo.getItemAmt() * cartShareItemInfo.getItemQty())
                 .shppCd(ShppCd.valueOf(cartShareItemInfo.getShppCd()))
                 .build();
