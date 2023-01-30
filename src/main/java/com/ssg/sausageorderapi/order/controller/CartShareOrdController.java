@@ -5,6 +5,7 @@ import com.ssg.sausageorderapi.common.dto.ErrorResponse;
 import com.ssg.sausageorderapi.common.dto.SuccessResponse;
 import com.ssg.sausageorderapi.common.success.SuccessCode;
 import com.ssg.sausageorderapi.order.dto.response.CartShareOrdFindDetailForCartShareCalResponse;
+import com.ssg.sausageorderapi.order.dto.response.CartShareOrdFindListForCartShareCalResponse;
 import com.ssg.sausageorderapi.order.dto.response.CartShareOrdFindListResponse;
 import com.ssg.sausageorderapi.order.dto.response.CartShareOrdFindResponse;
 import com.ssg.sausageorderapi.order.service.CartShareOrdForCartShareCalService;
@@ -76,6 +77,18 @@ public class CartShareOrdController {
                 cartShareOrdService.findCartShareOrder(mbrId, cartShareId, cartShareOrdId));
     }
 
+    @Operation(summary = "[external] 공유장바구니주문 정산 리스트 조회", responses = {
+            @ApiResponse(responseCode = "200", description = "공유장바구니주문 정산 리스트 조회 성공입니다."),
+            @ApiResponse(responseCode = "404", description = "1. 일치하는 공유장바구니주문 ID가 존재하지 않습니다.\n2. 해당 주문의 주문 상품 정보가 존재하지 않습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @GetMapping(value = "/cart-share-ord/{cartShareOrdId}/cart-share-ord-list/cart-share-cal")
+    public ResponseEntity<SuccessResponse<CartShareOrdFindListForCartShareCalResponse>> findCartShareOrdFindListForCartShareCal(
+            @PathVariable Long cartShareOrdId) {
+
+        return SuccessResponse.success(SuccessCode.FIND_CART_SHARE_ORD_SUCCESS,
+                cartShareOrdForCartShareCalService.findCartShareOrdList(cartShareOrdId));
+    }
+
     @Operation(summary = "[internal] 공유장바구니주문 정산 세부 조회", responses = {
             @ApiResponse(responseCode = "200", description = "공유장바구니주문 정산 세부 조회 성공입니다."),
             @ApiResponse(responseCode = "404", description = "일치하는 공유장바구니주문 ID가 존재하지 않습니다.", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
@@ -84,7 +97,7 @@ public class CartShareOrdController {
     public ResponseEntity<SuccessResponse<CartShareOrdFindDetailForCartShareCalResponse>> findCartShareOrdFindDetailForCartShareCal(
             @PathVariable Long cartShareOrdId) {
 
-        return SuccessResponse.success(SuccessCode.OK_SUCCESS,
+        return SuccessResponse.success(SuccessCode.FIND_CART_SHARE_ORD_SUCCESS,
                 cartShareOrdForCartShareCalService.findCartShareOrdDetail(cartShareOrdId));
     }
 }

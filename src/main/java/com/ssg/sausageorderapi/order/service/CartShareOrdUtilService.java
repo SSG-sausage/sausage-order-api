@@ -4,6 +4,7 @@ import com.ssg.sausageorderapi.common.exception.ErrorCode;
 import com.ssg.sausageorderapi.common.exception.NotFoundException;
 import com.ssg.sausageorderapi.order.entity.CartShareOdr;
 import com.ssg.sausageorderapi.order.repository.CartShareOrdRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,4 +26,7 @@ public class CartShareOrdUtilService {
                 });
     }
 
+    public List<CartShareOdr> findListByCartShareId(Long cartShareId) {
+        return cartShareOrdRepository.findAllByCartShareId(cartShareId);
+    }
 }

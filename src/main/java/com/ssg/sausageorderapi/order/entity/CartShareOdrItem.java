@@ -78,6 +78,8 @@ public class CartShareOdrItem extends BaseEntity {
                 .itemNm(cartShareTmpOdrItem.getItemNm())
                 .commYn(cartShareTmpOdrItem.getCommYn())
                 .itemAmt(cartShareTmpOdrItem.getItemAmt())
+                .itemBrandNm(cartShareTmpOdrItem.getItemBrandNm())
+                .itemImgUrl(cartShareTmpOdrItem.getItemImgUrl())
                 .paymtAmt(cartShareTmpOdrItem.getItemAmt() * cartShareTmpOdrItem.getItemQty())
                 .shppCd(cartShareTmpOdrItem.getShppCd())
                 .build();

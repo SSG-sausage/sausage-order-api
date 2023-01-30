@@ -2,9 +2,14 @@ package com.ssg.sausageorderapi.order.service;
 
 
 import com.ssg.sausageorderapi.common.client.internal.CartShareApiClient;
+import com.ssg.sausageorderapi.common.client.internal.dto.response.CartShareMbrIdListResponse;
+import com.ssg.sausageorderapi.common.exception.ErrorCode;
+import com.ssg.sausageorderapi.common.exception.NotFoundException;
 import com.ssg.sausageorderapi.order.dto.response.CartShareOrdFindDetailForCartShareCalResponse;
 import com.ssg.sausageorderapi.order.dto.response.CartShareOrdFindDetailForCartShareCalResponse.CartShareOrdAmtInfo;
 import com.ssg.sausageorderapi.order.dto.response.CartShareOrdFindDetailForCartShareCalResponse.CartShareOrdShppInfo;
+import com.ssg.sausageorderapi.order.dto.response.CartShareOrdFindListForCartShareCalResponse;
+import com.ssg.sausageorderapi.order.dto.response.CartShareOrdFindListForCartShareCalResponse.CartShareOrdInfo;
 import com.ssg.sausageorderapi.order.entity.CartShareOdr;
 import com.ssg.sausageorderapi.order.entity.CartShareOdrItem;
 import com.ssg.sausageorderapi.order.repository.CartShareOrdItemRepository;
@@ -12,6 +17,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,6 +33,8 @@ public class CartShareOrdForCartShareCalService {
     private final CartShareOrdItemRepository cartShareOrdItemRepository;
 
     private final CartShareOrdUtilService cartShareOrdUtilService;
+
+    private final CartShareOrdItemUtilService cartShareOrdItemUtilService;
 
     private final CartShareApiClient cartShareClient;
 
@@ -65,6 +74,24 @@ public class CartShareOrdForCartShareCalService {
                 .ordInfoList(new ArrayList<>(cartShareOrdAmtInfoMap.values())).build();
     }
 
+    public CartShareOrdFindListForCartShareCalResponse findCartShareOrdList(Long cartShareId) {
+
+        List<CartShareOdr> cartShareOdrList = cartShareOrdUtilService.findListByCartShareId(cartShareId);
+
+        CartShareMbrIdListResponse cartShareMbrIdListResponse = cartShareClient.findCartShareMbrIdList(cartShareId)
+                .getData();
+
+        int cartShareMbrQty = cartShareMbrIdListResponse.getMbrIdList().size();
+
+        String cartShareNm = cartShareMbrIdListResponse.getCartShareNm();
+
+        List<CartShareOrdInfo> cartShareOrdInfoList = cartShareOdrList.stream()
+                .map(cartShareOdr -> createCartShareOrdInfo(cartShareMbrQty, cartShareOdr, cartShareNm))
+                .collect(Collectors.toList());
+
+        return CartShareOrdFindListForCartShareCalResponse.of(cartShareOrdInfoList);
+    }
+    
     private int calculateCommAmt(int commAmt, CartShareOdrItem cartShareOdrItem) {
         if (cartShareOdrItem.getCommYn()) {
             commAmt += cartShareOdrItem.getPaymtAmt();
@@ -97,5 +124,32 @@ public class CartShareOrdForCartShareCalService {
         cartShareOrdAmtInfo.addOrdAmt(cartShareOdrItem.getPaymtAmt());
 
         cartShareOrdAmtInfoMap.put(cartShareOdrItem.getMbrId(), cartShareOrdAmtInfo);
+    }
+
+    private CartShareOrdInfo createCartShareOrdInfo(int cartShareMbrQty, CartShareOdr cartShareOdr,
+            String cartShareNm) {
+        List<CartShareOdrItem> cartShareOdrItemList = cartShareOrdItemUtilService.findListByCartShareOrdId(
+                cartShareOdr.getCartShareOrdId());
+
+        int ttlOrdItemQty = (int) cartShareOdrItemList.stream()
+                .map(CartShareOdrItem::getItemId)
+                .distinct().count();
+
+        CartShareOdrItem cartShareOdrItem = Optional.ofNullable(cartShareOdrItemList.get(0)).orElseThrow(() -> {
+            throw new NotFoundException(
+                    String.format("주문 상품이 존재하지 않는 주문 ID (%s) 입니다", cartShareOdr.getCartShareOrdId()),
+                    ErrorCode.NOT_FOUND_CART_SHARE_ORD_ITEM_EXCEPTION);
+        });
+
+        return CartShareOrdInfo.builder()
+                .cartShareOrdRcpDts(cartShareOdr.getCartShareOrdRcpDts())
+                .cartShareOrdNo(cartShareOdr.getCartShareOrdNo())
+                .ttlPaymtAmt(cartShareOdr.getTtlPaymtAmt())
+                .ttlOrdItemQty(ttlOrdItemQty)
+                .cartShareMbrQty(cartShareMbrQty)
+                .repItemNm(cartShareOdrItem.getItemNm())
+                .repItemImgUrl(cartShareOdrItem.getItemImgUrl())
+                .cartShareNm(cartShareNm)
+                .build();
     }
 }

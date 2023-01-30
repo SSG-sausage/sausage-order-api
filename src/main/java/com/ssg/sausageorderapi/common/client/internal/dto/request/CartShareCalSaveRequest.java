@@ -21,7 +21,7 @@ public class CartShareCalSaveRequest {
     private Long cartShareId;
 
     @Schema(description = "공유장바구니 이름")
-    private Long cartShareNm;
+    private String cartShareNm;
 
     @Schema(description = "마스터멤버 ID")
     private Long mastrMbrId;

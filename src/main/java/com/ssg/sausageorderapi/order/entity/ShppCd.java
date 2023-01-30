@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 public enum ShppCd {
 
     SSG_SHPP("쓱배송", 3000),
-    EMART_TRADERS_SHPP("이마트 트레이더스 배송", 4000);
+    SSG_TRADERS_SHPP("쓱배송 트레이더스 배송", 4000);
 
     private final String nm;
     private final int shppCst;
@@ -20,8 +20,8 @@ public enum ShppCd {
             case SSG_SHPP:
                 return findShppCst(SSG_SHPP, paymtAmt, 40000);
 
-            case EMART_TRADERS_SHPP:
-                return findShppCst(EMART_TRADERS_SHPP, paymtAmt, 120000);
+            case SSG_TRADERS_SHPP:
+                return findShppCst(SSG_TRADERS_SHPP, paymtAmt, 120000);
 
             default:
                 return 0;

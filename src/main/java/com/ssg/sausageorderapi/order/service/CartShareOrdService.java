@@ -37,6 +37,8 @@ public class CartShareOrdService {
 
     private final CartShareOrdUtilService cartShareOrdUtilService;
 
+    private final CartShareOrdItemUtilService cartShareOrdItemUtilService;
+
     private final CartShareTmpOrdUtilService cartShareTmpOrdUtilService;
 
     private final CartShareApiClient cartShareClient;
@@ -72,17 +74,17 @@ public class CartShareOrdService {
         cartShareOdr.changeTtlPaymtAmt(ttlPaymtAmt);
 
         // 주문 완료 이후, 장바구니 후속 이벤트 발생
-        cartShareTmpOrdUtilService.changeTmpOrdStatCd(cartShareTmpOdr, TmpOrdStatCd.CANCELED);
-        cartShareProducerService.deleteCartShareItemList(cartShareId);
-        cartShareProducerService.updateEditPsblYn(cartShareId, true);
+        // cartShareTmpOrdUtilService.changeTmpOrdStatCd(cartShareTmpOdr, TmpOrdStatCd.CANCELED);
+        // cartShareProducerService.deleteCartShareItemList(cartShareId);
+        // cartShareProducerService.updateEditPsblYn(cartShareId, true);
 
         // *to be added, produce 주문 완료 알림 생성 이벤트
 
-        CartShareCalSaveRequest cartShareCalSaveRequest = createCartShareCalSaveRequest(cartShareOdr);
-        Long cartShareCalId = cartShareCalApiClient.saveCartShareCal(cartShareCalSaveRequest).getData()
-                .getCartShareCalId();
+       CartShareCalSaveRequest cartShareCalSaveRequest = createCartShareCalSaveRequest(cartShareOdr);
+       Long cartShareCalId = cartShareCalApiClient.saveCartShareCal(cartShareCalSaveRequest).getData()
+               .getCartShareCalId();
 
-        cartShareOdr.changeCartShareCalId(cartShareCalId);
+       cartShareOdr.changeCartShareCalId(cartShareCalId);
     }
 
 
@@ -90,7 +92,7 @@ public class CartShareOrdService {
 
         cartShareClient.validateCartShareMbr(mbrId, cartShareId);
 
-        List<CartShareOdr> cartShareOdrList = cartShareOrdRepository.findAllByCartShareId(cartShareId);
+        List<CartShareOdr> cartShareOdrList = cartShareOrdUtilService.findListByCartShareId(cartShareId);
 
         // * to be added, get DUTCH_PAY_ST_YN
 
@@ -103,7 +105,7 @@ public class CartShareOrdService {
 
         CartShareOdr cartShareOdr = cartShareOrdUtilService.findById(cartShareOrdId);
 
-        List<CartShareOdrItem> cartShareOdrItemList = cartShareOrdItemRepository.findAllByCartShareOrdId(
+        List<CartShareOdrItem> cartShareOdrItemList = cartShareOrdItemUtilService.findListByCartShareOrdId(
                 cartShareOdr.getCartShareOrdId());
 
         return CartShareOrdFindResponse.of(cartShareOdr, cartShareOdrItemList);
