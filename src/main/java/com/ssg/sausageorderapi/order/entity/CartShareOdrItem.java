@@ -57,6 +57,12 @@ public class CartShareOdrItem extends BaseEntity {
     @Column(name = "PAYMT_AMT", nullable = false)
     private Integer paymtAmt;
 
+    @Column(name = "ITEM_BRAND_NM")
+    private String itemBrandNm;
+
+    @Column(name = "ITEM_IMG_URL")
+    private String itemImgUrl;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "SHPP_CD")
     private ShppCd shppCd;

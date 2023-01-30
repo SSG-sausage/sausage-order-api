@@ -104,7 +104,7 @@ public class CartShareOrdService {
         CartShareOdr cartShareOdr = cartShareOrdUtilService.findById(cartShareOrdId);
 
         List<CartShareOdrItem> cartShareOdrItemList = cartShareOrdItemRepository.findAllByCartShareOrdId(
-                cartShareOdr.getCartShareId());
+                cartShareOdr.getCartShareOrdId());
 
         return CartShareOrdFindResponse.of(cartShareOdr, cartShareOdrItemList);
     }
@@ -140,6 +140,7 @@ public class CartShareOrdService {
                 .cartShareOrdId(cartShareOdr.getCartShareOrdId())
                 .mbrIdList(new HashSet<>(cartShareMbrIdListResponse.getMbrIdList()))
                 .mastrMbrId(cartShareMbrIdListResponse.getMastrMbrId())
+                .cartShareNm(cartShareMbrIdListResponse.getCartShareNm())
                 .ttlPaymtAmt(cartShareOdr.getTtlPaymtAmt()).build();
     }
 }

@@ -22,4 +22,6 @@ public class CartShareMbrIdListResponse {
     @Schema(description = "멤버 ID 리스트")
     private List<Long> mbrIdList;
 
+    @Schema(description = "공유장바구니 이름")
+    private Long cartShareNm;
 }
