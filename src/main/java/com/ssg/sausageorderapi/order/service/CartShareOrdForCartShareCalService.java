@@ -151,6 +151,8 @@ public class CartShareOrdForCartShareCalService {
                 .repItemImgUrl(cartShareOdrItem.getItemImgUrl())
                 .cartShareNm(cartShareNm)
                 .cartShareOrdNo(cartShareOdr.getCartShareOrdNo())
+                .cartShareCalId(cartShareOdr.getCartShareCalId())
+                .calStYn(cartShareOdr.getCalStYn())
                 .build();
     }
 }

@@ -58,9 +58,9 @@ public class CartShareOrdFindListForCartShareCalResponse {
         private Integer ttlPaymtAmt;
 
         @Schema(description = "정산 ID")
-        private String cartShareCalId;
+        private Long cartShareCalId;
 
         @Schema(description = "정산 시작 여부")
-        private String calStYn;
+        private Boolean calStYn;
     }
 }
