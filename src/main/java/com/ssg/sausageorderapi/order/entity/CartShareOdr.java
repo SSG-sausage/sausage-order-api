@@ -77,7 +77,7 @@ public class CartShareOdr extends BaseEntity {
                 .cartShareOrdRcpDts(LocalDateTime.now())
                 .ordStatCd(OrdStatCd.SUCCESS)
                 .cartShareOrdNo(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-                        + cartShareTmpOdr.getCartShareTmpOrdId())
+                        + "-" + String.format("%06d", cartShareTmpOdr.getCartShareTmpOrdId()))
                 .calStYn(false)
                 .build();
     }

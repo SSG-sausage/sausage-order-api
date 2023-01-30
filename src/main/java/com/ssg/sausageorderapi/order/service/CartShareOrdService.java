@@ -74,17 +74,17 @@ public class CartShareOrdService {
         cartShareOdr.changeTtlPaymtAmt(ttlPaymtAmt);
 
         // 주문 완료 이후, 장바구니 후속 이벤트 발생
-        // cartShareTmpOrdUtilService.changeTmpOrdStatCd(cartShareTmpOdr, TmpOrdStatCd.CANCELED);
-        // cartShareProducerService.deleteCartShareItemList(cartShareId);
-        // cartShareProducerService.updateEditPsblYn(cartShareId, true);
+        cartShareTmpOrdUtilService.changeTmpOrdStatCd(cartShareTmpOdr, TmpOrdStatCd.CANCELED);
+        cartShareProducerService.deleteCartShareItemList(cartShareId);
+        cartShareProducerService.updateEditPsblYn(cartShareId, true);
 
         // *to be added, produce 주문 완료 알림 생성 이벤트
 
-       CartShareCalSaveRequest cartShareCalSaveRequest = createCartShareCalSaveRequest(cartShareOdr);
-       Long cartShareCalId = cartShareCalApiClient.saveCartShareCal(cartShareCalSaveRequest).getData()
-               .getCartShareCalId();
+        CartShareCalSaveRequest cartShareCalSaveRequest = createCartShareCalSaveRequest(cartShareOdr);
+        Long cartShareCalId = cartShareCalApiClient.saveCartShareCal(cartShareCalSaveRequest).getData()
+                .getCartShareCalId();
 
-       cartShareOdr.changeCartShareCalId(cartShareCalId);
+        cartShareOdr.changeCartShareCalId(cartShareCalId);
     }
 
 
