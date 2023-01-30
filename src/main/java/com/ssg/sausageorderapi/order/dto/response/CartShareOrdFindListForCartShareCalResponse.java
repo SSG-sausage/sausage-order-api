@@ -56,5 +56,11 @@ public class CartShareOrdFindListForCartShareCalResponse {
 
         @Schema(description = "총결제 금액")
         private Integer ttlPaymtAmt;
+
+        @Schema(description = "정산 ID")
+        private String cartShareCalId;
+
+        @Schema(description = "정산 시작 여부")
+        private String calStYn;
     }
 }

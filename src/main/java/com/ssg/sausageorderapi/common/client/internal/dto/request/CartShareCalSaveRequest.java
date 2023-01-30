@@ -26,6 +26,9 @@ public class CartShareCalSaveRequest {
     @Schema(description = "마스터멤버 ID")
     private Long mastrMbrId;
 
+    @Schema(description = "공유장바구니 주문 번호")
+    private String cartShareOrdNo;
+
     @Schema(description = "공유장바구니멤버 ID")
     private Set<Long> mbrIdList;
 

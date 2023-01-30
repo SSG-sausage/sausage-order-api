@@ -66,6 +66,9 @@ VALUES (8, 2, 4, 1, 10, 1, 13410, '소고기 밀푀유나베 (2인분)', 134100,
         'https://sitem.ssgcdn.com/97/99/84/item/2097000849997_i1_1100.jpg', 'SSG_TRADERS_SHPP',
         '2023-01-30 13:44:17', 1, '2023-01-30 13:44:17', 1);
 
+-- ord
+
+
 INSERT INTO `order`.CART_SHARE_ORD (CART_SHARE_ORD_ID, CART_SHARE_TMP_ORD_ID, CART_SHARE_ID,
                                     CART_SHARE_CAL_ID, CAL_ST_YN, CART_SHARE_ORD_RCP_DTS,
                                     ORD_STAT_CD, TTL_PAYMT_AMT, CART_SHARE_ORD_NO, REG_DTS,

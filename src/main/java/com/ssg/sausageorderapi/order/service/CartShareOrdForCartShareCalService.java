@@ -91,7 +91,7 @@ public class CartShareOrdForCartShareCalService {
 
         return CartShareOrdFindListForCartShareCalResponse.of(cartShareOrdInfoList);
     }
-    
+
     private int calculateCommAmt(int commAmt, CartShareOdrItem cartShareOdrItem) {
         if (cartShareOdrItem.getCommYn()) {
             commAmt += cartShareOdrItem.getPaymtAmt();
@@ -150,6 +150,7 @@ public class CartShareOrdForCartShareCalService {
                 .repItemNm(cartShareOdrItem.getItemNm())
                 .repItemImgUrl(cartShareOdrItem.getItemImgUrl())
                 .cartShareNm(cartShareNm)
+                .cartShareOrdNo(cartShareOdr.getCartShareOrdNo())
                 .build();
     }
 }
