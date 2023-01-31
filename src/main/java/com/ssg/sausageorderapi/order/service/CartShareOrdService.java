@@ -42,15 +42,17 @@ public class CartShareOrdService {
 
     private final CartShareTmpOrdUtilService cartShareTmpOrdUtilService;
 
-    private final CartShareApiClient cartShareClient;
+    private final CartShareApiClient cartShareApiClient;
 
     private final CartShareCalApiClient cartShareCalApiClient;
 
     private final CartShareProducerService cartShareProducerService;
 
+    private final CartShareOrdCreateNotiService cartShareOrdCreateNotiService;
+
     public CartShareOrdSaveResponse saveCartShareOrdFromTmpOrd(Long mbrId, Long cartShareId) {
 
-        cartShareClient.validateCartShareMastr(cartShareId, mbrId);
+        cartShareApiClient.validateCartShareMastr(cartShareId, mbrId);
 
         CartShareTmpOrd cartShareTmpOrd = cartShareTmpOrdUtilService.findCartShareTmpOrdInProgress(cartShareId);
 
@@ -78,8 +80,7 @@ public class CartShareOrdService {
         cartShareTmpOrdUtilService.changeTmpOrdStatCd(cartShareTmpOrd, TmpOrdStatCd.CANCELED);
         cartShareProducerService.deleteCartShareItemList(cartShareId);
         cartShareProducerService.updateEditPsblYn(cartShareId, true);
-
-        // *to be added, produce 주문 완료 알림 생성 이벤트
+        cartShareOrdCreateNotiService.createOrdSaveNoti(cartShareOrd, cartShareId, mbrId, cartShareOrdItems);
 
         CartShareCalSaveRequest cartShareCalSaveRequest = createCartShareCalSaveRequest(cartShareOrd);
         Long cartShareCalId = cartShareCalApiClient.saveCartShareCal(cartShareCalSaveRequest).getData()
@@ -93,18 +94,16 @@ public class CartShareOrdService {
 
     public CartShareOrdFindListResponse findCartShareOrderList(Long mbrId, Long cartShareId) {
 
-        cartShareClient.validateCartShareMbr(cartShareId, mbrId);
+        cartShareApiClient.validateCartShareMbr(cartShareId, mbrId);
 
         List<CartShareOrd> cartShareOrdList = cartShareOrdUtilService.findListByCartShareId(cartShareId);
-
-        // * to be added, get DUTCH_PAY_ST_YN
 
         return CartShareOrdFindListResponse.of(cartShareOrdList);
     }
 
     public CartShareOrdFindResponse findCartShareOrder(Long mbrId, Long cartShareId, Long cartShareOrdId) {
 
-        cartShareClient.validateCartShareMbr(cartShareId, mbrId);
+        cartShareApiClient.validateCartShareMbr(cartShareId, mbrId);
 
         CartShareOrd cartShareOrd = cartShareOrdUtilService.findById(cartShareOrdId);
 
@@ -137,7 +136,7 @@ public class CartShareOrdService {
 
     private CartShareCalSaveRequest createCartShareCalSaveRequest(CartShareOrd cartShareOrd) {
 
-        CartShareMbrIdListResponse cartShareMbrIdListResponse = cartShareClient.findCartShareMbrIdList(
+        CartShareMbrIdListResponse cartShareMbrIdListResponse = cartShareApiClient.findCartShareMbrIdList(
                 cartShareOrd.getCartShareId()).getData();
 
         return CartShareCalSaveRequest.builder()
