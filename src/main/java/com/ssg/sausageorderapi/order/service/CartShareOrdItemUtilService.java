@@ -1,6 +1,6 @@
 package com.ssg.sausageorderapi.order.service;
 
-import com.ssg.sausageorderapi.order.entity.CartShareOdrItem;
+import com.ssg.sausageorderapi.order.entity.CartShareOrdItem;
 import com.ssg.sausageorderapi.order.repository.CartShareOrdItemRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ public class CartShareOrdItemUtilService {
 
     private final CartShareOrdItemRepository cartShareOrdItemRepository;
 
-    public List<CartShareOdrItem> findListByCartShareOrdId(Long cartShareOrdId) {
+    public List<CartShareOrdItem> findListByCartShareOrdId(Long cartShareOrdId) {
         return cartShareOrdItemRepository.findAllByCartShareOrdId(cartShareOrdId);
     }
 }

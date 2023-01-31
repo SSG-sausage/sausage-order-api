@@ -2,7 +2,7 @@ package com.ssg.sausageorderapi.order.service;
 
 import com.ssg.sausageorderapi.common.exception.ErrorCode;
 import com.ssg.sausageorderapi.common.exception.NotFoundException;
-import com.ssg.sausageorderapi.order.entity.CartShareOdr;
+import com.ssg.sausageorderapi.order.entity.CartShareOrd;
 import com.ssg.sausageorderapi.order.repository.CartShareOrdRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ public class CartShareOrdUtilService {
 
     private final CartShareOrdRepository cartShareOrdRepository;
 
-    public CartShareOdr findById(Long cartShareOrdId) {
+    public CartShareOrd findById(Long cartShareOrdId) {
         return cartShareOrdRepository.findById(cartShareOrdId)
                 .orElseThrow(() -> {
                     throw new NotFoundException(String.format("존재하지 않는 주문 ID (%s) 입니다", cartShareOrdId),
@@ -26,7 +26,7 @@ public class CartShareOrdUtilService {
                 });
     }
 
-    public List<CartShareOdr> findListByCartShareId(Long cartShareId) {
+    public List<CartShareOrd> findListByCartShareId(Long cartShareId) {
         return cartShareOrdRepository.findAllByCartShareId(cartShareId);
     }
 }

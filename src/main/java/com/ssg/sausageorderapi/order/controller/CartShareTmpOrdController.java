@@ -6,6 +6,7 @@ import com.ssg.sausageorderapi.common.dto.ErrorResponse;
 import com.ssg.sausageorderapi.common.dto.SuccessResponse;
 import com.ssg.sausageorderapi.common.success.SuccessCode;
 import com.ssg.sausageorderapi.order.dto.response.CartShareTmpOrdFindResponse;
+import com.ssg.sausageorderapi.order.dto.response.CartShareTmpOrdSaveResponse;
 import com.ssg.sausageorderapi.order.service.CartShareTmpOrdService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -36,13 +37,12 @@ public class CartShareTmpOrdController {
             @ApiResponse(responseCode = "200", description = "공유장바구니 임시주문하기 성공입니다.")
     })
     @PostMapping("/cart-share/{cartShareId}/cart-share-tmp-ord")
-    public ResponseEntity<SuccessResponse<String>> saveCartShareTmpOrd(
+    public ResponseEntity<SuccessResponse<CartShareTmpOrdSaveResponse>> saveCartShareTmpOrd(
             @Parameter(in = ParameterIn.HEADER) @MbrId Long mbrId,
             @PathVariable Long cartShareId) {
 
-        cartShareTmpOrdService.saveCartShareTmpOrd(mbrId, cartShareId);
-
-        return SuccessResponse.OK;
+        return SuccessResponse.success(SuccessCode.OK_SUCCESS,
+                cartShareTmpOrdService.saveCartShareTmpOrd(mbrId, cartShareId));
     }
 
 

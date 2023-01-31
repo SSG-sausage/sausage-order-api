@@ -25,7 +25,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder(access = AccessLevel.PUBLIC)
-public class CartShareOdr extends BaseEntity {
+public class CartShareOrd extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -69,15 +69,15 @@ public class CartShareOdr extends BaseEntity {
         this.ttlPaymtAmt = ttlPaymtAmt;
     }
 
-    public static CartShareOdr newInstance(CartShareTmpOdr cartShareTmpOdr) {
+    public static CartShareOrd newInstance(CartShareTmpOrd cartShareTmpOrd) {
 
-        return CartShareOdr.builder()
-                .cartShareId(cartShareTmpOdr.getCartShareId())
-                .cartShareTmpOrdId(cartShareTmpOdr.getCartShareTmpOrdId())
+        return CartShareOrd.builder()
+                .cartShareId(cartShareTmpOrd.getCartShareId())
+                .cartShareTmpOrdId(cartShareTmpOrd.getCartShareTmpOrdId())
                 .cartShareOrdRcpDts(LocalDateTime.now())
                 .ordStatCd(OrdStatCd.SUCCESS)
                 .cartShareOrdNo(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-                        + "-" + String.format("%06d", cartShareTmpOdr.getCartShareTmpOrdId()))
+                        + "-" + String.format("%06d", cartShareTmpOrd.getCartShareTmpOrdId()))
                 .calStYn(false)
                 .build();
     }

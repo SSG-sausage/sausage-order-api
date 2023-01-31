@@ -24,7 +24,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder(access = AccessLevel.PUBLIC)
-public class CartShareTmpOdr extends BaseEntity {
+public class CartShareTmpOrd extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,6 +37,9 @@ public class CartShareTmpOdr extends BaseEntity {
     @Column(name = "CART_SHARE_TMP_ORD_RCP_DTS", nullable = false)
     private LocalDateTime cartShareTmpOrdRcpDts;
 
+    @Column(name = "TTL_PAYMT_AMT", nullable = true)
+    private Integer ttlPaymtAmt;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "TMP_ORD_STAT_CD", nullable = false)
     private TmpOrdStatCd tmpOrdStatCd;
@@ -45,8 +48,12 @@ public class CartShareTmpOdr extends BaseEntity {
         this.tmpOrdStatCd = tmpOrdStatCd;
     }
 
-    public static CartShareTmpOdr newInstance(Long cartShareId) {
-        return CartShareTmpOdr.builder()
+    public void changeTtlPaymtAmt(int ttlPaymtAmt) {
+        this.ttlPaymtAmt = ttlPaymtAmt;
+    }
+
+    public static CartShareTmpOrd newInstance(Long cartShareId) {
+        return CartShareTmpOrd.builder()
                 .cartShareId(cartShareId)
                 .cartShareTmpOrdRcpDts(LocalDateTime.now())
                 .tmpOrdStatCd(TmpOrdStatCd.IN_PROGRESS)
