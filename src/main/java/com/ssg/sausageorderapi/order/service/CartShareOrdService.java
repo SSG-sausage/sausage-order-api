@@ -8,6 +8,7 @@ import com.ssg.sausageorderapi.common.client.internal.dto.response.CartShareMbrI
 import com.ssg.sausageorderapi.common.kafka.service.CartShareProducerService;
 import com.ssg.sausageorderapi.order.dto.response.CartShareOrdFindListResponse;
 import com.ssg.sausageorderapi.order.dto.response.CartShareOrdFindResponse;
+import com.ssg.sausageorderapi.order.dto.response.CartShareOrdSaveResponse;
 import com.ssg.sausageorderapi.order.entity.CartShareOdr;
 import com.ssg.sausageorderapi.order.entity.CartShareOdrItem;
 import com.ssg.sausageorderapi.order.entity.CartShareTmpOdr;
@@ -47,7 +48,7 @@ public class CartShareOrdService {
 
     private final CartShareProducerService cartShareProducerService;
 
-    public void saveCartShareOrdFromTmpOrd(Long mbrId, Long cartShareId) {
+    public CartShareOrdSaveResponse saveCartShareOrdFromTmpOrd(Long mbrId, Long cartShareId) {
 
         cartShareClient.validateCartShareMastr(mbrId, cartShareId);
 
@@ -85,6 +86,8 @@ public class CartShareOrdService {
                 .getCartShareCalId();
 
         cartShareOdr.changeCartShareCalId(cartShareCalId);
+
+        return CartShareOrdSaveResponse.of(cartShareOdr);
     }
 
 

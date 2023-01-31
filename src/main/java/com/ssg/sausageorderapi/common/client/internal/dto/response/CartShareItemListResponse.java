@@ -37,6 +37,9 @@ public class CartShareItemListResponse {
         @Schema(description = "멤버 ID")
         private Long mbrId;
 
+        @Schema(description = "멤버 이름")
+        private String mbrNm;
+
         @Schema(description = "상품이름")
         private String itemNm;
 

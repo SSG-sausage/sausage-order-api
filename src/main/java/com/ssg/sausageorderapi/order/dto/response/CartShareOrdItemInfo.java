@@ -28,6 +28,9 @@ public class CartShareOrdItemInfo {
     @Schema(description = "멤버 ID")
     private Long mbrId;
 
+    @Schema(description = "멤버 이름")
+    private String mbrNm;
+
     @Schema(description = "상품수량")
     private Integer itemQty;
 
@@ -66,6 +69,7 @@ public class CartShareOrdItemInfo {
                 .commYn(cartShareOdrItem.getCommYn())
                 .itemBrandNm(cartShareOdrItem.getItemBrandNm())
                 .itemImgUrl(cartShareOdrItem.getItemImgUrl())
+                .mbrNm(cartShareOdrItem.getMbrNm())
                 .build();
     }
 }

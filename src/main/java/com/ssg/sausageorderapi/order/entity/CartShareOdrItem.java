@@ -42,6 +42,9 @@ public class CartShareOdrItem extends BaseEntity {
     @Column(name = "MBR_ID", nullable = false)
     private Long mbrId;
 
+    @Column(name = "MBR_NM", nullable = false)
+    private String mbrNm;
+
     @Column(name = "ITEM_QTY", nullable = false)
     private Integer itemQty;
 
@@ -82,6 +85,7 @@ public class CartShareOdrItem extends BaseEntity {
                 .itemImgUrl(cartShareTmpOdrItem.getItemImgUrl())
                 .paymtAmt(cartShareTmpOdrItem.getItemAmt() * cartShareTmpOdrItem.getItemQty())
                 .shppCd(cartShareTmpOdrItem.getShppCd())
+                .mbrNm(cartShareTmpOdrItem.getMbrNm())
                 .build();
     }
 

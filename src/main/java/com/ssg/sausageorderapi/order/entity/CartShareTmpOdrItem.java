@@ -40,6 +40,9 @@ public class CartShareTmpOdrItem extends BaseEntity {
     @Column(name = "MBR_ID", nullable = false)
     private Long mbrId;
 
+    @Column(name = "MBR_NM", nullable = false)
+    private String mbrNm;
+
     @Column(name = "ITEM_QTY", nullable = false)
     private Integer itemQty;
 
@@ -71,6 +74,7 @@ public class CartShareTmpOdrItem extends BaseEntity {
                 .cartShareTmpOrdId(cartShareTmpOrdId)
                 .itemId(cartShareItemInfo.getItemId())
                 .mbrId(cartShareItemInfo.getMbrId())
+                .mbrNm(cartShareItemInfo.getMbrNm())
                 .itemQty(cartShareItemInfo.getItemQty())
                 .commYn(cartShareItemInfo.isCommYn())
                 .itemAmt(cartShareItemInfo.getItemAmt())
