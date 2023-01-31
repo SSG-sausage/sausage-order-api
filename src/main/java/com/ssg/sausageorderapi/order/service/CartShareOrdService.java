@@ -143,6 +143,7 @@ public class CartShareOrdService {
         return CartShareCalSaveRequest.builder()
                 .cartShareId(cartShareOdr.getCartShareId())
                 .cartShareOrdId(cartShareOdr.getCartShareOrdId())
+                .cartShareOrdNo(cartShareOdr.getCartShareOrdNo())
                 .mbrIdList(new HashSet<>(cartShareMbrIdListResponse.getMbrIdList()))
                 .mastrMbrId(cartShareMbrIdListResponse.getMastrMbrId())
                 .cartShareNm(cartShareMbrIdListResponse.getCartShareNm())
