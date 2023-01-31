@@ -50,7 +50,7 @@ public class CartShareOrdService {
 
     public CartShareOrdSaveResponse saveCartShareOrdFromTmpOrd(Long mbrId, Long cartShareId) {
 
-        cartShareClient.validateCartShareMastr(mbrId, cartShareId);
+        cartShareClient.validateCartShareMastr(cartShareId, mbrId);
 
         CartShareTmpOrd cartShareTmpOrd = cartShareTmpOrdUtilService.findCartShareTmpOrdInProgress(cartShareId);
 
@@ -93,7 +93,7 @@ public class CartShareOrdService {
 
     public CartShareOrdFindListResponse findCartShareOrderList(Long mbrId, Long cartShareId) {
 
-        cartShareClient.validateCartShareMbr(mbrId, cartShareId);
+        cartShareClient.validateCartShareMbr(cartShareId, mbrId);
 
         List<CartShareOrd> cartShareOrdList = cartShareOrdUtilService.findListByCartShareId(cartShareId);
 
@@ -104,7 +104,7 @@ public class CartShareOrdService {
 
     public CartShareOrdFindResponse findCartShareOrder(Long mbrId, Long cartShareId, Long cartShareOrdId) {
 
-        cartShareClient.validateCartShareMbr(mbrId, cartShareId);
+        cartShareClient.validateCartShareMbr(cartShareId, mbrId);
 
         CartShareOrd cartShareOrd = cartShareOrdUtilService.findById(cartShareOrdId);
 

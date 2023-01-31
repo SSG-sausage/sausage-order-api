@@ -12,6 +12,7 @@ import com.ssg.sausageorderapi.order.dto.response.CartShareOrdFindListForCartSha
 import com.ssg.sausageorderapi.order.dto.response.CartShareOrdFindListForCartShareCalResponse.CartShareOrdInfo;
 import com.ssg.sausageorderapi.order.entity.CartShareOrd;
 import com.ssg.sausageorderapi.order.entity.CartShareOrdItem;
+import com.ssg.sausageorderapi.order.entity.ShppCd;
 import com.ssg.sausageorderapi.order.repository.CartShareOrdItemRepository;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,6 +53,7 @@ public class CartShareOrdForCartShareCalService {
 
         HashMap<String, CartShareOrdShppInfo> cartShareOrdShppInfoMap = new HashMap<>();
         HashMap<Long, CartShareOrdAmtInfo> cartShareOrdAmtInfoMap = new HashMap<>();
+        HashMap<String, Integer> paymtAmtByShppCdMap = new HashMap<>();
 
         int commAmt = 0;
 
@@ -59,7 +61,9 @@ public class CartShareOrdForCartShareCalService {
 
             commAmt = calculateCommAmt(commAmt, cartShareOrdItem);
 
-            calculateShppCst(cartShareOrdShppInfoMap, cartShareOrdItem, mbrIdList);
+            addShppMbr(cartShareOrdShppInfoMap, cartShareOrdItem, mbrIdList);
+
+            calculatePaymtAmtByShppCd(paymtAmtByShppCdMap, cartShareOrdItem);
 
             calculateOrdAmt(cartShareOrdAmtInfoMap, cartShareOrdItem);
         }
@@ -68,11 +72,20 @@ public class CartShareOrdForCartShareCalService {
         cartShareMbrIdSet.removeAll(cartShareOrdAmtInfoMap.keySet());
         cartShareMbrIdSet.forEach(mbrId -> cartShareOrdAmtInfoMap.put(mbrId, CartShareOrdAmtInfo.of(mbrId, 0)));
 
+        // 배송비 계산
+        for (String shppCd : paymtAmtByShppCdMap.keySet()) {
+
+            int shppCst = ShppCd.calculateShppCst(ShppCd.valueOf(shppCd), paymtAmtByShppCdMap.get(shppCd));
+
+            cartShareOrdShppInfoMap.get(shppCd).chagneShppCst(shppCst);
+        }
+
         return CartShareOrdFindDetailForCartShareCalResponse.builder()
                 .commAmt(commAmt)
                 .shppInfoList(new ArrayList<>(cartShareOrdShppInfoMap.values()))
                 .ordInfoList(new ArrayList<>(cartShareOrdAmtInfoMap.values())).build();
     }
+
 
     public CartShareOrdFindListForCartShareCalResponse findCartShareOrdList(Long cartShareId) {
 
@@ -99,7 +112,16 @@ public class CartShareOrdForCartShareCalService {
         return commAmt;
     }
 
-    private void calculateShppCst(HashMap<String, CartShareOrdShppInfo> cartShareOrdShppInfoMap,
+    private static void calculatePaymtAmtByShppCd(HashMap<String, Integer> paymtAmtByShppCd,
+            CartShareOrdItem cartShareOrdItem) {
+
+        int paymtAmt = paymtAmtByShppCd.getOrDefault(cartShareOrdItem.getShppCd().name(), 0)
+                + cartShareOrdItem.getPaymtAmt();
+
+        paymtAmtByShppCd.put(cartShareOrdItem.getShppCd().name(), paymtAmt);
+    }
+
+    private void addShppMbr(HashMap<String, CartShareOrdShppInfo> cartShareOrdShppInfoMap,
             CartShareOrdItem cartShareOrdItem, List<Long> mbrIdList) {
 
         CartShareOrdShppInfo cartShareOrdShppInfo = cartShareOrdShppInfoMap.getOrDefault(
@@ -107,6 +129,8 @@ public class CartShareOrdForCartShareCalService {
                 CartShareOrdShppInfo.of(cartShareOrdItem.getShppCd()));
 
         if (cartShareOrdItem.getCommYn()) {
+
+            // 공통인 경우 모든 유저 추가
             cartShareOrdShppInfo.addMbrIdList(new HashSet<>(mbrIdList));
         } else {
             cartShareOrdShppInfo.addMbrId(cartShareOrdItem.getMbrId());
@@ -117,6 +141,10 @@ public class CartShareOrdForCartShareCalService {
 
     private void calculateOrdAmt(HashMap<Long, CartShareOrdAmtInfo> cartShareOrdAmtInfoMap,
             CartShareOrdItem cartShareOrdItem) {
+
+        if (cartShareOrdItem.getCommYn()) {
+            return;
+        }
 
         CartShareOrdAmtInfo cartShareOrdAmtInfo = cartShareOrdAmtInfoMap.getOrDefault(cartShareOrdItem.getMbrId(),
                 CartShareOrdAmtInfo.of(cartShareOrdItem.getMbrId(), cartShareOrdItem.getPaymtAmt()));

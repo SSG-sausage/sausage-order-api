@@ -39,7 +39,7 @@ public class CartShareTmpOrdService {
     @Transactional
     public CartShareTmpOrdFindResponse findCartShareTmpOrdInProgress(Long mbrId, Long cartShareId) {
 
-        cartShareClient.validateCartShareMbr(mbrId, cartShareId);
+        cartShareClient.validateCartShareMbr(cartShareId, mbrId);
 
         CartShareTmpOrd cartShareTmpOrd = cartShareTmpOrdUtilService.findCartShareTmpOrdInProgress(cartShareId);
 
@@ -52,7 +52,7 @@ public class CartShareTmpOrdService {
     @Transactional
     public CartShareTmpOrdSaveResponse saveCartShareTmpOrd(Long mbrId, Long cartShareId) {
 
-        cartShareClient.validateCartShareMastr(mbrId, cartShareId);
+        cartShareClient.validateCartShareMastr(cartShareId, mbrId);
 
         CartShareTmpOrd cartShareTmpOrd = cartShareTmpOrdRepository.save(CartShareTmpOrd.newInstance(cartShareId));
 
@@ -78,7 +78,7 @@ public class CartShareTmpOrdService {
     @Transactional
     public void cancelCartShareTmpOrd(Long mbrId, Long cartShareId) {
 
-        cartShareClient.validateCartShareMastr(mbrId, cartShareId);
+        cartShareClient.validateCartShareMastr(cartShareId, mbrId);
 
         CartShareTmpOrd cartShareTmpOrd = cartShareTmpOrdUtilService.findCartShareTmpOrdInProgress(cartShareId);
 

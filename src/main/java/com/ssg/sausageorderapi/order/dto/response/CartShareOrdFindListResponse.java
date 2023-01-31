@@ -2,6 +2,7 @@ package com.ssg.sausageorderapi.order.dto.response;
 
 import com.ssg.sausageorderapi.order.entity.CartShareOrd;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
@@ -25,6 +26,7 @@ public class CartShareOrdFindListResponse {
 
         List<CartShareOrdInfo> cartShareOrdInfoList = cartShareOrdList.stream()
                 .map(CartShareOrdInfo::of)
+                .sorted(Comparator.comparing(CartShareOrdInfo::getCartShareOrdRcpDts).reversed())
                 .collect(Collectors.toList());
 
         return CartShareOrdFindListResponse.builder()
