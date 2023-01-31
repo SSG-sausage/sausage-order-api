@@ -37,6 +37,9 @@ public class CartShareItemListResponse {
         @Schema(description = "멤버 ID")
         private Long mbrId;
 
+        @Schema(description = "멤버 이름")
+        private String mbrNm;
+
         @Schema(description = "상품이름")
         private String itemNm;
 
@@ -51,5 +54,12 @@ public class CartShareItemListResponse {
 
         @Schema(description = "공통상품여부")
         private boolean commYn;
+
+        @Schema(description = "상품 브랜드 이름")
+        private String itemBrandNm;
+
+        @Schema(description = "상품 이미지 URL")
+        private String itemImgUrl;
+
     }
 }

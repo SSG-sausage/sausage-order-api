@@ -25,7 +25,7 @@ public class CartShareApiClientMock implements CartShareApiClient {
     @Override
     public SuccessResponse<CartShareMbrIdListResponse> findCartShareMbrIdList(Long cartShareId) {
         return SuccessResponse.success(SuccessCode.OK_SUCCESS,
-                new CartShareMbrIdListResponse(1L, List.of(1L, 2L, 3L))).getBody();
+                new CartShareMbrIdListResponse(1L, List.of(1L, 2L, 3L), "test")).getBody();
     }
 
     @Override

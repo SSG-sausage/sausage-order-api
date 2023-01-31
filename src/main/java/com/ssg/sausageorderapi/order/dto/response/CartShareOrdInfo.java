@@ -23,18 +23,30 @@ public class CartShareOrdInfo {
     @Schema(description = "공유장바구니 ID")
     private Long cartShareId;
 
+    @Schema(description = "공유장바구니정산 ID")
+    private Long cartShareCalId;
+
     @Schema(description = "주문접수일시")
     private LocalDateTime cartShareOrdRcpDts;
 
     @Schema(description = "주문상태코드")
     private String ordStatCd;
 
+    @Schema(description = "정산시작여부")
+    private Boolean calStYn;
+
+    @Schema(description = "총결제 금액")
+    private Integer ttlPaymtAmt;
+
     public static CartShareOrdInfo of(CartShareOdr cartShareOdr) {
         return CartShareOrdInfo.builder()
                 .cartShareOrdId(cartShareOdr.getCartShareOrdId())
                 .cartShareId(cartShareOdr.getCartShareId())
+                .cartShareCalId(cartShareOdr.getCartShareCalId())
                 .cartShareOrdRcpDts(cartShareOdr.getCartShareOrdRcpDts())
                 .ordStatCd(cartShareOdr.getOrdStatCd().name())
+                .calStYn(cartShareOdr.getCalStYn())
+                .ttlPaymtAmt(cartShareOdr.getTtlPaymtAmt())
                 .build();
     }
 }

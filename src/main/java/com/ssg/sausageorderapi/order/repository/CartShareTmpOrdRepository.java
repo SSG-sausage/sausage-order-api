@@ -9,4 +9,8 @@ public interface CartShareTmpOrdRepository extends JpaRepository<CartShareTmpOdr
 
     Optional<CartShareTmpOdr> findFirstByCartShareIdAndTmpOrdStatCd(Long cartShareId, TmpOrdStatCd tmpOrdStatCd);
 
+    Optional<CartShareTmpOdr> findFirstByCartShareIdAndTmpOrdStatCdOrderByCartShareTmpOrdRcpDts(Long cartShareId,
+            TmpOrdStatCd tmpOrdStatCd);
+
+
 }

@@ -6,6 +6,7 @@ import com.ssg.sausageorderapi.common.kafka.service.CartShareProducerService;
 import com.ssg.sausageorderapi.order.dto.response.CartShareTmpOrdFindResponse;
 import com.ssg.sausageorderapi.order.entity.CartShareTmpOdr;
 import com.ssg.sausageorderapi.order.entity.CartShareTmpOdrItem;
+import com.ssg.sausageorderapi.order.entity.TmpOrdStatCd;
 import com.ssg.sausageorderapi.order.repository.CartShareTmpOrdItemRepository;
 import com.ssg.sausageorderapi.order.repository.CartShareTmpOrdRepository;
 import java.util.List;
@@ -35,7 +36,6 @@ public class CartShareTmpOrdService {
     @Transactional
     public CartShareTmpOrdFindResponse findCartShareTmpOrdInProgress(Long mbrId, Long cartShareId) {
 
-        // validate 'isFound' and 'isCartShareMember'
         cartShareClient.validateCartShareMbr(mbrId, cartShareId);
 
         CartShareTmpOdr cartShareTmpOdr = cartShareTmpOrdUtilService.findCartShareTmpOrdInProgress(cartShareId);
@@ -49,14 +49,10 @@ public class CartShareTmpOrdService {
     @Transactional
     public void saveCartShareTmpOrd(Long mbrId, Long cartShareId) {
 
-        log.info(String.valueOf(mbrId));
-
-        // validate 'isFound' and 'isCartShareMaster'
         cartShareClient.validateCartShareMastr(mbrId, cartShareId);
 
         CartShareTmpOdr cartShareTmpOdr = cartShareTmpOrdRepository.save(CartShareTmpOdr.newInstance(cartShareId));
 
-        // find cartShareOrderItem-list by cart share id
         List<CartShareItemInfo> cartShareItemList = cartShareClient.findCartShareItemList(cartShareId).getData()
                 .getCartShareItemList();
 
@@ -65,11 +61,19 @@ public class CartShareTmpOrdService {
                         cartShareTmpOdr.getCartShareTmpOrdId()))
                 .collect(Collectors.toList());
 
-        // save all items
         cartShareTmpOrdItemRepository.saveAll(cartShareTmpOdrItems);
 
-        // produce update cartshare editPsblYn to False api
         cartShareProducerService.updateEditPsblYn(cartShareId, false);
+    }
+
+    @Transactional
+    public void cancelCartShareTmpOrd(Long mbrId, Long cartShareId) {
+
+        cartShareClient.validateCartShareMastr(mbrId, cartShareId);
+
+        CartShareTmpOdr cartShareTmpOdr = cartShareTmpOrdUtilService.findCartShareTmpOrdInProgress(cartShareId);
+
+        cartShareTmpOdr.changeTmpOrdStat(TmpOrdStatCd.CANCELED);
     }
 
 

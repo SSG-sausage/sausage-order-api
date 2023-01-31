@@ -2,6 +2,7 @@ package com.ssg.sausageorderapi.order.entity;
 
 import com.ssg.sausageorderapi.common.entity.BaseEntity;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -37,6 +38,9 @@ public class CartShareOdr extends BaseEntity {
     @Column(name = "CART_SHARE_ID", nullable = false)
     private Long cartShareId;
 
+    @Column(name = "CART_SHARE_ORD_NO", nullable = false)
+    private String cartShareOrdNo;
+
     @Column(name = "CART_SHARE_CAL_ID")
     private Long cartShareCalId;
 
@@ -66,11 +70,14 @@ public class CartShareOdr extends BaseEntity {
     }
 
     public static CartShareOdr newInstance(CartShareTmpOdr cartShareTmpOdr) {
+
         return CartShareOdr.builder()
                 .cartShareId(cartShareTmpOdr.getCartShareId())
                 .cartShareTmpOrdId(cartShareTmpOdr.getCartShareTmpOrdId())
                 .cartShareOrdRcpDts(LocalDateTime.now())
                 .ordStatCd(OrdStatCd.SUCCESS)
+                .cartShareOrdNo(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+                        + "-" + String.format("%06d", cartShareTmpOdr.getCartShareTmpOrdId()))
                 .calStYn(false)
                 .build();
     }

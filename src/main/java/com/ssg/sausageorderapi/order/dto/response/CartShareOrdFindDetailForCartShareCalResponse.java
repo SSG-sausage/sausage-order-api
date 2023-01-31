@@ -72,6 +72,10 @@ public class CartShareOrdFindDetailForCartShareCalResponse {
             this.mbrIdList.add(mbrId);
         }
 
+        public void addMbrIdList(Set<Long> mbrIdList) {
+            this.mbrIdList.addAll(mbrIdList);
+        }
+
         public static CartShareOrdShppInfo of(ShppCd shppCd) {
 
             return CartShareOrdShppInfo.builder()

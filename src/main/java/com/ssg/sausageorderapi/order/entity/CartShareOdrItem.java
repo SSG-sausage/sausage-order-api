@@ -42,6 +42,9 @@ public class CartShareOdrItem extends BaseEntity {
     @Column(name = "MBR_ID", nullable = false)
     private Long mbrId;
 
+    @Column(name = "MBR_NM", nullable = false)
+    private String mbrNm;
+
     @Column(name = "ITEM_QTY", nullable = false)
     private Integer itemQty;
 
@@ -51,8 +54,17 @@ public class CartShareOdrItem extends BaseEntity {
     @Column(name = "ITEM_AMT", nullable = false)
     private Integer itemAmt;
 
+    @Column(name = "ITEM_NM", nullable = false)
+    private String itemNm;
+
     @Column(name = "PAYMT_AMT", nullable = false)
     private Integer paymtAmt;
+
+    @Column(name = "ITEM_BRAND_NM")
+    private String itemBrandNm;
+
+    @Column(name = "ITEM_IMG_URL")
+    private String itemImgUrl;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "SHPP_CD")
@@ -66,10 +78,14 @@ public class CartShareOdrItem extends BaseEntity {
                 .itemId(cartShareTmpOdrItem.getItemId())
                 .mbrId(cartShareTmpOdrItem.getMbrId())
                 .itemQty(cartShareTmpOdrItem.getItemQty())
+                .itemNm(cartShareTmpOdrItem.getItemNm())
                 .commYn(cartShareTmpOdrItem.getCommYn())
                 .itemAmt(cartShareTmpOdrItem.getItemAmt())
+                .itemBrandNm(cartShareTmpOdrItem.getItemBrandNm())
+                .itemImgUrl(cartShareTmpOdrItem.getItemImgUrl())
                 .paymtAmt(cartShareTmpOdrItem.getItemAmt() * cartShareTmpOdrItem.getItemQty())
                 .shppCd(cartShareTmpOdrItem.getShppCd())
+                .mbrNm(cartShareTmpOdrItem.getMbrNm())
                 .build();
     }
 
