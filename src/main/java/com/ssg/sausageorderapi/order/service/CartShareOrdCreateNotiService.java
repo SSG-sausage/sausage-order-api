@@ -36,18 +36,18 @@ public class CartShareOrdCreateNotiService {
             // 마스터 인경우 알림 발송
             if (masterId.equals(mbrId)) {
                 cartShareProducerService.createCartShareNoti(mbrId, NotiCd.CART_SHARE_ORD.name(),
-                        createNotiCntt(cartShareOrd, cartShareOrdItems, true));
+                        createNotiCntt(cartShareOrd, cartShareOrdItems, true, mbrIdList.getMastrMbrNm()));
                 continue;
             }
 
             cartShareProducerService.createCartShareNoti(mbrId, NotiCd.CART_SHARE.name(),
-                    createNotiCntt(cartShareOrd, cartShareOrdItems, false));
+                    createNotiCntt(cartShareOrd, cartShareOrdItems, false, mbrIdList.getMastrMbrNm()));
         }
 
     }
 
     private String createNotiCntt(CartShareOrd cartShareOrd, List<CartShareOrdItem> cartShareOrdItems,
-            boolean isMaster) {
+            boolean isMaster, String masterMbrNm) {
         DecimalFormat decFormat = new DecimalFormat("###,###");
 
         StringBuilder cnttBuilder = new StringBuilder();
@@ -57,7 +57,7 @@ public class CartShareOrdCreateNotiService {
         if (isMaster) {
             cnttBuilder.append(String.format("'%s' 장바구니의 마스터가 상품 주문을 완료했습니다.\n\n", cartShareNm));
         } else {
-            cnttBuilder.append(String.format("'%s' 고객님의 주문내역입니다.\n\n", "test"));
+            cnttBuilder.append(String.format("'%s' 고객님의 주문내역입니다.\n\n", masterMbrNm));
         }
 
         for (ShppCd shppCd : ShppCd.values()) {
