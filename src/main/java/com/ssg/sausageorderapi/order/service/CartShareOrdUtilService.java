@@ -26,6 +26,14 @@ public class CartShareOrdUtilService {
                 });
     }
 
+    public CartShareOrd findListByCartShareCalId(Long cartShareCalId) {
+        return cartShareOrdRepository.findByCartShareCalId(cartShareCalId)
+                .orElseThrow(() -> {
+                    throw new NotFoundException(String.format("존재하지 않는 주문 정산 ID (%s) 입니다", cartShareCalId),
+                            ErrorCode.NOT_FOUND_CART_SHARE_ORD_CAL_EXCEPTION);
+                });
+    }
+
     public List<CartShareOrd> findListByCartShareId(Long cartShareId) {
         return cartShareOrdRepository.findAllByCartShareId(cartShareId);
     }

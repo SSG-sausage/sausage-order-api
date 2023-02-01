@@ -24,4 +24,6 @@ public class CartShareMbrIdListResponse {
 
     @Schema(description = "공유장바구니 이름")
     private String cartShareNm;
+
+
 }

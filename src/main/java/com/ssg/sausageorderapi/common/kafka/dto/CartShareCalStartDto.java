@@ -11,14 +11,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(access = AccessLevel.PUBLIC)
-public class CartShareOrdUpdateCalStYnDto {
+public class CartShareCalStartDto {
 
-    @Schema(description = "공유장바구니 ID")
-    private Long cartShareId;
+    @Schema(description = "공유장바구니 정산 ID")
+    private Long cartShareCalId;
 
-    public static CartShareOrdUpdateCalStYnDto of(Long cartShareId) {
-        return CartShareOrdUpdateCalStYnDto.builder()
-                .cartShareId(cartShareId)
+    public static CartShareCalStartDto of(Long cartShareCalId) {
+        return CartShareCalStartDto.builder()
+                .cartShareCalId(cartShareCalId)
                 .build();
     }
 }
