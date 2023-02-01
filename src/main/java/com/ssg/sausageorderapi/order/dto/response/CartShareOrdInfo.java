@@ -1,6 +1,6 @@
 package com.ssg.sausageorderapi.order.dto.response;
 
-import com.ssg.sausageorderapi.order.entity.CartShareOdr;
+import com.ssg.sausageorderapi.order.entity.CartShareOrd;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 import lombok.AccessLevel;
@@ -38,15 +38,15 @@ public class CartShareOrdInfo {
     @Schema(description = "총결제 금액")
     private Integer ttlPaymtAmt;
 
-    public static CartShareOrdInfo of(CartShareOdr cartShareOdr) {
+    public static CartShareOrdInfo of(CartShareOrd cartShareOrd) {
         return CartShareOrdInfo.builder()
-                .cartShareOrdId(cartShareOdr.getCartShareOrdId())
-                .cartShareId(cartShareOdr.getCartShareId())
-                .cartShareCalId(cartShareOdr.getCartShareCalId())
-                .cartShareOrdRcpDts(cartShareOdr.getCartShareOrdRcpDts())
-                .ordStatCd(cartShareOdr.getOrdStatCd().name())
-                .calStYn(cartShareOdr.getCalStYn())
-                .ttlPaymtAmt(cartShareOdr.getTtlPaymtAmt())
+                .cartShareOrdId(cartShareOrd.getCartShareOrdId())
+                .cartShareId(cartShareOrd.getCartShareId())
+                .cartShareCalId(cartShareOrd.getCartShareCalId())
+                .cartShareOrdRcpDts(cartShareOrd.getCartShareOrdRcpDts())
+                .ordStatCd(cartShareOrd.getOrdStatCd().name())
+                .calStYn(cartShareOrd.getCalStYn())
+                .ttlPaymtAmt(cartShareOrd.getTtlPaymtAmt())
                 .build();
     }
 }

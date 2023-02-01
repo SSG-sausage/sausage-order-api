@@ -1,7 +1,7 @@
 package com.ssg.sausageorderapi.order.dto.response;
 
-import com.ssg.sausageorderapi.order.entity.CartShareOdr;
-import com.ssg.sausageorderapi.order.entity.CartShareOdrItem;
+import com.ssg.sausageorderapi.order.entity.CartShareOrd;
+import com.ssg.sausageorderapi.order.entity.CartShareOrdItem;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -32,16 +32,16 @@ public class CartShareOrdFindResponse {
     @Schema(description = "공유장바구니주문상품 리스트")
     private List<CartShareOrdItemInfo> cartShareOrdItemList;
 
-    public static CartShareOrdFindResponse of(CartShareOdr cartShareOdr, List<CartShareOdrItem> cartShareOdrItemList) {
+    public static CartShareOrdFindResponse of(CartShareOrd cartShareOrd, List<CartShareOrdItem> cartShareOrdItemList) {
 
-        List<CartShareOrdItemInfo> cartShareOrdItemInfoList = cartShareOdrItemList.stream()
+        List<CartShareOrdItemInfo> cartShareOrdItemInfoList = cartShareOrdItemList.stream()
                 .map(CartShareOrdItemInfo::of)
                 .collect(Collectors.toList());
 
         return CartShareOrdFindResponse.builder()
-                .cartShareId(cartShareOdr.getCartShareId())
-                .cartShareOrdId(cartShareOdr.getCartShareOrdId())
-                .cartShareOrdRcpDts(cartShareOdr.getRegDts())
+                .cartShareId(cartShareOrd.getCartShareId())
+                .cartShareOrdId(cartShareOrd.getCartShareOrdId())
+                .cartShareOrdRcpDts(cartShareOrd.getRegDts())
                 .cartShareOrdItemList(cartShareOrdItemInfoList)
                 .build();
     }

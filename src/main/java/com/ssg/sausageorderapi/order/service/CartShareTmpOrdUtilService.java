@@ -2,8 +2,8 @@ package com.ssg.sausageorderapi.order.service;
 
 import com.ssg.sausageorderapi.common.exception.ErrorCode;
 import com.ssg.sausageorderapi.common.exception.NotFoundException;
-import com.ssg.sausageorderapi.order.entity.CartShareTmpOdr;
-import com.ssg.sausageorderapi.order.entity.CartShareTmpOdrItem;
+import com.ssg.sausageorderapi.order.entity.CartShareTmpOrd;
+import com.ssg.sausageorderapi.order.entity.CartShareTmpOrdItem;
 import com.ssg.sausageorderapi.order.entity.TmpOrdStatCd;
 import com.ssg.sausageorderapi.order.repository.CartShareTmpOrdItemRepository;
 import com.ssg.sausageorderapi.order.repository.CartShareTmpOrdRepository;
@@ -23,7 +23,7 @@ public class CartShareTmpOrdUtilService {
 
     private final CartShareTmpOrdItemRepository cartShareTmpOrdItemRepository;
 
-    public CartShareTmpOdr findCartShareTmpOrdInProgress(Long cartShareId) {
+    public CartShareTmpOrd findCartShareTmpOrdInProgress(Long cartShareId) {
 
         // 임시 주문 상태가 IN_PROGRESS인 주문만 find
         return cartShareTmpOrdRepository.findFirstByCartShareIdAndTmpOrdStatCdOrderByCartShareTmpOrdRcpDts(cartShareId,
@@ -34,12 +34,12 @@ public class CartShareTmpOrdUtilService {
                 });
     }
 
-    public List<CartShareTmpOdrItem> findCartShareTmpOrdItemByTmpOrdId(Long cartShareTmpOrdId) {
+    public List<CartShareTmpOrdItem> findCartShareTmpOrdItemByTmpOrdId(Long cartShareTmpOrdId) {
         return cartShareTmpOrdItemRepository.findAllByCartShareTmpOrdId(cartShareTmpOrdId);
     }
 
     @Transactional
-    public void changeTmpOrdStatCd(CartShareTmpOdr cartShareTmpOdr, TmpOrdStatCd tmpOrdStatCd) {
-        cartShareTmpOdr.changeTmpOrdStat(tmpOrdStatCd);
+    public void changeTmpOrdStatCd(CartShareTmpOrd cartShareTmpOrd, TmpOrdStatCd tmpOrdStatCd) {
+        cartShareTmpOrd.changeTmpOrdStat(tmpOrdStatCd);
     }
 }

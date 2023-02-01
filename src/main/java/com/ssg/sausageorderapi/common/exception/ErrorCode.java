@@ -40,6 +40,7 @@ public enum ErrorCode {
      */
     NOT_FOUND_EXCEPTION(NOT_FOUND, "존재하지 않습니다."),
     NOT_FOUND_CART_SHARE_ORD_EXCEPTION(NOT_FOUND, "존재하지 않는 주문입니다."),
+    NOT_FOUND_CART_SHARE_ORD_CAL_EXCEPTION(NOT_FOUND, "존재하지 않는 정산 ID 주문입니다."),
     NOT_FOUND_CART_SHARE_TMP_ORD_EXCEPTION(NOT_FOUND, "존재하지 않는 임시주문입니다."),
     NOT_FOUND_CART_SHARE_ORD_ITEM_EXCEPTION(NOT_FOUND, "해당 주문의 주문 상품 정보가 존재하지 않습니다."),
 

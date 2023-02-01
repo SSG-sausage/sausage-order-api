@@ -27,6 +27,7 @@ CREATE TABLE `CART_SHARE_TMP_ORD`
     `CART_SHARE_ID`              bigint      NOT NULL,
     `CART_SHARE_TMP_ORD_RCP_DTS` datetime    NOT NULL,
     `TMP_ORD_STAT_CD`            varchar(30) NOT NULL,
+    `TTL_PAYMT_AMT`              int NULL,
     `REG_DTS`                    datetime    NOT NULL,
     `REGPE_ID`                   bigint NULL,
     `MOD_DTS`                    datetime    NOT NULL,

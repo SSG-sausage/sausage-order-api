@@ -1,6 +1,6 @@
 package com.ssg.sausageorderapi.order.dto.response;
 
-import com.ssg.sausageorderapi.order.entity.CartShareOdrItem;
+import com.ssg.sausageorderapi.order.entity.CartShareOrdItem;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -55,21 +55,21 @@ public class CartShareOrdItemInfo {
     @Schema(description = "상품 이미지 URL")
     private String itemImgUrl;
 
-    public static CartShareOrdItemInfo of(CartShareOdrItem cartShareOdrItem) {
+    public static CartShareOrdItemInfo of(CartShareOrdItem cartShareOrdItem) {
         return CartShareOrdItemInfo.builder()
-                .cartShareOrdItemId(cartShareOdrItem.getCartShareOrdItemId())
-                .cartShareOrdId(cartShareOdrItem.getCartShareOrdId())
-                .itemId(cartShareOdrItem.getItemId())
-                .mbrId(cartShareOdrItem.getMbrId())
-                .itemQty(cartShareOdrItem.getItemQty())
-                .itemNm(cartShareOdrItem.getItemNm())
-                .itemAmt(cartShareOdrItem.getItemAmt())
-                .paymtAmt(cartShareOdrItem.getPaymtAmt())
-                .shppCd(cartShareOdrItem.getShppCd().name())
-                .commYn(cartShareOdrItem.getCommYn())
-                .itemBrandNm(cartShareOdrItem.getItemBrandNm())
-                .itemImgUrl(cartShareOdrItem.getItemImgUrl())
-                .mbrNm(cartShareOdrItem.getMbrNm())
+                .cartShareOrdItemId(cartShareOrdItem.getCartShareOrdItemId())
+                .cartShareOrdId(cartShareOrdItem.getCartShareOrdId())
+                .itemId(cartShareOrdItem.getItemId())
+                .mbrId(cartShareOrdItem.getMbrId())
+                .itemQty(cartShareOrdItem.getItemQty())
+                .itemNm(cartShareOrdItem.getItemNm())
+                .itemAmt(cartShareOrdItem.getItemAmt())
+                .paymtAmt(cartShareOrdItem.getPaymtAmt())
+                .shppCd(cartShareOrdItem.getShppCd().name())
+                .commYn(cartShareOrdItem.getCommYn())
+                .itemBrandNm(cartShareOrdItem.getItemBrandNm())
+                .itemImgUrl(cartShareOrdItem.getItemImgUrl())
+                .mbrNm(cartShareOrdItem.getMbrNm())
                 .build();
     }
 }

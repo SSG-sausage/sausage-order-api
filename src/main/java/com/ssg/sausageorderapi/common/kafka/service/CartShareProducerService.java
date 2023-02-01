@@ -6,6 +6,7 @@ import com.ssg.sausageorderapi.common.exception.ErrorCode;
 import com.ssg.sausageorderapi.common.exception.InternalServerException;
 import com.ssg.sausageorderapi.common.kafka.constant.KafkaConstants;
 import com.ssg.sausageorderapi.common.kafka.dto.CartShareItemDeleteListDto;
+import com.ssg.sausageorderapi.common.kafka.dto.CartShareNotiCreateDto;
 import com.ssg.sausageorderapi.common.kafka.dto.CartShareUpdateEditPsblYnDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,11 @@ public class CartShareProducerService {
     public void updateEditPsblYn(Long cartShareId, boolean editPsblYn) {
         produceKafkaMsg(KafkaConstants.KAFKA_CART_SHARE_EDIT_UPDATE_UPDATE,
                 CartShareUpdateEditPsblYnDto.of(cartShareId, editPsblYn));
+    }
+
+    public void createCartShareNoti(Long mbrId, String notiCd, String cartShareNotiCntt) {
+        produceKafkaMsg(KafkaConstants.KAFKA_CART_SHARE_NOTI_CREATE,
+                CartShareNotiCreateDto.of(mbrId, notiCd, cartShareNotiCntt));
     }
 
     public void produceKafkaMsg(String topicNm, Object object) {

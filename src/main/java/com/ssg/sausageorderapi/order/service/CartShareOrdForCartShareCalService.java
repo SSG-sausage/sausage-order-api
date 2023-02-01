@@ -10,8 +10,9 @@ import com.ssg.sausageorderapi.order.dto.response.CartShareOrdFindDetailForCartS
 import com.ssg.sausageorderapi.order.dto.response.CartShareOrdFindDetailForCartShareCalResponse.CartShareOrdShppInfo;
 import com.ssg.sausageorderapi.order.dto.response.CartShareOrdFindListForCartShareCalResponse;
 import com.ssg.sausageorderapi.order.dto.response.CartShareOrdFindListForCartShareCalResponse.CartShareOrdInfo;
-import com.ssg.sausageorderapi.order.entity.CartShareOdr;
-import com.ssg.sausageorderapi.order.entity.CartShareOdrItem;
+import com.ssg.sausageorderapi.order.entity.CartShareOrd;
+import com.ssg.sausageorderapi.order.entity.CartShareOrdItem;
+import com.ssg.sausageorderapi.order.entity.ShppCd;
 import com.ssg.sausageorderapi.order.repository.CartShareOrdItemRepository;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,33 +41,44 @@ public class CartShareOrdForCartShareCalService {
 
     public CartShareOrdFindDetailForCartShareCalResponse findCartShareOrdDetail(Long cartShareOrdId) {
 
-        CartShareOdr cartShareOdr = cartShareOrdUtilService.findById(cartShareOrdId);
+        CartShareOrd cartShareOrd = cartShareOrdUtilService.findById(cartShareOrdId);
 
-        List<CartShareOdrItem> cartShareOdrItemList = cartShareOrdItemRepository.findAllByCartShareOrdId(
+        List<CartShareOrdItem> cartShareOrdItemList = cartShareOrdItemRepository.findAllByCartShareOrdId(
                 cartShareOrdId);
 
-        List<Long> mbrIdList = cartShareClient.findCartShareMbrIdList(cartShareOdr.getCartShareId()).getData()
+        List<Long> mbrIdList = cartShareClient.findCartShareMbrIdList(cartShareOrd.getCartShareId()).getData()
                 .getMbrIdList();
 
         HashSet<Long> cartShareMbrIdSet = new HashSet<>(mbrIdList);
 
         HashMap<String, CartShareOrdShppInfo> cartShareOrdShppInfoMap = new HashMap<>();
         HashMap<Long, CartShareOrdAmtInfo> cartShareOrdAmtInfoMap = new HashMap<>();
+        HashMap<String, Integer> paymtAmtByShppCdMap = new HashMap<>();
 
         int commAmt = 0;
 
-        for (CartShareOdrItem cartShareOdrItem : cartShareOdrItemList) {
+        for (CartShareOrdItem cartShareOrdItem : cartShareOrdItemList) {
 
-            commAmt = calculateCommAmt(commAmt, cartShareOdrItem);
+            commAmt = calculateCommAmt(commAmt, cartShareOrdItem);
 
-            calculateShppCst(cartShareOrdShppInfoMap, cartShareOdrItem, mbrIdList);
+            addShppMbr(cartShareOrdShppInfoMap, cartShareOrdItem, mbrIdList);
 
-            calculateOrdAmt(cartShareOrdAmtInfoMap, cartShareOdrItem);
+            calculatePaymtAmtByShppCd(paymtAmtByShppCdMap, cartShareOrdItem);
+
+            calculateOrdAmt(cartShareOrdAmtInfoMap, cartShareOrdItem);
         }
 
         // 총결제금액이 0원이 멤버 추가
         cartShareMbrIdSet.removeAll(cartShareOrdAmtInfoMap.keySet());
         cartShareMbrIdSet.forEach(mbrId -> cartShareOrdAmtInfoMap.put(mbrId, CartShareOrdAmtInfo.of(mbrId, 0)));
+
+        // 배송비 계산
+        for (String shppCd : paymtAmtByShppCdMap.keySet()) {
+
+            int shppCst = ShppCd.calculateShppCst(ShppCd.valueOf(shppCd), paymtAmtByShppCdMap.get(shppCd));
+
+            cartShareOrdShppInfoMap.get(shppCd).chagneShppCst(shppCst);
+        }
 
         return CartShareOrdFindDetailForCartShareCalResponse.builder()
                 .commAmt(commAmt)
@@ -74,9 +86,10 @@ public class CartShareOrdForCartShareCalService {
                 .ordInfoList(new ArrayList<>(cartShareOrdAmtInfoMap.values())).build();
     }
 
+
     public CartShareOrdFindListForCartShareCalResponse findCartShareOrdList(Long cartShareId) {
 
-        List<CartShareOdr> cartShareOdrList = cartShareOrdUtilService.findListByCartShareId(cartShareId);
+        List<CartShareOrd> cartShareOrdList = cartShareOrdUtilService.findListByCartShareId(cartShareId);
 
         CartShareMbrIdListResponse cartShareMbrIdListResponse = cartShareClient.findCartShareMbrIdList(cartShareId)
                 .getData();
@@ -85,74 +98,89 @@ public class CartShareOrdForCartShareCalService {
 
         String cartShareNm = cartShareMbrIdListResponse.getCartShareNm();
 
-        List<CartShareOrdInfo> cartShareOrdInfoList = cartShareOdrList.stream()
+        List<CartShareOrdInfo> cartShareOrdInfoList = cartShareOrdList.stream()
                 .map(cartShareOdr -> createCartShareOrdInfo(cartShareMbrQty, cartShareOdr, cartShareNm))
                 .collect(Collectors.toList());
 
         return CartShareOrdFindListForCartShareCalResponse.of(cartShareOrdInfoList);
     }
 
-    private int calculateCommAmt(int commAmt, CartShareOdrItem cartShareOdrItem) {
-        if (cartShareOdrItem.getCommYn()) {
-            commAmt += cartShareOdrItem.getPaymtAmt();
+    private int calculateCommAmt(int commAmt, CartShareOrdItem cartShareOrdItem) {
+        if (cartShareOrdItem.getCommYn()) {
+            commAmt += cartShareOrdItem.getPaymtAmt();
         }
         return commAmt;
     }
 
-    private void calculateShppCst(HashMap<String, CartShareOrdShppInfo> cartShareOrdShppInfoMap,
-            CartShareOdrItem cartShareOdrItem, List<Long> mbrIdList) {
+    private static void calculatePaymtAmtByShppCd(HashMap<String, Integer> paymtAmtByShppCd,
+            CartShareOrdItem cartShareOrdItem) {
+
+        int paymtAmt = paymtAmtByShppCd.getOrDefault(cartShareOrdItem.getShppCd().name(), 0)
+                + cartShareOrdItem.getPaymtAmt();
+
+        paymtAmtByShppCd.put(cartShareOrdItem.getShppCd().name(), paymtAmt);
+    }
+
+    private void addShppMbr(HashMap<String, CartShareOrdShppInfo> cartShareOrdShppInfoMap,
+            CartShareOrdItem cartShareOrdItem, List<Long> mbrIdList) {
 
         CartShareOrdShppInfo cartShareOrdShppInfo = cartShareOrdShppInfoMap.getOrDefault(
-                cartShareOdrItem.getShppCd().name(),
-                CartShareOrdShppInfo.of(cartShareOdrItem.getShppCd()));
+                cartShareOrdItem.getShppCd().name(),
+                CartShareOrdShppInfo.of(cartShareOrdItem.getShppCd()));
 
-        if (cartShareOdrItem.getCommYn()) {
+        if (cartShareOrdItem.getCommYn()) {
+
+            // 공통인 경우 모든 유저 추가
             cartShareOrdShppInfo.addMbrIdList(new HashSet<>(mbrIdList));
         } else {
-            cartShareOrdShppInfo.addMbrId(cartShareOdrItem.getMbrId());
+            cartShareOrdShppInfo.addMbrId(cartShareOrdItem.getMbrId());
         }
 
-        cartShareOrdShppInfoMap.put(cartShareOdrItem.getShppCd().name(), cartShareOrdShppInfo);
+        cartShareOrdShppInfoMap.put(cartShareOrdItem.getShppCd().name(), cartShareOrdShppInfo);
     }
 
     private void calculateOrdAmt(HashMap<Long, CartShareOrdAmtInfo> cartShareOrdAmtInfoMap,
-            CartShareOdrItem cartShareOdrItem) {
+            CartShareOrdItem cartShareOrdItem) {
 
-        CartShareOrdAmtInfo cartShareOrdAmtInfo = cartShareOrdAmtInfoMap.getOrDefault(cartShareOdrItem.getMbrId(),
-                CartShareOrdAmtInfo.of(cartShareOdrItem.getMbrId(), cartShareOdrItem.getPaymtAmt()));
+        if (cartShareOrdItem.getCommYn()) {
+            return;
+        }
 
-        cartShareOrdAmtInfo.addOrdAmt(cartShareOdrItem.getPaymtAmt());
+        CartShareOrdAmtInfo cartShareOrdAmtInfo = cartShareOrdAmtInfoMap.getOrDefault(cartShareOrdItem.getMbrId(),
+                CartShareOrdAmtInfo.of(cartShareOrdItem.getMbrId(), cartShareOrdItem.getPaymtAmt()));
 
-        cartShareOrdAmtInfoMap.put(cartShareOdrItem.getMbrId(), cartShareOrdAmtInfo);
+        cartShareOrdAmtInfo.addOrdAmt(cartShareOrdItem.getPaymtAmt());
+
+        cartShareOrdAmtInfoMap.put(cartShareOrdItem.getMbrId(), cartShareOrdAmtInfo);
     }
 
-    private CartShareOrdInfo createCartShareOrdInfo(int cartShareMbrQty, CartShareOdr cartShareOdr,
+    private CartShareOrdInfo createCartShareOrdInfo(int cartShareMbrQty, CartShareOrd cartShareOrd,
             String cartShareNm) {
-        List<CartShareOdrItem> cartShareOdrItemList = cartShareOrdItemUtilService.findListByCartShareOrdId(
-                cartShareOdr.getCartShareOrdId());
+        List<CartShareOrdItem> cartShareOrdItemList = cartShareOrdItemUtilService.findListByCartShareOrdId(
+                cartShareOrd.getCartShareOrdId());
 
-        int ttlOrdItemQty = (int) cartShareOdrItemList.stream()
-                .map(CartShareOdrItem::getItemId)
+        int ttlOrdItemQty = (int) cartShareOrdItemList.stream()
+                .map(CartShareOrdItem::getItemId)
                 .distinct().count();
 
-        CartShareOdrItem cartShareOdrItem = Optional.ofNullable(cartShareOdrItemList.get(0)).orElseThrow(() -> {
+        CartShareOrdItem cartShareOrdItem = Optional.ofNullable(cartShareOrdItemList.get(0)).orElseThrow(() -> {
             throw new NotFoundException(
-                    String.format("주문 상품이 존재하지 않는 주문 ID (%s) 입니다", cartShareOdr.getCartShareOrdId()),
+                    String.format("주문 상품이 존재하지 않는 주문 ID (%s) 입니다", cartShareOrd.getCartShareOrdId()),
                     ErrorCode.NOT_FOUND_CART_SHARE_ORD_ITEM_EXCEPTION);
         });
 
         return CartShareOrdInfo.builder()
-                .cartShareOrdRcpDts(cartShareOdr.getCartShareOrdRcpDts())
-                .cartShareOrdNo(cartShareOdr.getCartShareOrdNo())
-                .ttlPaymtAmt(cartShareOdr.getTtlPaymtAmt())
+                .cartShareOrdRcpDts(cartShareOrd.getCartShareOrdRcpDts())
+                .cartShareOrdNo(cartShareOrd.getCartShareOrdNo())
+                .ttlPaymtAmt(cartShareOrd.getTtlPaymtAmt())
                 .ttlOrdItemQty(ttlOrdItemQty)
                 .cartShareMbrQty(cartShareMbrQty)
-                .repItemNm(cartShareOdrItem.getItemNm())
-                .repItemImgUrl(cartShareOdrItem.getItemImgUrl())
+                .repItemNm(cartShareOrdItem.getItemNm())
+                .repItemImgUrl(cartShareOrdItem.getItemImgUrl())
                 .cartShareNm(cartShareNm)
-                .cartShareOrdNo(cartShareOdr.getCartShareOrdNo())
-                .cartShareCalId(cartShareOdr.getCartShareCalId())
-                .calStYn(cartShareOdr.getCalStYn())
+                .cartShareOrdNo(cartShareOrd.getCartShareOrdNo())
+                .cartShareCalId(cartShareOrd.getCartShareCalId())
+                .calStYn(cartShareOrd.getCalStYn())
                 .build();
     }
 }

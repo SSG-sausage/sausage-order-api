@@ -1,11 +1,11 @@
 package com.ssg.sausageorderapi.order.repository;
 
-import com.ssg.sausageorderapi.order.entity.CartShareOdrItem;
+import com.ssg.sausageorderapi.order.entity.CartShareOrdItem;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface CartShareOrdItemRepository extends JpaRepository<CartShareOdrItem, Long> {
+public interface CartShareOrdItemRepository extends JpaRepository<CartShareOrdItem, Long> {
 
-    List<CartShareOdrItem> findAllByCartShareOrdId(Long cartShareOrdId);
+    List<CartShareOrdItem> findAllByCartShareOrdId(Long cartShareOrdId);
 
 }

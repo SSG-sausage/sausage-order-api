@@ -2,7 +2,9 @@ package com.ssg.sausageorderapi.order.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,8 +23,13 @@ public class CartShareOrdFindListForCartShareCalResponse {
     public List<CartShareOrdInfo> cartShareOdrList;
 
     public static CartShareOrdFindListForCartShareCalResponse of(List<CartShareOrdInfo> cartShareOdrList) {
+
+        List<CartShareOrdInfo> cartShareOrdInfoList = cartShareOdrList.stream()
+                .sorted(Comparator.comparing(CartShareOrdInfo::getCartShareOrdRcpDts).reversed())
+                .collect(Collectors.toList());
+
         return CartShareOrdFindListForCartShareCalResponse.builder()
-                .cartShareOdrList(cartShareOdrList)
+                .cartShareOdrList(cartShareOrdInfoList)
                 .build();
     }
 

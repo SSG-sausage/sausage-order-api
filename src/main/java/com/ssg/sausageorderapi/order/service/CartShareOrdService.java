@@ -9,10 +9,10 @@ import com.ssg.sausageorderapi.common.kafka.service.CartShareProducerService;
 import com.ssg.sausageorderapi.order.dto.response.CartShareOrdFindListResponse;
 import com.ssg.sausageorderapi.order.dto.response.CartShareOrdFindResponse;
 import com.ssg.sausageorderapi.order.dto.response.CartShareOrdSaveResponse;
-import com.ssg.sausageorderapi.order.entity.CartShareOdr;
-import com.ssg.sausageorderapi.order.entity.CartShareOdrItem;
-import com.ssg.sausageorderapi.order.entity.CartShareTmpOdr;
-import com.ssg.sausageorderapi.order.entity.CartShareTmpOdrItem;
+import com.ssg.sausageorderapi.order.entity.CartShareOrd;
+import com.ssg.sausageorderapi.order.entity.CartShareOrdItem;
+import com.ssg.sausageorderapi.order.entity.CartShareTmpOrd;
+import com.ssg.sausageorderapi.order.entity.CartShareTmpOrdItem;
 import com.ssg.sausageorderapi.order.entity.ShppCd;
 import com.ssg.sausageorderapi.order.entity.TmpOrdStatCd;
 import com.ssg.sausageorderapi.order.repository.CartShareOrdItemRepository;
@@ -42,90 +42,89 @@ public class CartShareOrdService {
 
     private final CartShareTmpOrdUtilService cartShareTmpOrdUtilService;
 
-    private final CartShareApiClient cartShareClient;
+    private final CartShareApiClient cartShareApiClient;
 
     private final CartShareCalApiClient cartShareCalApiClient;
 
     private final CartShareProducerService cartShareProducerService;
 
+    private final CartShareOrdCreateNotiService cartShareOrdCreateNotiService;
+
     public CartShareOrdSaveResponse saveCartShareOrdFromTmpOrd(Long mbrId, Long cartShareId) {
 
-        cartShareClient.validateCartShareMastr(mbrId, cartShareId);
+        cartShareApiClient.validateCartShareMastr(cartShareId, mbrId);
 
-        CartShareTmpOdr cartShareTmpOdr = cartShareTmpOrdUtilService.findCartShareTmpOrdInProgress(cartShareId);
+        CartShareTmpOrd cartShareTmpOrd = cartShareTmpOrdUtilService.findCartShareTmpOrdInProgress(cartShareId);
 
         // 임시주문으로부터 주문 저장
-        CartShareOdr cartShareOdr = CartShareOdr.newInstance(cartShareTmpOdr);
+        CartShareOrd cartShareOrd = CartShareOrd.newInstance(cartShareTmpOrd);
 
-        cartShareOrdRepository.save(cartShareOdr);
+        cartShareOrdRepository.save(cartShareOrd);
 
         // 임시주문상품으로부터 주문상품 저장
-        List<CartShareTmpOdrItem> cartShareTmpOdrItemList = cartShareTmpOrdUtilService.findCartShareTmpOrdItemByTmpOrdId(
-                cartShareOdr.getCartShareTmpOrdId());
+        List<CartShareTmpOrdItem> cartShareTmpOrdItemList = cartShareTmpOrdUtilService.findCartShareTmpOrdItemByTmpOrdId(
+                cartShareOrd.getCartShareTmpOrdId());
 
-        List<CartShareOdrItem> cartShareOdrItems = cartShareTmpOdrItemList.stream()
-                .map(cartShareTmpOdrItem -> CartShareOdrItem.newInstance(cartShareOdr.getCartShareOrdId(),
+        List<CartShareOrdItem> cartShareOrdItems = cartShareTmpOrdItemList.stream()
+                .map(cartShareTmpOdrItem -> CartShareOrdItem.newInstance(cartShareOrd.getCartShareOrdId(),
                         cartShareTmpOdrItem))
                 .collect(Collectors.toList());
 
-        cartShareOrdItemRepository.saveAll(cartShareOdrItems);
+        cartShareOrdItemRepository.saveAll(cartShareOrdItems);
 
         // 총 결제 금액 변경
-        int ttlPaymtAmt = calculateTtlPaymtAmt(cartShareOdrItems);
-        cartShareOdr.changeTtlPaymtAmt(ttlPaymtAmt);
+        int ttlPaymtAmt = calculateTtlPaymtAmt(cartShareOrdItems);
+        cartShareOrd.changeTtlPaymtAmt(ttlPaymtAmt);
 
         // 주문 완료 이후, 장바구니 후속 이벤트 발생
-        cartShareTmpOrdUtilService.changeTmpOrdStatCd(cartShareTmpOdr, TmpOrdStatCd.CANCELED);
+        cartShareTmpOrdUtilService.changeTmpOrdStatCd(cartShareTmpOrd, TmpOrdStatCd.CANCELED);
         cartShareProducerService.deleteCartShareItemList(cartShareId);
         cartShareProducerService.updateEditPsblYn(cartShareId, true);
+        cartShareOrdCreateNotiService.createOrdSaveNoti(cartShareOrd, cartShareId, mbrId, cartShareOrdItems);
 
-        // *to be added, produce 주문 완료 알림 생성 이벤트
-
-        CartShareCalSaveRequest cartShareCalSaveRequest = createCartShareCalSaveRequest(cartShareOdr);
+        CartShareCalSaveRequest cartShareCalSaveRequest = createCartShareCalSaveRequest(cartShareOrd);
         Long cartShareCalId = cartShareCalApiClient.saveCartShareCal(cartShareCalSaveRequest).getData()
                 .getCartShareCalId();
 
-        cartShareOdr.changeCartShareCalId(cartShareCalId);
+        cartShareOrd.changeCartShareCalId(cartShareCalId);
 
-        return CartShareOrdSaveResponse.of(cartShareOdr);
+        return CartShareOrdSaveResponse.of(cartShareOrd);
     }
 
 
     public CartShareOrdFindListResponse findCartShareOrderList(Long mbrId, Long cartShareId) {
 
-        cartShareClient.validateCartShareMbr(mbrId, cartShareId);
+        cartShareApiClient.validateCartShareMbr(cartShareId, mbrId);
 
-        List<CartShareOdr> cartShareOdrList = cartShareOrdUtilService.findListByCartShareId(cartShareId);
+        List<CartShareOrd> cartShareOrdList = cartShareOrdUtilService.findListByCartShareId(cartShareId);
 
-        // * to be added, get DUTCH_PAY_ST_YN
-
-        return CartShareOrdFindListResponse.of(cartShareOdrList);
+        return CartShareOrdFindListResponse.of(cartShareOrdList);
     }
 
     public CartShareOrdFindResponse findCartShareOrder(Long mbrId, Long cartShareId, Long cartShareOrdId) {
 
-        cartShareClient.validateCartShareMbr(mbrId, cartShareId);
+        cartShareApiClient.validateCartShareMbr(cartShareId, mbrId);
 
-        CartShareOdr cartShareOdr = cartShareOrdUtilService.findById(cartShareOrdId);
+        CartShareOrd cartShareOrd = cartShareOrdUtilService.findById(cartShareOrdId);
 
-        List<CartShareOdrItem> cartShareOdrItemList = cartShareOrdItemUtilService.findListByCartShareOrdId(
-                cartShareOdr.getCartShareOrdId());
+        List<CartShareOrdItem> cartShareOrdItemList = cartShareOrdItemUtilService.findListByCartShareOrdId(
+                cartShareOrd.getCartShareOrdId());
 
-        return CartShareOrdFindResponse.of(cartShareOdr, cartShareOdrItemList);
+        return CartShareOrdFindResponse.of(cartShareOrd, cartShareOrdItemList);
     }
 
-    private int calculateTtlPaymtAmt(List<CartShareOdrItem> cartShareOdrItems) {
+    private int calculateTtlPaymtAmt(List<CartShareOrdItem> cartShareOrdItems) {
 
         int ttlPaymtAmt = 0, ttlShppcst = 0;
         HashMap<String, Integer> shppCdMap = new HashMap<>();
 
-        for (CartShareOdrItem cartShareOdrItem : cartShareOdrItems) {
+        for (CartShareOrdItem cartShareOrdItem : cartShareOrdItems) {
 
-            ttlPaymtAmt += cartShareOdrItem.getPaymtAmt();
+            ttlPaymtAmt += cartShareOrdItem.getPaymtAmt();
 
-            String shppName = cartShareOdrItem.getShppCd().name();
+            String shppName = cartShareOrdItem.getShppCd().name();
             shppCdMap.put(shppName, shppCdMap.getOrDefault(shppName, 0)
-                    + cartShareOdrItem.getItemAmt() * cartShareOdrItem.getItemQty());
+                    + cartShareOrdItem.getItemAmt() * cartShareOrdItem.getItemQty());
         }
 
         for (String shppCd : shppCdMap.keySet()) {
@@ -135,17 +134,18 @@ public class CartShareOrdService {
         return ttlPaymtAmt + ttlShppcst;
     }
 
-    private CartShareCalSaveRequest createCartShareCalSaveRequest(CartShareOdr cartShareOdr) {
+    private CartShareCalSaveRequest createCartShareCalSaveRequest(CartShareOrd cartShareOrd) {
 
-        CartShareMbrIdListResponse cartShareMbrIdListResponse = cartShareClient.findCartShareMbrIdList(
-                cartShareOdr.getCartShareId()).getData();
+        CartShareMbrIdListResponse cartShareMbrIdListResponse = cartShareApiClient.findCartShareMbrIdList(
+                cartShareOrd.getCartShareId()).getData();
 
         return CartShareCalSaveRequest.builder()
-                .cartShareId(cartShareOdr.getCartShareId())
-                .cartShareOrdId(cartShareOdr.getCartShareOrdId())
+                .cartShareId(cartShareOrd.getCartShareId())
+                .cartShareOrdId(cartShareOrd.getCartShareOrdId())
+                .cartShareOrdNo(cartShareOrd.getCartShareOrdNo())
                 .mbrIdList(new HashSet<>(cartShareMbrIdListResponse.getMbrIdList()))
                 .mastrMbrId(cartShareMbrIdListResponse.getMastrMbrId())
                 .cartShareNm(cartShareMbrIdListResponse.getCartShareNm())
-                .ttlPaymtAmt(cartShareOdr.getTtlPaymtAmt()).build();
+                .ttlPaymtAmt(cartShareOrd.getTtlPaymtAmt()).build();
     }
 }

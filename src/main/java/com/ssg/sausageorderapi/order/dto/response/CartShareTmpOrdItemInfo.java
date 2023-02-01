@@ -1,6 +1,6 @@
 package com.ssg.sausageorderapi.order.dto.response;
 
-import com.ssg.sausageorderapi.order.entity.CartShareTmpOdrItem;
+import com.ssg.sausageorderapi.order.entity.CartShareTmpOrdItem;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -46,18 +46,18 @@ public class CartShareTmpOrdItemInfo {
     @Schema(description = "배송타입코드")
     private String shppCd;
 
-    public static CartShareTmpOrdItemInfo of(CartShareTmpOdrItem cartShareTmpOdrItem) {
+    public static CartShareTmpOrdItemInfo of(CartShareTmpOrdItem cartShareTmpOrdItem) {
         return CartShareTmpOrdItemInfo.builder()
-                .cartShareTmpOrdItemId(cartShareTmpOdrItem.getCartShareTmpOrdItemId())
-                .cartShareTmpOrdId(cartShareTmpOdrItem.getCartShareTmpOrdId())
-                .itemId(cartShareTmpOdrItem.getItemId())
-                .mbrId(cartShareTmpOdrItem.getMbrId())
-                .itemQty(cartShareTmpOdrItem.getItemQty())
-                .itemAmt(cartShareTmpOdrItem.getItemAmt())
-                .itemNm(cartShareTmpOdrItem.getItemNm())
-                .paymtAmt(cartShareTmpOdrItem.getPaymtAmt())
-                .shppCd(cartShareTmpOdrItem.getShppCd().name())
-                .commYn(cartShareTmpOdrItem.getCommYn())
+                .cartShareTmpOrdItemId(cartShareTmpOrdItem.getCartShareTmpOrdItemId())
+                .cartShareTmpOrdId(cartShareTmpOrdItem.getCartShareTmpOrdId())
+                .itemId(cartShareTmpOrdItem.getItemId())
+                .mbrId(cartShareTmpOrdItem.getMbrId())
+                .itemQty(cartShareTmpOrdItem.getItemQty())
+                .itemAmt(cartShareTmpOrdItem.getItemAmt())
+                .itemNm(cartShareTmpOrdItem.getItemNm())
+                .paymtAmt(cartShareTmpOrdItem.getPaymtAmt())
+                .shppCd(cartShareTmpOrdItem.getShppCd().name())
+                .commYn(cartShareTmpOrdItem.getCommYn())
                 .build();
     }
 }

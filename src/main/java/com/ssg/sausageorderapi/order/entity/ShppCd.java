@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 public enum ShppCd {
 
     SSG_SHPP("쓱배송", 3000),
-    SSG_TRADERS_SHPP("쓱배송 트레이더스 배송", 4000);
+    SSG_TRADERS_SHPP("쓱 트레이더스", 4000);
 
     private final String nm;
     private final int shppCst;

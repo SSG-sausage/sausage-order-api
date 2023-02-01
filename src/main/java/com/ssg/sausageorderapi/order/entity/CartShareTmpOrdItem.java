@@ -1,5 +1,6 @@
 package com.ssg.sausageorderapi.order.entity;
 
+import com.ssg.sausageorderapi.common.client.internal.dto.response.CartShareItemListResponse.CartShareItemInfo;
 import com.ssg.sausageorderapi.common.entity.BaseEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,25 +17,22 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 
-@Table(name = "CART_SHARE_ORD_ITEM")
+@Table(name = "CART_SHARE_TMP_ORD_ITEM")
 @Getter
 @Entity
 @DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
-public class CartShareOdrItem extends BaseEntity {
+public class CartShareTmpOrdItem extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "CART_SHARE_ORD_ITEM_ID", nullable = false)
-    private Long cartShareOrdItemId;
-
     @Column(name = "CART_SHARE_TMP_ORD_ITEM_ID", nullable = false)
     private Long cartShareTmpOrdItemId;
 
-    @Column(name = "CART_SHARE_ORD_ID", nullable = false)
-    private Long cartShareOrdId;
+    @Column(name = "CART_SHARE_TMP_ORD_ID", nullable = false)
+    private Long cartShareTmpOrdId;
 
     @Column(name = "ITEM_ID", nullable = false)
     private Long itemId;
@@ -70,22 +68,21 @@ public class CartShareOdrItem extends BaseEntity {
     @Column(name = "SHPP_CD")
     private ShppCd shppCd;
 
-    public static CartShareOdrItem newInstance(Long cartShareOrdId, CartShareTmpOdrItem cartShareTmpOdrItem) {
+    public static CartShareTmpOrdItem newInstance(CartShareItemInfo cartShareItemInfo, Long cartShareTmpOrdId) {
 
-        return CartShareOdrItem.builder()
-                .cartShareOrdId(cartShareOrdId)
-                .cartShareTmpOrdItemId(cartShareTmpOdrItem.getCartShareTmpOrdItemId())
-                .itemId(cartShareTmpOdrItem.getItemId())
-                .mbrId(cartShareTmpOdrItem.getMbrId())
-                .itemQty(cartShareTmpOdrItem.getItemQty())
-                .itemNm(cartShareTmpOdrItem.getItemNm())
-                .commYn(cartShareTmpOdrItem.getCommYn())
-                .itemAmt(cartShareTmpOdrItem.getItemAmt())
-                .itemBrandNm(cartShareTmpOdrItem.getItemBrandNm())
-                .itemImgUrl(cartShareTmpOdrItem.getItemImgUrl())
-                .paymtAmt(cartShareTmpOdrItem.getItemAmt() * cartShareTmpOdrItem.getItemQty())
-                .shppCd(cartShareTmpOdrItem.getShppCd())
-                .mbrNm(cartShareTmpOdrItem.getMbrNm())
+        return CartShareTmpOrdItem.builder()
+                .cartShareTmpOrdId(cartShareTmpOrdId)
+                .itemId(cartShareItemInfo.getItemId())
+                .mbrId(cartShareItemInfo.getMbrId())
+                .mbrNm(cartShareItemInfo.getMbrNm())
+                .itemQty(cartShareItemInfo.getItemQty())
+                .commYn(cartShareItemInfo.isCommYn())
+                .itemAmt(cartShareItemInfo.getItemAmt())
+                .itemNm(cartShareItemInfo.getItemNm())
+                .itemBrandNm(cartShareItemInfo.getItemBrandNm())
+                .itemImgUrl(cartShareItemInfo.getItemImgUrl())
+                .paymtAmt(cartShareItemInfo.getItemAmt() * cartShareItemInfo.getItemQty())
+                .shppCd(ShppCd.valueOf(cartShareItemInfo.getShppCd()))
                 .build();
     }
 

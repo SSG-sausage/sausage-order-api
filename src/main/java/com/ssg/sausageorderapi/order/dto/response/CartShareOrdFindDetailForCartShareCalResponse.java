@@ -76,6 +76,10 @@ public class CartShareOrdFindDetailForCartShareCalResponse {
             this.mbrIdList.addAll(mbrIdList);
         }
 
+        public void chagneShppCst(int shppCst) {
+            this.shppCst = shppCst;
+        }
+
         public static CartShareOrdShppInfo of(ShppCd shppCd) {
 
             return CartShareOrdShppInfo.builder()
