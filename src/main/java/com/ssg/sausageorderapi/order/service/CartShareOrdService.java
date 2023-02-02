@@ -5,7 +5,7 @@ import com.ssg.sausageorderapi.common.client.internal.CartShareApiClient;
 import com.ssg.sausageorderapi.common.client.internal.CartShareCalApiClient;
 import com.ssg.sausageorderapi.common.client.internal.dto.request.CartShareCalSaveRequest;
 import com.ssg.sausageorderapi.common.client.internal.dto.response.CartShareMbrIdListResponse;
-import com.ssg.sausageorderapi.common.kafka.service.CartShareProducerService;
+import com.ssg.sausageorderapi.common.kafka.service.ProducerService;
 import com.ssg.sausageorderapi.order.dto.response.CartShareOrdFindListResponse;
 import com.ssg.sausageorderapi.order.dto.response.CartShareOrdFindResponse;
 import com.ssg.sausageorderapi.order.dto.response.CartShareOrdSaveResponse;
@@ -46,7 +46,7 @@ public class CartShareOrdService {
 
     private final CartShareCalApiClient cartShareCalApiClient;
 
-    private final CartShareProducerService cartShareProducerService;
+    private final ProducerService producerService;
 
     private final CartShareOrdCreateNotiService cartShareOrdCreateNotiService;
 
@@ -65,22 +65,23 @@ public class CartShareOrdService {
         List<CartShareTmpOrdItem> cartShareTmpOrdItemList = cartShareTmpOrdUtilService.findCartShareTmpOrdItemByTmpOrdId(
                 cartShareOrd.getCartShareTmpOrdId());
 
-        List<CartShareOrdItem> cartShareOrdItems = cartShareTmpOrdItemList.stream()
+        List<CartShareOrdItem> cartShareOrdItemList = cartShareTmpOrdItemList.stream()
                 .map(cartShareTmpOdrItem -> CartShareOrdItem.newInstance(cartShareOrd.getCartShareOrdId(),
                         cartShareTmpOdrItem))
                 .collect(Collectors.toList());
 
-        cartShareOrdItemRepository.saveAll(cartShareOrdItems);
+        cartShareOrdItemRepository.saveAll(cartShareOrdItemList);
 
         // 총 결제 금액 변경
-        int ttlPaymtAmt = calculateTtlPaymtAmt(cartShareOrdItems);
+        int ttlPaymtAmt = calculateTtlPaymtAmt(cartShareOrdItemList);
         cartShareOrd.changeTtlPaymtAmt(ttlPaymtAmt);
 
         // 주문 완료 이후, 장바구니 후속 이벤트 발생
         cartShareTmpOrdUtilService.changeTmpOrdStatCd(cartShareTmpOrd, TmpOrdStatCd.CANCELED);
-        cartShareProducerService.deleteCartShareItemList(cartShareId);
-        cartShareProducerService.updateEditPsblYn(cartShareId, true);
-        cartShareOrdCreateNotiService.createOrdSaveNoti(cartShareOrd, cartShareId, mbrId, cartShareOrdItems);
+        producerService.deleteCartShareItemList(cartShareId);
+        producerService.updateEditPsblYn(cartShareId, true);
+        producerService.updateItemInvQty(cartShareOrd.getCartShareOrdId(), cartShareOrdItemList);
+        cartShareOrdCreateNotiService.createOrdSaveNoti(cartShareOrd, cartShareId, mbrId, cartShareOrdItemList);
 
         CartShareCalSaveRequest cartShareCalSaveRequest = createCartShareCalSaveRequest(cartShareOrd);
         Long cartShareCalId = cartShareCalApiClient.saveCartShareCal(cartShareCalSaveRequest).getData()

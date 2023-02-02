@@ -2,7 +2,7 @@ package com.ssg.sausageorderapi.order.service;
 
 import com.ssg.sausageorderapi.common.client.internal.CartShareApiClient;
 import com.ssg.sausageorderapi.common.client.internal.dto.response.CartShareItemListResponse.CartShareItemInfo;
-import com.ssg.sausageorderapi.common.kafka.service.CartShareProducerService;
+import com.ssg.sausageorderapi.common.kafka.service.ProducerService;
 import com.ssg.sausageorderapi.order.dto.response.CartShareTmpOrdFindResponse;
 import com.ssg.sausageorderapi.order.dto.response.CartShareTmpOrdSaveResponse;
 import com.ssg.sausageorderapi.order.entity.CartShareTmpOrd;
@@ -33,7 +33,7 @@ public class CartShareTmpOrdService {
 
     private final CartShareTmpOrdUtilService cartShareTmpOrdUtilService;
 
-    private final CartShareProducerService cartShareProducerService;
+    private final ProducerService producerService;
 
 
     @Transactional
@@ -70,7 +70,7 @@ public class CartShareTmpOrdService {
         int ttlPaymtAmt = calculateTtlPaymtAmt(cartShareTmpOrdItems);
         cartShareTmpOrd.changeTtlPaymtAmt(ttlPaymtAmt);
 
-        cartShareProducerService.updateEditPsblYn(cartShareId, false);
+        producerService.updateEditPsblYn(cartShareId, false);
 
         return CartShareTmpOrdSaveResponse.of(cartShareTmpOrd);
     }
@@ -84,7 +84,7 @@ public class CartShareTmpOrdService {
 
         cartShareTmpOrd.changeTmpOrdStat(TmpOrdStatCd.CANCELED);
 
-        cartShareProducerService.updateEditPsblYn(cartShareId, true);
+        producerService.updateEditPsblYn(cartShareId, true);
     }
 
     private int calculateTtlPaymtAmt(List<CartShareTmpOrdItem> cartShareOdrItems) {
