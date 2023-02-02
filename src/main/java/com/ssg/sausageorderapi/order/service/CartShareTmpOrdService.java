@@ -83,6 +83,8 @@ public class CartShareTmpOrdService {
         CartShareTmpOrd cartShareTmpOrd = cartShareTmpOrdUtilService.findCartShareTmpOrdInProgress(cartShareId);
 
         cartShareTmpOrd.changeTmpOrdStat(TmpOrdStatCd.CANCELED);
+
+        cartShareProducerService.updateEditPsblYn(cartShareId, true);
     }
 
     private int calculateTtlPaymtAmt(List<CartShareTmpOrdItem> cartShareOdrItems) {

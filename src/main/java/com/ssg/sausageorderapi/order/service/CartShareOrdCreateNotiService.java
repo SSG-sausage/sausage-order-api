@@ -52,12 +52,12 @@ public class CartShareOrdCreateNotiService {
 
         StringBuilder cnttBuilder = new StringBuilder();
 
-        String cartShareNm = "소시지";
+        String cartShareNm = "소시지팀";
 
         if (isMaster) {
-            cnttBuilder.append(String.format("'%s' 장바구니의 마스터가 상품 주문을 완료했습니다.\n\n", cartShareNm));
-        } else {
             cnttBuilder.append(String.format("'%s' 고객님의 주문내역입니다.\n\n", masterMbrNm));
+        } else {
+            cnttBuilder.append(String.format("'%s' 장바구니의 마스터가 상품 주문을 완료했습니다.\n\n", cartShareNm));
         }
 
         for (ShppCd shppCd : ShppCd.values()) {
