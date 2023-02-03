@@ -92,7 +92,6 @@ public class CartShareOrdService {
         return CartShareOrdSaveResponse.of(cartShareOrd);
     }
 
-
     public CartShareOrdFindListResponse findCartShareOrderList(Long mbrId, Long cartShareId) {
 
         cartShareApiClient.validateCartShareMbr(cartShareId, mbrId);
