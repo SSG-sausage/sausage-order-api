@@ -9,6 +9,8 @@ public enum OrdStatCd {
 
     SUCCESS("주문 성공"),
 
+    PARTIAL_SUCCESS("일부 주문 성공"),
+    
     CANCELED("주문 취소");
 
     private final String nm;

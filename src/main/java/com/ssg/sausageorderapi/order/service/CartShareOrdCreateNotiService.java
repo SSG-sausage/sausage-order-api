@@ -2,7 +2,7 @@ package com.ssg.sausageorderapi.order.service;
 
 import com.ssg.sausageorderapi.common.client.internal.CartShareApiClient;
 import com.ssg.sausageorderapi.common.client.internal.dto.response.CartShareMbrIdListResponse;
-import com.ssg.sausageorderapi.common.kafka.service.CartShareProducerService;
+import com.ssg.sausageorderapi.common.kafka.service.ProducerService;
 import com.ssg.sausageorderapi.order.entity.CartShareOrd;
 import com.ssg.sausageorderapi.order.entity.CartShareOrdItem;
 import com.ssg.sausageorderapi.order.entity.NotiCd;
@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class CartShareOrdCreateNotiService {
 
-    private final CartShareProducerService cartShareProducerService;
+    private final ProducerService producerService;
 
     private final CartShareApiClient cartShareApiClient;
 
@@ -35,12 +35,12 @@ public class CartShareOrdCreateNotiService {
 
             // 마스터 인경우 알림 발송
             if (masterId.equals(mbrId)) {
-                cartShareProducerService.createCartShareNoti(mbrId, NotiCd.CART_SHARE_ORD.name(),
+                producerService.createCartShareNoti(mbrId, NotiCd.CART_SHARE_ORD.name(),
                         createNotiCntt(cartShareOrd, cartShareOrdItems, true, mbrIdList.getMastrMbrNm()));
                 continue;
             }
 
-            cartShareProducerService.createCartShareNoti(mbrId, NotiCd.CART_SHARE.name(),
+            producerService.createCartShareNoti(mbrId, NotiCd.CART_SHARE.name(),
                     createNotiCntt(cartShareOrd, cartShareOrdItems, false, mbrIdList.getMastrMbrNm()));
         }
 

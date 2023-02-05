@@ -69,6 +69,10 @@ public class CartShareOrd extends BaseEntity {
         this.ttlPaymtAmt = ttlPaymtAmt;
     }
 
+    public void changeOrdStatCd(OrdStatCd ordStatCd) {
+        this.ordStatCd = ordStatCd;
+    }
+
     public static CartShareOrd newInstance(CartShareTmpOrd cartShareTmpOrd) {
 
         return CartShareOrd.builder()

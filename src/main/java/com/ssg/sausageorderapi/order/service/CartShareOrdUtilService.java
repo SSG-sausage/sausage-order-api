@@ -3,6 +3,8 @@ package com.ssg.sausageorderapi.order.service;
 import com.ssg.sausageorderapi.common.exception.ErrorCode;
 import com.ssg.sausageorderapi.common.exception.NotFoundException;
 import com.ssg.sausageorderapi.order.entity.CartShareOrd;
+import com.ssg.sausageorderapi.order.entity.OrdStatCd;
+import com.ssg.sausageorderapi.order.repository.CartShareOrdItemRepository;
 import com.ssg.sausageorderapi.order.repository.CartShareOrdRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class CartShareOrdUtilService {
 
     private final CartShareOrdRepository cartShareOrdRepository;
+
+    private final CartShareOrdItemRepository cartShareOrdItemRepository;
 
     public CartShareOrd findById(Long cartShareOrdId) {
         return cartShareOrdRepository.findById(cartShareOrdId)
@@ -36,5 +40,14 @@ public class CartShareOrdUtilService {
 
     public List<CartShareOrd> findListByCartShareId(Long cartShareId) {
         return cartShareOrdRepository.findAllByCartShareId(cartShareId);
+    }
+
+    public void changeCartShareOrdStatCd(Long cartShareOrdId, OrdStatCd ordStatCd) {
+        CartShareOrd cartShareOrd = findById(cartShareOrdId);
+        cartShareOrd.changeOrdStatCd(ordStatCd);
+    }
+
+    public void deleteCartShareOrdItemList(List<Long> cartShareOrdItemList) {
+        cartShareOrdItemRepository.deleteAllById(cartShareOrdItemList);
     }
 }

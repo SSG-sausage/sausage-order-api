@@ -147,7 +147,7 @@ public class CartShareOrdForCartShareCalService {
         }
 
         CartShareOrdAmtInfo cartShareOrdAmtInfo = cartShareOrdAmtInfoMap.getOrDefault(cartShareOrdItem.getMbrId(),
-                CartShareOrdAmtInfo.of(cartShareOrdItem.getMbrId(), cartShareOrdItem.getPaymtAmt()));
+                CartShareOrdAmtInfo.of(cartShareOrdItem.getMbrId(), 0));
 
         cartShareOrdAmtInfo.addOrdAmt(cartShareOrdItem.getPaymtAmt());
 

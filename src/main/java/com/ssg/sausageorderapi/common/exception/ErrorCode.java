@@ -24,6 +24,7 @@ public enum ErrorCode {
     VALIDATION_ENUM_VALUE_EXCEPTION(BAD_REQUEST, "잘못된 Enum 값 입니다."),
     VALIDATION_REQUEST_MISSING_EXCEPTION(BAD_REQUEST, "필수적인 요청 값이 입력되지 않았습니다."),
     VALIDATION_WRONG_TYPE_EXCEPTION(BAD_REQUEST, "잘못된 타입이 입력되었습니다."),
+    VALIDATION_ITEM_INV_QTY(BAD_REQUEST, "재고가 소진된 상품이 존재합니다."),
 
     /**
      * 401 UnAuthorized
