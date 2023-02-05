@@ -35,6 +35,9 @@ public class CartShareOrdInfo {
     @Schema(description = "정산시작여부")
     private Boolean calStYn;
 
+    @Schema(description = "공유장바구니주문 번호")
+    private String cartShareOrdNo;
+
     @Schema(description = "총결제 금액")
     private Integer ttlPaymtAmt;
 
@@ -45,6 +48,7 @@ public class CartShareOrdInfo {
                 .cartShareCalId(cartShareOrd.getCartShareCalId())
                 .cartShareOrdRcpDts(cartShareOrd.getCartShareOrdRcpDts())
                 .ordStatCd(cartShareOrd.getOrdStatCd().name())
+                .cartShareOrdNo(cartShareOrd.getCartShareOrdNo())
                 .calStYn(cartShareOrd.getCalStYn())
                 .ttlPaymtAmt(cartShareOrd.getTtlPaymtAmt())
                 .build();
