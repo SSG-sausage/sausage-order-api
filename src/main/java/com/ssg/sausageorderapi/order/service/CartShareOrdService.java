@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,6 +51,8 @@ public class CartShareOrdService {
     private final ProducerService producerService;
 
     private final CartShareOrdCreateNotiService cartShareOrdCreateNotiService;
+
+    private final CircuitBreakerFactory circuitBreakerFactory;
 
     public CartShareOrdSaveResponse saveCartShareOrdFromTmpOrd(Long mbrId, Long cartShareId) {
 
@@ -84,8 +88,13 @@ public class CartShareOrdService {
         cartShareOrdCreateNotiService.createOrdSaveNoti(cartShareOrd, cartShareId, mbrId, cartShareOrdItemList);
 
         CartShareCalSaveRequest cartShareCalSaveRequest = createCartShareCalSaveRequest(cartShareOrd);
-        Long cartShareCalId = cartShareCalApiClient.saveCartShareCal(cartShareCalSaveRequest).getData()
-                .getCartShareCalId();
+
+        CircuitBreaker circuitbreaker = circuitBreakerFactory.create("circuitbreaker");
+        Long cartShareCalId = circuitbreaker.run(()-> cartShareCalApiClient.saveCartShareCal(cartShareCalSaveRequest).getData()
+                .getCartShareCalId(), throwable -> null);
+
+//        Long cartShareCalId = cartShareCalApiClient.saveCartShareCal(cartShareCalSaveRequest).getData()
+//                .getCartShareCalId();
 
         cartShareOrd.changeCartShareCalId(cartShareCalId);
 
