@@ -54,6 +54,7 @@ public enum ErrorCode {
      * 500 Internal Server Exception
      */
     INTERNAL_SERVER_EXCEPTION(INTERNAL_SERVER, "예상치 못한 서버 에러가 발생하였습니다."),
+    INTERNAL_SERVER_ORD_SAVE_EXCEPTION(INTERNAL_SERVER, "예상치 못한 서버 에러가 발생하였습니다."),
 
     /**
      * 502 Bad Gateway

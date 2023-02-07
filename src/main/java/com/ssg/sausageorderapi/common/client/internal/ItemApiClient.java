@@ -1,5 +1,6 @@
 package com.ssg.sausageorderapi.common.client.internal;
 
+import com.ssg.sausageorderapi.common.client.internal.dto.request.ItemInvQtyUpdateListRequest;
 import com.ssg.sausageorderapi.common.client.internal.dto.request.ItemInvQtyValidateRequest;
 import com.ssg.sausageorderapi.common.dto.SuccessResponse;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -11,4 +12,7 @@ public interface ItemApiClient {
 
     @PostMapping("/api/item/inv-qty-validation")
     SuccessResponse<Boolean> validateItemInvQty(@RequestBody ItemInvQtyValidateRequest request);
+
+    @PostMapping("/api/item/inv-qty")
+    SuccessResponse<Boolean> updateItemInvQty(@RequestBody ItemInvQtyUpdateListRequest request);
 }
