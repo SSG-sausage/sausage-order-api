@@ -47,6 +47,11 @@ public class CartShareOrdUtilService {
         cartShareOrd.changeOrdStatCd(ordStatCd);
     }
 
+    public void changeCartShareOrdCartShareCalId(Long cartShareOrdId, Long cartShareCalId){
+        CartShareOrd cartShareOrd = findById(cartShareOrdId);
+        cartShareOrd.changeCartShareCalId(cartShareCalId);
+    }
+
     public void deleteCartShareOrdItemList(List<Long> cartShareOrdItemList) {
         cartShareOrdItemRepository.deleteAllById(cartShareOrdItemList);
     }

@@ -2,9 +2,11 @@ package com.ssg.sausageorderapi.common.kafka.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ssg.sausageorderapi.common.client.internal.dto.request.CartShareCalSaveRequest;
 import com.ssg.sausageorderapi.common.exception.ErrorCode;
 import com.ssg.sausageorderapi.common.exception.InternalServerException;
 import com.ssg.sausageorderapi.common.kafka.constant.KafkaConstants;
+import com.ssg.sausageorderapi.common.kafka.dto.CartShareCalRetryDto;
 import com.ssg.sausageorderapi.common.kafka.dto.CartShareItemDeleteListDto;
 import com.ssg.sausageorderapi.common.kafka.dto.CartShareNotiCreateDto;
 import com.ssg.sausageorderapi.common.kafka.dto.CartShareUpdateEditPsblYnDto;
@@ -34,6 +36,10 @@ public class ProducerService {
     public void createCartShareNoti(Long mbrId, String notiCd, String cartShareNotiCntt) {
         produceKafkaMsg(KafkaConstants.KAFKA_CART_SHARE_NOTI_CREATE,
                 CartShareNotiCreateDto.of(mbrId, notiCd, cartShareNotiCntt));
+    }
+
+    public void retryCartShareCal(CartShareCalSaveRequest request){
+        produceKafkaMsg(KafkaConstants.KAFKA_CART_SHARE_CAL_SAVE_RETRY, CartShareCalRetryDto.of(request));
     }
 
     private void produceKafkaMsg(String topicNm, Object object) {
