@@ -10,6 +10,10 @@ import com.ssg.sausageorderapi.common.kafka.dto.CartShareCalRetryDto;
 import com.ssg.sausageorderapi.common.kafka.dto.CartShareItemDeleteListDto;
 import com.ssg.sausageorderapi.common.kafka.dto.CartShareNotiCreateDto;
 import com.ssg.sausageorderapi.common.kafka.dto.CartShareUpdateEditPsblYnDto;
+import com.ssg.sausageorderapi.common.kafka.dto.ItemInvQtyUpdateListDto;
+import com.ssg.sausageorderapi.common.kafka.dto.ItemInvQtyUpdateListDto.ItemInvQtyUpdateListDtoType;
+import com.ssg.sausageorderapi.order.dto.response.ItemInvQtyUpdateInfo;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -38,8 +42,14 @@ public class ProducerService {
                 CartShareNotiCreateDto.of(mbrId, notiCd, cartShareNotiCntt));
     }
 
-    public void retryCartShareCal(CartShareCalSaveRequest request){
+    public void retryCartShareCal(CartShareCalSaveRequest request) {
         produceKafkaMsg(KafkaConstants.KAFKA_CART_SHARE_CAL_SAVE_RETRY, CartShareCalRetryDto.of(request));
+    }
+
+    public void updateItemInvQty(List<ItemInvQtyUpdateInfo> itemInvQtyUpdateInfoList) {
+
+        produceKafkaMsg(KafkaConstants.KAFKA_ITEM_INV_QTY_UPDATE,
+                ItemInvQtyUpdateListDto.of(itemInvQtyUpdateInfoList, ItemInvQtyUpdateListDtoType.INCREASE));
     }
 
     private void produceKafkaMsg(String topicNm, Object object) {

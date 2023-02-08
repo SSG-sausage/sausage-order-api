@@ -1,4 +1,4 @@
-package com.ssg.sausageorderapi.common.client.internal.dto.request;
+package com.ssg.sausageorderapi.common.kafka.dto;
 
 import com.ssg.sausageorderapi.order.dto.response.ItemInvQtyUpdateInfo;
 import java.util.ArrayList;
@@ -14,28 +14,28 @@ import lombok.RequiredArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(access = AccessLevel.PRIVATE)
-public class ItemInvQtyUpdateListRequest {
+public class ItemInvQtyUpdateListDto {
 
     private List<ItemInvQtyUpdateInfo> itemInvQtyUpdateInfoList = new ArrayList<>();
 
-    private ItemInvQtyUpdateListRequestType updateType;
+    private ItemInvQtyUpdateListDtoType itemInvQtyUpdateListDtoType;
 
-    public static ItemInvQtyUpdateListRequest of(List<ItemInvQtyUpdateInfo> cartShareOrdItemInvQtyUpdateInfoList,
-            ItemInvQtyUpdateListRequestType itemInvQtyUpdateListRequestType) {
-        return ItemInvQtyUpdateListRequest.builder()
-                .itemInvQtyUpdateInfoList(cartShareOrdItemInvQtyUpdateInfoList)
-                .updateType(itemInvQtyUpdateListRequestType)
+    public static ItemInvQtyUpdateListDto of(List<ItemInvQtyUpdateInfo> itemInvQtyUpdateInfoList,
+            ItemInvQtyUpdateListDtoType itemInvQtyUpdateListDtoType) {
+
+        return ItemInvQtyUpdateListDto.builder()
+                .itemInvQtyUpdateInfoList(itemInvQtyUpdateInfoList)
+                .itemInvQtyUpdateListDtoType(itemInvQtyUpdateListDtoType)
                 .build();
     }
 
     @RequiredArgsConstructor
     @Getter
-    public enum ItemInvQtyUpdateListRequestType {
+    public enum ItemInvQtyUpdateListDtoType {
 
         INCREASE(1),
         DECREASE(-1);
 
         private final int value;
     }
-
 }

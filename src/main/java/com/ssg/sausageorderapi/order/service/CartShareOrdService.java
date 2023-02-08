@@ -6,8 +6,7 @@ import com.ssg.sausageorderapi.common.client.internal.CartShareCalApiClient;
 import com.ssg.sausageorderapi.common.client.internal.ItemApiClient;
 import com.ssg.sausageorderapi.common.client.internal.dto.request.CartShareCalSaveRequest;
 import com.ssg.sausageorderapi.common.client.internal.dto.request.ItemInvQtyUpdateListRequest;
-import com.ssg.sausageorderapi.common.client.internal.dto.request.ItemInvQtyUpdateListRequest.ItemInfo;
-import com.ssg.sausageorderapi.common.client.internal.dto.request.ItemInvQtyUpdateListRequest.ItemInvQtyUpdateListUpdateType;
+import com.ssg.sausageorderapi.common.client.internal.dto.request.ItemInvQtyUpdateListRequest.ItemInvQtyUpdateListRequestType;
 import com.ssg.sausageorderapi.common.client.internal.dto.response.CartShareMbrIdListResponse;
 import com.ssg.sausageorderapi.common.exception.ErrorCode;
 import com.ssg.sausageorderapi.common.exception.InternalServerException;
@@ -15,6 +14,7 @@ import com.ssg.sausageorderapi.common.kafka.service.ProducerService;
 import com.ssg.sausageorderapi.order.dto.response.CartShareOrdFindListResponse;
 import com.ssg.sausageorderapi.order.dto.response.CartShareOrdFindResponse;
 import com.ssg.sausageorderapi.order.dto.response.CartShareOrdSaveResponse;
+import com.ssg.sausageorderapi.order.dto.response.ItemInvQtyUpdateInfo;
 import com.ssg.sausageorderapi.order.entity.CartShareOrd;
 import com.ssg.sausageorderapi.order.entity.CartShareOrdItem;
 import com.ssg.sausageorderapi.order.entity.CartShareTmpOrd;
@@ -74,7 +74,7 @@ public class CartShareOrdService {
                 cartShareTmpOrd.getCartShareTmpOrdId());
 
         //선재고차감
-        List<ItemInfo> cartShareOrdItemInfoList = decreaseItemInvQty(cartShareTmpOrdItemList);
+        List<ItemInvQtyUpdateInfo> itemInvQtyUpdateInfoList = decreaseItemInvQty(cartShareTmpOrdItemList);
 
         CartShareOrd cartShareOrd;
         List<CartShareOrdItem> cartShareOrdItemList;
@@ -99,8 +99,8 @@ public class CartShareOrdService {
         } catch (Exception exception) {
 
             //재고 차감 복구 처리
-            itemApiClient.updateItemInvQty(
-                    ItemInvQtyUpdateListRequest.of(cartShareOrdItemInfoList, ItemInvQtyUpdateListUpdateType.INCREASE));
+
+            producerService.updateItemInvQty(itemInvQtyUpdateInfoList);
 
             throw new InternalServerException("주문 생성 중 알 수 없는 오류가 발생했습니다.",
                     ErrorCode.INTERNAL_SERVER_ORD_SAVE_EXCEPTION);
@@ -149,15 +149,17 @@ public class CartShareOrdService {
         return CartShareOrdFindResponse.of(cartShareOrd, cartShareOrdItemList);
     }
 
-    private List<ItemInfo> decreaseItemInvQty(List<CartShareTmpOrdItem> cartShareTmpOrdItemList) {
-        List<ItemInfo> cartShareOrdItemInfoList = cartShareTmpOrdItemList.stream()
-                .map(cartShareTmpOrdItem -> ItemInfo.of(cartShareTmpOrdItem.getItemId(),
-                        cartShareTmpOrdItem.getItemQty()))
+    private List<ItemInvQtyUpdateInfo> decreaseItemInvQty(List<CartShareTmpOrdItem> cartShareTmpOrdItemList) {
+
+        List<ItemInvQtyUpdateInfo> itemInvQtyUpdateInfoList = cartShareTmpOrdItemList.stream()
+                .map(cartShareTmpOrdItem ->
+                        ItemInvQtyUpdateInfo.of(cartShareTmpOrdItem.getItemId(), cartShareTmpOrdItem.getItemQty()))
                 .collect(Collectors.toList());
 
         itemApiClient.updateItemInvQty(
-                ItemInvQtyUpdateListRequest.of(cartShareOrdItemInfoList, ItemInvQtyUpdateListUpdateType.DECREASE));
-        return cartShareOrdItemInfoList;
+                ItemInvQtyUpdateListRequest.of(itemInvQtyUpdateInfoList, ItemInvQtyUpdateListRequestType.DECREASE));
+
+        return itemInvQtyUpdateInfoList;
     }
 
     private int calculateTtlPaymtAmt(List<CartShareOrdItem> cartShareOrdItems) {
