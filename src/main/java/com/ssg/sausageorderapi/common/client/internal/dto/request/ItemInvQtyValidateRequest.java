@@ -17,13 +17,13 @@ import lombok.ToString;
 @Builder(access = AccessLevel.PUBLIC)
 public class ItemInvQtyValidateRequest {
 
-    private List<ItemInfo> itemInfoList = new ArrayList<>();
+    private List<ItemValidateInfo> itemValidateInfoList = new ArrayList<>();
 
     @Getter
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     @Builder(access = AccessLevel.PUBLIC)
-    public static class ItemInfo {
+    public static class ItemValidateInfo {
 
         @Schema(description = "상품 ID")
         private Long itemId;
