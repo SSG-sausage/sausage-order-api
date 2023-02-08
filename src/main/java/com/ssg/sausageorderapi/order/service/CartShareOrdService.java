@@ -62,6 +62,8 @@ public class CartShareOrdService {
 
     private final CircuitBreakerFactory circuitBreakerFactory;
 
+    private static final String ORDER_CIRCUIT_BREAKER_NAME = "orderCircuitBreaker";
+
     public CartShareOrdSaveResponse saveCartShareOrdFromTmpOrd(Long mbrId, Long cartShareId) {
 
         cartShareApiClient.validateCartShareMastr(cartShareId, mbrId);
@@ -112,10 +114,13 @@ public class CartShareOrdService {
 
         CartShareCalSaveRequest cartShareCalSaveRequest = createCartShareCalSaveRequest(cartShareOrd);
 
-        CircuitBreaker circuitbreaker = circuitBreakerFactory.create("circuitbreaker");
-        Long cartShareCalId = circuitbreaker.run(
-                () -> cartShareCalApiClient.saveCartShareCal(cartShareCalSaveRequest).getData()
-                        .getCartShareCalId(), throwable -> null);
+
+        CircuitBreaker circuitbreaker = circuitBreakerFactory.create(ORDER_CIRCUIT_BREAKER_NAME);
+        Long cartShareCalId = circuitbreaker.run(()-> cartShareCalApiClient.saveCartShareCal(cartShareCalSaveRequest).getData()
+                .getCartShareCalId(), throwable -> {
+            producerService.retryCartShareCal(cartShareCalSaveRequest);
+            return null;
+        });
 
         cartShareOrd.changeCartShareCalId(cartShareCalId);
 
