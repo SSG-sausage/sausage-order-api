@@ -1,6 +1,7 @@
 package com.ssg.sausageorderapi.common.config.resilience4j;
 
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
+import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig.SlidingWindowType;
 import io.github.resilience4j.timelimiter.TimeLimiterConfig;
 import java.time.Duration;
 import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JCircuitBreakerFactory;
@@ -16,13 +17,15 @@ public class Resilience4JConfig {
     public Customizer<Resilience4JCircuitBreakerFactory> globalCustomConfiguration(){
 
         CircuitBreakerConfig circuitBreakerConfig = CircuitBreakerConfig.custom()
-                .failureRateThreshold(4)
-                .waitDurationInOpenState(Duration.ofMillis(1000))
+                .failureRateThreshold(50)
+                .waitDurationInOpenState(Duration.ofMillis(60000))
+                .slidingWindowType(SlidingWindowType.COUNT_BASED)
                 .slidingWindowSize(2)
+                .minimumNumberOfCalls(2)
                 .build();
 
         TimeLimiterConfig timeLimiterConfig = TimeLimiterConfig.custom()
-                .timeoutDuration(Duration.ofSeconds(4))
+                .timeoutDuration(Duration.ofSeconds(2))
                 .build();
 
         return factory -> factory.configureDefault(id -> new Resilience4JConfigBuilder(id)
