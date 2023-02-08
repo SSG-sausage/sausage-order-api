@@ -3,8 +3,14 @@ package com.ssg.sausageorderapi.order.service;
 
 import com.ssg.sausageorderapi.common.client.internal.CartShareApiClient;
 import com.ssg.sausageorderapi.common.client.internal.CartShareCalApiClient;
+import com.ssg.sausageorderapi.common.client.internal.ItemApiClient;
 import com.ssg.sausageorderapi.common.client.internal.dto.request.CartShareCalSaveRequest;
+import com.ssg.sausageorderapi.common.client.internal.dto.request.ItemInvQtyUpdateListRequest;
+import com.ssg.sausageorderapi.common.client.internal.dto.request.ItemInvQtyUpdateListRequest.ItemInfo;
+import com.ssg.sausageorderapi.common.client.internal.dto.request.ItemInvQtyUpdateListRequest.ItemInvQtyUpdateListUpdateType;
 import com.ssg.sausageorderapi.common.client.internal.dto.response.CartShareMbrIdListResponse;
+import com.ssg.sausageorderapi.common.exception.ErrorCode;
+import com.ssg.sausageorderapi.common.exception.InternalServerException;
 import com.ssg.sausageorderapi.common.kafka.service.ProducerService;
 import com.ssg.sausageorderapi.order.dto.response.CartShareOrdFindListResponse;
 import com.ssg.sausageorderapi.order.dto.response.CartShareOrdFindResponse;
@@ -48,6 +54,8 @@ public class CartShareOrdService {
 
     private final CartShareCalApiClient cartShareCalApiClient;
 
+    private final ItemApiClient itemApiClient;
+
     private final ProducerService producerService;
 
     private final CartShareOrdCreateNotiService cartShareOrdCreateNotiService;
@@ -60,45 +68,59 @@ public class CartShareOrdService {
 
         CartShareTmpOrd cartShareTmpOrd = cartShareTmpOrdUtilService.findCartShareTmpOrdInProgress(cartShareId);
 
-        // 임시주문으로부터 주문 저장
-        CartShareOrd cartShareOrd = CartShareOrd.newInstance(cartShareTmpOrd);
-
-        cartShareOrdRepository.save(cartShareOrd);
-
-        // 임시주문상품으로부터 주문상품 저장
         List<CartShareTmpOrdItem> cartShareTmpOrdItemList = cartShareTmpOrdUtilService.findCartShareTmpOrdItemByTmpOrdId(
-                cartShareOrd.getCartShareTmpOrdId());
+                cartShareTmpOrd.getCartShareTmpOrdId());
 
-        List<CartShareOrdItem> cartShareOrdItemList = cartShareTmpOrdItemList.stream()
-                .map(cartShareTmpOdrItem -> CartShareOrdItem.newInstance(cartShareOrd.getCartShareOrdId(),
-                        cartShareTmpOdrItem))
-                .collect(Collectors.toList());
+        //선재고차감
+        List<ItemInfo> cartShareOrdItemInfoList = decreaseItemInvQty(cartShareTmpOrdItemList);
 
-        cartShareOrdItemRepository.saveAll(cartShareOrdItemList);
+        CartShareOrd cartShareOrd;
+        List<CartShareOrdItem> cartShareOrdItemList;
 
-        // 총 결제 금액 변경
-        int ttlPaymtAmt = calculateTtlPaymtAmt(cartShareOrdItemList);
-        cartShareOrd.changeTtlPaymtAmt(ttlPaymtAmt);
+        try {
+
+            cartShareOrd = CartShareOrd.newInstance(cartShareTmpOrd);
+
+            cartShareOrdRepository.save(cartShareOrd);
+
+            cartShareOrdItemList = cartShareTmpOrdItemList.stream()
+                    .map(cartShareTmpOdrItem -> CartShareOrdItem.newInstance(cartShareOrd.getCartShareOrdId(),
+                            cartShareTmpOdrItem))
+                    .collect(Collectors.toList());
+
+            cartShareOrdItemRepository.saveAll(cartShareOrdItemList);
+
+            // 총 결제 금액 변경
+            int ttlPaymtAmt = calculateTtlPaymtAmt(cartShareOrdItemList);
+            cartShareOrd.changeTtlPaymtAmt(ttlPaymtAmt);
+
+        } catch (Exception exception) {
+
+            //재고 차감 복구 처리
+            itemApiClient.updateItemInvQty(
+                    ItemInvQtyUpdateListRequest.of(cartShareOrdItemInfoList, ItemInvQtyUpdateListUpdateType.INCREASE));
+
+            throw new InternalServerException("주문 생성 중 알 수 없는 오류가 발생했습니다.",
+                    ErrorCode.INTERNAL_SERVER_ORD_SAVE_EXCEPTION);
+        }
 
         // 주문 완료 이후, 장바구니 후속 이벤트 발생
         cartShareTmpOrdUtilService.changeTmpOrdStatCd(cartShareTmpOrd, TmpOrdStatCd.CANCELED);
         producerService.deleteCartShareItemList(cartShareId);
         producerService.updateEditPsblYn(cartShareId, true);
-        producerService.updateItemInvQty(cartShareOrd.getCartShareOrdId(), cartShareOrdItemList);
         cartShareOrdCreateNotiService.createOrdSaveNoti(cartShareOrd, cartShareId, mbrId, cartShareOrdItemList);
 
         CartShareCalSaveRequest cartShareCalSaveRequest = createCartShareCalSaveRequest(cartShareOrd);
 
         CircuitBreaker circuitbreaker = circuitBreakerFactory.create("circuitbreaker");
-        Long cartShareCalId = circuitbreaker.run(()-> cartShareCalApiClient.saveCartShareCal(cartShareCalSaveRequest).getData()
-                .getCartShareCalId(), throwable -> null);
-
-//        Long cartShareCalId = cartShareCalApiClient.saveCartShareCal(cartShareCalSaveRequest).getData()
-//                .getCartShareCalId();
+        Long cartShareCalId = circuitbreaker.run(
+                () -> cartShareCalApiClient.saveCartShareCal(cartShareCalSaveRequest).getData()
+                        .getCartShareCalId(), throwable -> null);
 
         cartShareOrd.changeCartShareCalId(cartShareCalId);
 
         return CartShareOrdSaveResponse.of(cartShareOrd);
+
     }
 
     public CartShareOrdFindListResponse findCartShareOrderList(Long mbrId, Long cartShareId) {
@@ -120,6 +142,17 @@ public class CartShareOrdService {
                 cartShareOrd.getCartShareOrdId());
 
         return CartShareOrdFindResponse.of(cartShareOrd, cartShareOrdItemList);
+    }
+
+    private List<ItemInfo> decreaseItemInvQty(List<CartShareTmpOrdItem> cartShareTmpOrdItemList) {
+        List<ItemInfo> cartShareOrdItemInfoList = cartShareTmpOrdItemList.stream()
+                .map(cartShareTmpOrdItem -> ItemInfo.of(cartShareTmpOrdItem.getItemId(),
+                        cartShareTmpOrdItem.getItemQty()))
+                .collect(Collectors.toList());
+
+        itemApiClient.updateItemInvQty(
+                ItemInvQtyUpdateListRequest.of(cartShareOrdItemInfoList, ItemInvQtyUpdateListUpdateType.DECREASE));
+        return cartShareOrdItemInfoList;
     }
 
     private int calculateTtlPaymtAmt(List<CartShareOrdItem> cartShareOrdItems) {
